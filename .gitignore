@@ -1,0 +1,22 @@
+# Unity-generated folders
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Ll]ogs/
+/[Uu]serSettings/
+/[Bb]uild/
+/[Bb]uilds/
+/Data/
+
+# Generated IDE files
+/.vs/
+/.vscode/
+*.csproj
+*.sln
+*.slnx
+*.user
+*.unityproj
+
+# Local captures
+/Assets/Screenshots/
+
