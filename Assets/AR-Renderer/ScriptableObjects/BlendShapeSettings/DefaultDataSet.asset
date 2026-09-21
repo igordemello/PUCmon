@@ -1,0 +1,83 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a22bb042756d88c4fb40bea69d6c8a0e, type: 3}
+  m_Name: DefaultDataSet
+  m_EditorClassIdentifier: 
+  JointPairs:
+  - jointFirstIndex: 11
+    jointSecondIndex: 16
+    arBlendShapesType: 1
+    CoefficientMul: 5
+  - jointFirstIndex: 291
+    jointSecondIndex: 192
+    arBlendShapesType: 18
+    CoefficientMul: 1.1
+  - jointFirstIndex: 61
+    jointSecondIndex: 416
+    arBlendShapesType: 17
+    CoefficientMul: 1.1
+  - jointFirstIndex: 257
+    jointSecondIndex: 253
+    arBlendShapesType: 3
+    CoefficientMul: 2.05
+  - jointFirstIndex: 27
+    jointSecondIndex: 23
+    arBlendShapesType: 2
+    CoefficientMul: 2.05
+  - jointFirstIndex: 257
+    jointSecondIndex: 443
+    arBlendShapesType: 7
+    CoefficientMul: 1.95
+  - jointFirstIndex: 27
+    jointSecondIndex: 223
+    arBlendShapesType: 6
+    CoefficientMul: 1.95
+  - jointFirstIndex: 199
+    jointSecondIndex: 68
+    arBlendShapesType: 14
+    CoefficientMul: 1.03
+  - jointFirstIndex: 199
+    jointSecondIndex: 298
+    arBlendShapesType: 13
+    CoefficientMul: 1.03
+  - jointFirstIndex: 386
+    jointSecondIndex: 450
+    arBlendShapesType: 5
+    CoefficientMul: 0.9
+  - jointFirstIndex: 159
+    jointSecondIndex: 230
+    arBlendShapesType: 4
+    CoefficientMul: 0.9
+  - jointFirstIndex: 308
+    jointSecondIndex: 78
+    arBlendShapesType: 19
+    CoefficientMul: 0.76
+  - jointFirstIndex: 197
+    jointSecondIndex: 9
+    arBlendShapesType: 10
+    CoefficientMul: 1.1
+  - jointFirstIndex: 225
+    jointSecondIndex: 53
+    arBlendShapesType: 11
+    CoefficientMul: 0.9
+  - jointFirstIndex: 283
+    jointSecondIndex: 445
+    arBlendShapesType: 12
+    CoefficientMul: 0.9
+  - jointFirstIndex: 358
+    jointSecondIndex: 6
+    arBlendShapesType: 25
+    CoefficientMul: 0.97
+  - jointFirstIndex: 129
+    jointSecondIndex: 6
+    arBlendShapesType: 24
+    CoefficientMul: 0.97

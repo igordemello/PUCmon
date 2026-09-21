@@ -1,0 +1,1 @@
+Run program from folder, and not from editor. (RMB - Show in Explorer);

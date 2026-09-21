@@ -1,0 +1,32 @@
+namespace Qualium_Systems.WebXRPlugin.AR_Renderer.Scripts.BlendShapes
+{
+    public enum ARBlendShapesType
+    {
+        MouthOpen,
+        JawOpen,
+        EyeOpenL,
+        EyeOpenR,
+        EyeBlinkL,
+        EyeBlinkR,
+        EyeUpL,
+        EyeUpR,
+        BrowDownR,
+        BrowDownL,
+        BrowsUpCenter,
+        BrowsUpLeft,
+        BrowsUpRight,
+        JawLeft,
+        JawRight,
+        ChinUpperClose,
+        ChinLowerClose,
+        MouthSmileL,
+        MouthSmileR,
+        LipsPucker,
+        MouthPressL,
+        MouthPressR,
+        CheekSquintR,
+        CheekSquintL,
+        SneerL,
+        SneerR
+    }
+}

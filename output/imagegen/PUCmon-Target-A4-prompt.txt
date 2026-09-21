@@ -1,0 +1,8 @@
+Generated with the built-in image generation tool.
+
+Use case: illustration-story.
+Asset type: printable image-tracking target for the PUCmon Unity/MindAR augmented-reality test.
+Generate one finished flat illustration in A4 PORTRAIT aspect ratio, 210:297 (approximately 0.7071 width/height), ideally 2480 x 3508 pixels. This is the actual artwork to print, not a photo/mockup of a sheet.
+Subject: an original friendly fantasy forest creature with small horns, expressive eyes, textured fur and leafy accessories, exploring an old stone courtyard with plants, broken mosaics, carved stone, scattered illustrated field notes and curious natural objects.
+Composition: richly detailed, asymmetric, clearly readable hand-inked adventure illustration. Unique medium-size sharp corners, contrasting irregular shapes and distinctive local details distributed throughout all four quadrants and close to all four edges. Each corner should look different. Keep the creature prominent but retain textured varied background across the whole page. Rich moss greens, warm ochre, teal, cream highlights and very dark ink shadows; strong luminance contrast even in grayscale.
+Optimize for natural feature image tracking: crisp stable edges, irregular nonrepeating details at several scales, no large flat areas, no blur, no shallow depth of field, no gradients filling large spaces. Avoid uniform grids, repeated tile patterns, bilateral symmetry, QR codes, barcodes, fiducial symbols, frames, wide blank margins, logos, watermarks, typography and any text. Full-page opaque artwork. Maintain A4 portrait proportions.
