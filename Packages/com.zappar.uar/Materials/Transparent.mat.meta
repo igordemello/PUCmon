@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 57302a68427ce47c6b1ac522a4e90f82
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 245020
+  packageName: Universal AR (UAR) SDK - Web and Native AR
+  packageVersion: 3.2.3
+  assetPath: Packages/com.zappar.uar/Materials/Transparent.mat
+  uploadId: 597678

@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: c716c4976cee9634e95ba59466a8ff96
+TextScriptImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 245020
+  packageName: Universal AR (UAR) SDK - Web and Native AR
+  packageVersion: 3.2.3
+  assetPath: Packages/com.zappar.uar/LICENSE.md
+  uploadId: 597678

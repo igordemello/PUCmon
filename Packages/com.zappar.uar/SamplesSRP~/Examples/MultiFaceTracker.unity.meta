@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 11c990bb92d8ca44397634a4c760fa17
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 245020
+  packageName: Universal AR (UAR) SDK - Web and Native AR
+  packageVersion: 3.2.3
+  assetPath: Packages/com.zappar.uar/SamplesSRP~/Examples/MultiFaceTracker.unity
+  uploadId: 597678

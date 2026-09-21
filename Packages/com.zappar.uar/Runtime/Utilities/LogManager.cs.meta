@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 4d2be52e0b905cd40abe2e2a17fb45d8
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 245020
+  packageName: Universal AR (UAR) SDK - Web and Native AR
+  packageVersion: 3.2.3
+  assetPath: Packages/com.zappar.uar/Runtime/Utilities/LogManager.cs
+  uploadId: 597678

@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: afc85657244d94368b426e3747346f0a
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  preprocessorOverride: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 245020
+  packageName: Universal AR (UAR) SDK - Web and Native AR
+  packageVersion: 3.2.3
+  assetPath: Packages/com.zappar.uar/Resources/Shaders/ZUnlitTextureUV.shader
+  uploadId: 597678

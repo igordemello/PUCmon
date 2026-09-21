@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 327767f1acd932a4cb5a76eb9cc493e2
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 245020
+  packageName: Universal AR (UAR) SDK - Web and Native AR
+  packageVersion: 3.2.3
+  assetPath: Packages/com.zappar.uar/Samples~/Examples/FaceLandmark.unity
+  uploadId: 597678

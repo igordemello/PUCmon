@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: e26aaf9b92a214ddeadf1af0c4f8eeff
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 245020
+  packageName: Universal AR (UAR) SDK - Web and Native AR
+  packageVersion: 3.2.3
+  assetPath: Packages/com.zappar.uar/Materials/Depth Mask.mat
+  uploadId: 597678

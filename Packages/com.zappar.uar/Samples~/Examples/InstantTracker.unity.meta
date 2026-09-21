@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 9362b7cea9fa2994994090d72bb20163
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 245020
+  packageName: Universal AR (UAR) SDK - Web and Native AR
+  packageVersion: 3.2.3
+  assetPath: Packages/com.zappar.uar/Samples~/Examples/InstantTracker.unity
+  uploadId: 597678

@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 139c618766f367b4280b650efb618b72
+AssemblyDefinitionImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 245020
+  packageName: Universal AR (UAR) SDK - Web and Native AR
+  packageVersion: 3.2.3
+  assetPath: Packages/com.zappar.uar/Runtime/Zappar.UAR.asmdef
+  uploadId: 597678

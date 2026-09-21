@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: e06d494c94abd7e489308b8c2b4ac452
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 245020
+  packageName: Universal AR (UAR) SDK - Web and Native AR
+  packageVersion: 3.2.3
+  assetPath: Packages/com.zappar.uar/Materials/URP/Default.mat
+  uploadId: 597678

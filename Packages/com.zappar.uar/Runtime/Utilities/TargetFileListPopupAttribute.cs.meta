@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 2d52a40404fbc46729bd43bfd15b321d
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 245020
+  packageName: Universal AR (UAR) SDK - Web and Native AR
+  packageVersion: 3.2.3
+  assetPath: Packages/com.zappar.uar/Runtime/Utilities/TargetFileListPopupAttribute.cs
+  uploadId: 597678

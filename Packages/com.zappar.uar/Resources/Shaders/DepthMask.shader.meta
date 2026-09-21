@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: b53e6fe10b38643a7bee6938e7cb0e24
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 245020
+  packageName: Universal AR (UAR) SDK - Web and Native AR
+  packageVersion: 3.2.3
+  assetPath: Packages/com.zappar.uar/Resources/Shaders/DepthMask.shader
+  uploadId: 597678
