@@ -130,10 +130,3 @@ TextureImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 245020
-  packageName: Universal AR (UAR) SDK - Web and Native AR
-  packageVersion: 3.2.3
-  assetPath: Packages/com.zappar.uar/Contents/ic64.png
-  uploadId: 597678
