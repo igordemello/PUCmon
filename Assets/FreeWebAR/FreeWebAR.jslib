@@ -1,5 +1,5 @@
 mergeInto(LibraryManager.library, {
-  // Copies window.freeWebARPose (written by the FreeWebAR WebGL template) into a C# float[11].
+  // Copies window.freeWebARPose (26 floats, written by the FreeWebAR WebGL template) into a C# float[26].
   FreeWebAR_ReadPose: function (ptr) {
     var pose = window.freeWebARPose;
     if (!pose) return 0;
@@ -8,7 +8,7 @@ mergeInto(LibraryManager.library, {
   },
 
   // Unity ends each frame with an alpha-only clear to 1. Skipping it keeps the pixels the camera
-  // cleared to Color.clear transparent, so the camera <video> behind the canvas shows through.
+  // cleared to Color.clear transparent, so the camera feed canvas behind this one shows through.
   glClear: function (mask) {
     if (mask === 0x4000) {
       var m = GLctx.getParameter(GLctx.COLOR_WRITEMASK);

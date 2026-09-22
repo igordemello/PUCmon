@@ -1,0 +1,23 @@
+{
+  "imagePath": "image-targets/pucmon_luminance.png",
+  "metadata": null,
+  "name": "pucmon",
+  "type": "PLANAR",
+  "properties": {
+    "left": 0,
+    "top": 101,
+    "width": 2480,
+    "height": 3307,
+    "isRotated": false,
+    "originalWidth": 2480,
+    "originalHeight": 3508
+  },
+  "resources": {
+    "originalImage": "pucmon_original.png",
+    "croppedImage": "pucmon_cropped.png",
+    "thumbnailImage": "pucmon_thumbnail.png",
+    "luminanceImage": "pucmon_luminance.png"
+  },
+  "created": 1790065504870,
+  "updated": 1790065504870
+}

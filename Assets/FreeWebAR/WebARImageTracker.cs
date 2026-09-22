@@ -3,7 +3,8 @@ using UnityEngine;
 using UnityEngine.Events;
 
 /// <summary>
-/// Moves <see cref="target"/> onto the printed image tracked by MindAR in the page (WebGLTemplates/FreeWebAR).
+/// Moves <see cref="target"/> onto the printed image tracked by the 8th Wall engine in the page
+/// (WebGLTemplates/FreeWebAR) and gives this camera the engine's projection, so the overlay matches the camera feed.
 /// Target space matches Zappar's: image centred on the origin, 2 units tall, content towards the camera on local -Z.
 /// Only runs in WebGL builds; in the Editor the target stays where it was placed.
 /// </summary>
@@ -19,14 +20,14 @@ public class WebARImageTracker : MonoBehaviour
 #if UNITY_WEBGL && !UNITY_EDITOR
     [DllImport("__Internal")] static extern int FreeWebAR_ReadPose(float[] pose);
 
-    // [tracked, fovY, position xyz, forward xyz, up xyz], written by the page's tracker.
-    readonly float[] pose = new float[11];
+    // [tracked, position xyz, forward xyz, up xyz, projection 16 (column-major)], written by the page.
+    readonly float[] pose = new float[26];
     Camera cam;
 
     void Awake()
     {
         cam = GetComponent<Camera>();
-        // Transparent clear: the camera <video> behind the canvas shows through.
+        // Transparent clear: the camera feed canvas behind this one shows through.
         cam.clearFlags = CameraClearFlags.SolidColor;
         cam.backgroundColor = Color.clear;
         target.gameObject.SetActive(false);
@@ -34,12 +35,21 @@ public class WebARImageTracker : MonoBehaviour
 
     void LateUpdate()
     {
-        bool tracked = FreeWebAR_ReadPose(pose) == 1 && pose[0] > 0.5f;
+        if (FreeWebAR_ReadPose(pose) == 0)
+            return;
+        if (pose[10] > 0f && !float.IsNaN(pose[15]))  // a perspective matrix has m00 > 0
+        {
+            var projection = new Matrix4x4();
+            for (int i = 0; i < 16; i++)
+                projection[i] = pose[10 + i];
+            cam.projectionMatrix = projection;
+        }
+
+        bool tracked = pose[0] > 0.5f;
         if (tracked)
         {
-            cam.fieldOfView = pose[1];
-            var rotation = Quaternion.LookRotation(new Vector3(pose[5], pose[6], pose[7]), new Vector3(pose[8], pose[9], pose[10]));
-            target.SetPositionAndRotation(transform.TransformPoint(pose[2], pose[3], pose[4]), transform.rotation * rotation);
+            var rotation = Quaternion.LookRotation(new Vector3(pose[4], pose[5], pose[6]), new Vector3(pose[7], pose[8], pose[9]));
+            target.SetPositionAndRotation(transform.TransformPoint(pose[1], pose[2], pose[3]), transform.rotation * rotation);
         }
         if (tracked == IsTracked)
             return;
