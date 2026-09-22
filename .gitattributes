@@ -1,0 +1,2 @@
+# Vendored 8th Wall engine: keep byte-for-byte (no CRLF conversion on Windows checkouts)
+Assets/WebGLTemplates/FreeWebAR/xr/*.js -text
