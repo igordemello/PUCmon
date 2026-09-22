@@ -6,8 +6,10 @@ câmera, com fundo transparente. Nada depende de serviço externo: tudo fica den
 
 ## Como funciona
 
-- `WebGLTemplates/FreeWebAR/index.html`: abre a câmera traseira em HD, rastreia uma cópia reduzida do vídeo
-  (640 px) com o MindAR e escreve a pose em `window.freeWebARPose`.
+- `WebGLTemplates/FreeWebAR/index.html`: abre a lente principal da câmera traseira em HD (nunca a 0.5x), rastreia
+  uma cópia reduzida do vídeo (640 px) com o MindAR, suaviza a pose e a escreve em `window.freeWebARPose`.
+- `WebGLTemplates/FreeWebAR/freewebar.js`: conversão da pose para a Unity, filtro anti-tremor (One Euro por canal:
+  posição, inclinação e giro) e escolha da lente.
 - `FreeWebAR.jslib` + `WebARImageTracker.cs` (na **AR Camera**): leem a pose a cada frame, movem o **Image Target**
   e disparam `onTargetFound` / `onTargetLost`.
 - O espaço do alvo é o mesmo da Zappar: imagem centrada na origem, **2 unidades de altura**, conteúdo "saindo"
@@ -31,7 +33,18 @@ de cor lisa rastreiam mal em **qualquer** rastreador, inclusive na Zappar.
 
 ## Ajuste fino no celular
 
-Parâmetros na URL, sem rebuild: `?mincf=0.0001&beta=10` (filtro: menos tremido x menos atraso),
-`?track=800` (mais resolução de rastreamento, mais CPU), `?miss=10` (tempo que o conteúdo fica visível ao perder a imagem).
+Parâmetros na URL, sem rebuild (ex.: `https://seu-site.netlify.app/?debug&tmin=0.3`):
 
-Teste da conversão de pose: `node "Assets/FreeWebAR/Tests~/pose.test.mjs"`.
+| Parâmetro | Padrão | Efeito |
+|---|---|---|
+| `debug` | — | Lista as câmeras (▶ = a aberta) e a resolução |
+| `cam=N` | auto | Força a câmera N da lista do `debug` |
+| `tmin` / `tbeta` | 0.5 / 3 | Inclinação: menor `tmin` = mais firme parado; maior `tbeta` = menos atraso ao inclinar |
+| `pmin` / `pbeta` | 4 / 200 | Posição (idem) |
+| `rmin` / `rbeta` | 4 / 50 | Giro no plano (idem) |
+| `kf` | 0 | 0 = rastreia no keyframe de 256 px (mais firme); 1 = 128 px, o padrão do MindAR |
+| `track` | 640 | Resolução de rastreamento (maior = mais preciso, mais CPU) |
+| `fov` | 60 | Abertura da lente no lado maior, em graus |
+| `miss` | 5 | Quadros que o conteúdo continua visível depois de perder a imagem |
+
+Testes (pose, filtro e escolha de câmera): `node "Assets/FreeWebAR/Tests~/freewebar.test.mjs"`.

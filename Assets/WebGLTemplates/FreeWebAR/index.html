@@ -11,28 +11,37 @@
     #unity-canvas { background: transparent; touch-action: none; }
     #status { position: fixed; left: 16px; right: 16px; bottom: 12%; text-align: center; color: #fff; pointer-events: none;
               font: 600 17px/1.4 system-ui, -apple-system, sans-serif; text-shadow: 0 1px 6px rgba(0, 0, 0, .8); }
+    #debug { position: fixed; top: 8px; left: 8px; margin: 0; color: #fff; font: 11px/1.3 monospace; pointer-events: none;
+             text-shadow: 0 1px 3px #000; white-space: pre-wrap; }
   </style>
 </head>
 <body>
   <video id="camera" autoplay muted playsinline></video>
   <canvas id="unity-canvas" tabindex="-1"></canvas>
   <div id="status">Carregando…</div>
+  <pre id="debug"></pre>
   <script src="Build/{{{ LOADER_FILENAME }}}"></script>
   <script type="module">
     import './mindar/mindar-image.prod.js';
-    import { toUnityPose, displayFovY } from './pose.js';
+    import { toUnityPose, displayFovY, PoseFilter, FILTER_DEFAULTS, mainBackCamera } from './freewebar.js';
 
-    // Tuning knobs. Override on the phone to compare, e.g. ?mincf=0.0001&beta=10
+    // Tuning knobs. Override on the phone to compare, e.g. ?tmin=0.3&debug
     const q = new URLSearchParams(location.search);
     const num = (key, fallback) => q.has(key) ? Number(q.get(key)) : fallback;
     const TRACK_SIZE = num('track', 640);  // long side (px) of the frame MindAR analyses; the camera is still shown in HD
     const LENS_FOV = num('fov', 60);       // assumed camera FOV (degrees) across the image's long side; phones are ~60-70
-    const FILTER = {
-      filterMinCF: num('mincf', 0.001),    // One Euro filter: lower = less jitter while still, more lag
-      filterBeta: num('beta', 1000),       // higher = less lag on fast moves
+    const KEYFRAME = num('kf', 0);         // target resolution MindAR tracks against: 0 = 256 px, 1 = 128 px (MindAR's default)
+    const MINDAR_OPTIONS = {
+      filterMinCF: 1e6,                    // MindAR's own filter off (passes through); PoseFilter below smooths instead
       warmupTolerance: num('warmup', 5),   // frames before showing a newly found target
       missTolerance: num('miss', 5),       // frames a lost target stays visible
     };
+    // Per channel [cutoff Hz at rest, beta]: ?pmin/pbeta (position), ?tmin/tbeta (tilt), ?rmin/rbeta (in-plane roll).
+    // Lower cutoff = steadier at rest, higher beta = less lag in motion.
+    const knob = (p, [min, beta]) => [num(p + 'min', min), num(p + 'beta', beta)];
+    const filter = new PoseFilter({
+      pos: knob('p', FILTER_DEFAULTS.pos), tilt: knob('t', FILTER_DEFAULTS.tilt), roll: knob('r', FILTER_DEFAULTS.roll),
+    });
     const HINT = 'Aponte a câmera para a imagem';
 
     const video = document.getElementById('camera');
@@ -53,9 +62,20 @@
       if (worldMatrix) {
         const tanHalfFovY = 1 / controller.getProjectionMatrix()[5];
         pose[1] = displayFovY(tanHalfFovY, video.videoWidth, video.videoHeight, canvas.clientWidth, canvas.clientHeight);
-        pose.set(toUnityPose(worldMatrix, marker[0], marker[1]), 2);
+        pose.set(filter.filter(performance.now() / 1000, toUnityPose(worldMatrix, marker[0], marker[1])), 2);
+      } else {
+        filter.reset();  // start fresh when found again instead of gliding from the old pose
       }
       if (unityReady) status.textContent = worldMatrix ? '' : HINT;
+    }
+
+    // MindAR's tracker matches in whole pixels of a 128 px keyframe of the target (TRACKING_KEYFRAME = 1), so each
+    // point snaps in 1/128 steps of the target: the main source of jitter. The .mind also has a 256 px keyframe with
+    // more points; put it in the slot the tracker reads.
+    function withTrackingKeyframe(buffer, k) {
+      const compiler = new MINDAR.IMAGE.Compiler();
+      for (const d of compiler.importData(buffer)) d.trackingData = [d.trackingData[k], d.trackingData[k]];
+      return compiler.exportData();
     }
 
     function startTracker(targets) {
@@ -63,7 +83,7 @@
       // MindAR draws the <video> at its width/height attributes, which downsamples the HD feed for tracking.
       [video.width, video.height] = fitTrackSize();
       const c = controller = new MINDAR.IMAGE.Controller({
-        inputWidth: video.width, inputHeight: video.height, maxTrack: 1, onUpdate: data => onUpdate(data, c), ...FILTER,
+        inputWidth: video.width, inputHeight: video.height, maxTrack: 1, onUpdate: data => onUpdate(data, c), ...MINDAR_OPTIONS,
       });
       // MindAR assumes a 45° FOV on whichever axis is vertical, so the lens "changes" when the phone rotates.
       // Pin it to the long side instead; must happen before addImageTargets* hands it to the tracker and worker.
@@ -72,19 +92,31 @@
       c.projectionMatrix = c._glProjectionMatrix({
         projectionTransform: c.projectionTransform, width: video.width, height: video.height, near: 10, far: 100000,
       });
-      marker =controller.addImageTargetsFromBuffer(targets).dimensions[0];
+      marker = controller.addImageTargetsFromBuffer(targets).dimensions[0];
       controller.dummyRun(video);
       controller.processVideo(video);
     }
 
     async function startCamera() {
       if (!navigator.mediaDevices?.getUserMedia) throw new Error('A câmera só funciona em HTTPS, no navegador do celular.');
-      video.srcObject = await navigator.mediaDevices.getUserMedia({
-        audio: false,
-        video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } },
-      });
+      const size = { width: { ideal: 1280 }, height: { ideal: 720 } };
+      let stream = await navigator.mediaDevices.getUserMedia({ audio: false, video: { facingMode: 'environment', ...size } });
+      // Labels are only readable once permission is granted, so choose the lens after the first stream.
+      // ?cam=N forces the Nth camera of the list shown with ?debug.
+      const cams = (await navigator.mediaDevices.enumerateDevices()).filter(d => d.kind === 'videoinput');
+      const main = q.has('cam') ? cams[num('cam', 0)] : mainBackCamera(cams);
+      if (main && main.deviceId !== stream.getVideoTracks()[0].getSettings().deviceId) {
+        stream.getTracks().forEach(t => t.stop());
+        stream = await navigator.mediaDevices.getUserMedia({ audio: false, video: { deviceId: { exact: main.deviceId }, ...size } });
+      }
+      video.srcObject = stream;
       await video.play();
       if (!video.videoWidth) await new Promise(r => video.addEventListener('loadedmetadata', r, { once: true }));
+      if (q.has('debug')) {
+        const open = stream.getVideoTracks()[0].label;
+        document.getElementById('debug').textContent =
+          cams.map((c, i) => `${c.label === open ? '▶' : ' '} ${i}: ${c.label}`).join('\n') + `\n${video.videoWidth}x${video.videoHeight}`;
+      }
     }
 
     const unity = createUnityInstance(canvas, {
@@ -109,7 +141,7 @@
 
     try {
       const [targets] = await Promise.all([
-        fetch('targets.mind').then(r => r.arrayBuffer()),
+        fetch('targets.mind').then(r => r.arrayBuffer()).then(b => withTrackingKeyframe(b, KEYFRAME)),
         startCamera(),
       ]);
       startTracker(targets);
