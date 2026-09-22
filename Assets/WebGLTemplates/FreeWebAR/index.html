@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>{{{ PRODUCT_NAME }}}</title>
+  <style>
+    html, body { margin: 0; height: 100%; overflow: hidden; background: #000; }
+    #camera, #unity-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; }
+    #camera { object-fit: cover; }
+    #unity-canvas { background: transparent; touch-action: none; }
+    #status { position: fixed; left: 16px; right: 16px; bottom: 12%; text-align: center; color: #fff; pointer-events: none;
+              font: 600 17px/1.4 system-ui, -apple-system, sans-serif; text-shadow: 0 1px 6px rgba(0, 0, 0, .8); }
+  </style>
+</head>
+<body>
+  <video id="camera" autoplay muted playsinline></video>
+  <canvas id="unity-canvas" tabindex="-1"></canvas>
+  <div id="status">Carregando…</div>
+  <script src="Build/{{{ LOADER_FILENAME }}}"></script>
+  <script type="module">
+    import './mindar/mindar-image.prod.js';
+    import { toUnityPose, displayFovY } from './pose.js';
+
+    // Tuning knobs. Override on the phone to compare, e.g. ?mincf=0.0001&beta=10
+    const q = new URLSearchParams(location.search);
+    const num = (key, fallback) => q.has(key) ? Number(q.get(key)) : fallback;
+    const TRACK_SIZE = num('track', 640);  // long side (px) of the frame MindAR analyses; the camera is still shown in HD
+    const LENS_FOV = num('fov', 60);       // assumed camera FOV (degrees) across the image's long side; phones are ~60-70
+    const FILTER = {
+      filterMinCF: num('mincf', 0.001),    // One Euro filter: lower = less jitter while still, more lag
+      filterBeta: num('beta', 1000),       // higher = less lag on fast moves
+      warmupTolerance: num('warmup', 5),   // frames before showing a newly found target
+      missTolerance: num('miss', 5),       // frames a lost target stays visible
+    };
+    const HINT = 'Aponte a câmera para a imagem';
+
+    const video = document.getElementById('camera');
+    const canvas = document.getElementById('unity-canvas');
+    const status = document.getElementById('status');
+    // [tracked, fovY, position xyz, forward xyz, up xyz] in Unity camera space. FreeWebAR.jslib reads it every frame.
+    const pose = window.freeWebARPose = new Float32Array(11);
+    let controller, marker, unityReady = false;
+
+    function fitTrackSize() {
+      const s = Math.min(1, TRACK_SIZE / Math.max(video.videoWidth, video.videoHeight));
+      return [Math.round(video.videoWidth * s), Math.round(video.videoHeight * s)];
+    }
+
+    function onUpdate({ type, worldMatrix }, from) {
+      if (type !== 'updateMatrix' || from !== controller) return;  // ignore a disposed controller's last frame
+      pose[0] = worldMatrix ? 1 : 0;
+      if (worldMatrix) {
+        const tanHalfFovY = 1 / controller.getProjectionMatrix()[5];
+        pose[1] = displayFovY(tanHalfFovY, video.videoWidth, video.videoHeight, canvas.clientWidth, canvas.clientHeight);
+        pose.set(toUnityPose(worldMatrix, marker[0], marker[1]), 2);
+      }
+      if (unityReady) status.textContent = worldMatrix ? '' : HINT;
+    }
+
+    function startTracker(targets) {
+      controller?.dispose();
+      // MindAR draws the <video> at its width/height attributes, which downsamples the HD feed for tracking.
+      [video.width, video.height] = fitTrackSize();
+      const c = controller = new MINDAR.IMAGE.Controller({
+        inputWidth: video.width, inputHeight: video.height, maxTrack: 1, onUpdate: data => onUpdate(data, c), ...FILTER,
+      });
+      // MindAR assumes a 45° FOV on whichever axis is vertical, so the lens "changes" when the phone rotates.
+      // Pin it to the long side instead; must happen before addImageTargets* hands it to the tracker and worker.
+      const f = Math.max(video.width, video.height) / 2 / Math.tan(LENS_FOV * Math.PI / 360);
+      c.projectionTransform = [[f, 0, video.width / 2], [0, f, video.height / 2], [0, 0, 1]];
+      c.projectionMatrix = c._glProjectionMatrix({
+        projectionTransform: c.projectionTransform, width: video.width, height: video.height, near: 10, far: 100000,
+      });
+      marker =controller.addImageTargetsFromBuffer(targets).dimensions[0];
+      controller.dummyRun(video);
+      controller.processVideo(video);
+    }
+
+    async function startCamera() {
+      if (!navigator.mediaDevices?.getUserMedia) throw new Error('A câmera só funciona em HTTPS, no navegador do celular.');
+      video.srcObject = await navigator.mediaDevices.getUserMedia({
+        audio: false,
+        video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } },
+      });
+      await video.play();
+      if (!video.videoWidth) await new Promise(r => video.addEventListener('loadedmetadata', r, { once: true }));
+    }
+
+    const unity = createUnityInstance(canvas, {
+      dataUrl: "Build/{{{ DATA_FILENAME }}}",
+      frameworkUrl: "Build/{{{ FRAMEWORK_FILENAME }}}",
+#if USE_WASM
+      codeUrl: "Build/{{{ CODE_FILENAME }}}",
+#endif
+#if MEMORY_FILENAME
+      memoryUrl: "Build/{{{ MEMORY_FILENAME }}}",
+#endif
+#if SYMBOLS_FILENAME
+      symbolsUrl: "Build/{{{ SYMBOLS_FILENAME }}}",
+#endif
+      streamingAssetsUrl: "StreamingAssets",
+      companyName: {{{ JSON.stringify(COMPANY_NAME) }}},
+      productName: {{{ JSON.stringify(PRODUCT_NAME) }}},
+      productVersion: {{{ JSON.stringify(PRODUCT_VERSION) }}},
+      devicePixelRatio: Math.min(window.devicePixelRatio, 2),
+      webglContextAttributes: { premultipliedAlpha: true, preserveDrawingBuffer: false, powerPreference: 2 },  // 2 = high-performance
+    }, progress => { if (!unityReady) status.textContent = `Carregando ${Math.round(progress * 100)}%`; });
+
+    try {
+      const [targets] = await Promise.all([
+        fetch('targets.mind').then(r => r.arrayBuffer()),
+        startCamera(),
+      ]);
+      startTracker(targets);
+      // Phone rotated (or camera changed resolution): MindAR's own rotated-input path returns poses turned 90°
+      // and stops re-detecting, so start a controller sized for the new frame instead.
+      // ponytail: MindAR never frees the old controller's GPU textures (a few MB per rotation); fine for a session.
+      video.addEventListener('resize', () => {
+        const [w, h] = fitTrackSize();
+        if (w !== controller.inputWidth || h !== controller.inputHeight) startTracker(targets);
+      });
+      await unity;
+      unityReady = true;
+      if (!pose[0]) status.textContent = HINT;
+    } catch (e) {
+      console.error(e);
+      status.textContent = e.name === 'NotAllowedError'
+        ? 'Permita o acesso à câmera e recarregue a página.'
+        : e.message || String(e);
+    }
+  </script>
+</body>
+</html>
