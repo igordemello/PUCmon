@@ -25,7 +25,7 @@
   <pre id="debug"></pre>
   <script src="Build/{{{ LOADER_FILENAME }}}"></script>
   <script type="module">
-    import { toCardPose } from './freewebar.js';
+    import { toCardPose, mainBackCamera, pinCamera } from './freewebar.js';
 
     const TARGETS = ['image-targets/pucmon.json'];  // made with: npx @8thwall/image-target-cli
     const HINT = 'Aponte a câmera para a imagem';
@@ -36,7 +36,7 @@
     // [tracked, position xyz, forward xyz, up xyz, projection (16, column-major GL)] in Unity camera space.
     // FreeWebAR.jslib copies it into WebARImageTracker every frame.
     const pose = window.freeWebARPose = new Float32Array(26);
-    let unityReady = false, cameraReady = false, cameraLabel = '';
+    let unityReady = false, cameraReady = false, cameraLabel = '', cameraList = '';
     const showHint = () => { if (unityReady && cameraReady) status.textContent = pose[0] ? '' : HINT; };
     const fail = message => { status.textContent = message; };
 
@@ -59,7 +59,7 @@
         pose[0] = image ? 1 : 0;
         if (image) pose.set(toCardPose(r, image), 1);
         showHint();
-        if (q.has('debug')) debug.textContent = `${cameraLabel}\n${image ? 'rastreando' : 'procurando'}`;
+        if (q.has('debug')) debug.textContent = `${cameraList}\naberta: ${cameraLabel}\n${image ? 'rastreando' : 'procurando'}`;
       },
       onException: e => { console.error(e); fail(String(e.message || e)); },
     };
@@ -75,7 +75,32 @@
     sizeFeed();
     addEventListener('resize', sizeFeed);
 
+    // Pin the main rear lens before the engine opens the camera (see mainBackCamera). Labels need camera permission,
+    // so on a first visit the camera is opened and closed once. ?cam=N forces the Nth camera listed by ?debug.
+    async function useMainLens() {
+      const md = navigator.mediaDevices;
+      const list = async () => (await md.enumerateDevices()).filter(d => d.kind === 'videoinput');
+      let cams = await list();
+      if (!cams.some(c => c.label)) {
+        (await md.getUserMedia({ video: { facingMode: 'environment' } })).getTracks().forEach(t => t.stop());
+        cams = await list();
+      }
+      const main = q.has('cam') ? cams[Number(q.get('cam'))] : mainBackCamera(cams);
+      if (main) pinCamera(md, main.deviceId);
+      cameraList = cams.map((c, i) => `${i}: ${c.label}${c === main ? ' ◀' : ''}`).join('\n');
+    }
+
     async function startAR() {
+      const phone = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ||
+        (/Mac/.test(navigator.platform) && navigator.maxTouchPoints > 1);  // iPadOS reports a Mac
+      if (phone || q.has('cam')) {
+        try {
+          await useMainLens();
+        } catch (e) {
+          if (e.name === 'NotAllowedError') return fail('Permita o acesso à câmera e recarregue a página.');
+          console.warn('Keeping the default camera:', e);
+        }
+      }
       const imageTargetData = await Promise.all(TARGETS.map(url => fetch(url).then(r => r.json())));
       // No world tracking: the card is tracked from the image alone, never "slides" onto world anchors.
       XR8.XrController.configure({ disableWorldTracking: true, leftHandedAxes: true, imageTargetData });

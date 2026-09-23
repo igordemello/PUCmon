@@ -37,6 +37,13 @@ vermelha de teste, o conteúdo 3D às vezes inclina para o lado errado; com uma 
    estão configurados no Player Settings).
 2. Arraste a pasta gerada para <https://app.netlify.com/drop>. O Netlify já dá HTTPS, que a câmera exige.
 
-Com `?debug` no fim do link aparecem a câmera aberta, a resolução e o estado do rastreamento.
+## Câmera
+
+Em celular com várias lentes, a página escolhe a lente principal pelo nome das câmeras, em qualquer idioma: nunca a
+0.5x, nem a câmera "Dupla/Tripla" do iPhone Pro, que troca para a 0.5x de perto. A correção da própria 8th Wall só
+reconhece o nome em inglês ("Back Camera").
+
+Com `?debug` no fim do link aparece a lista de câmeras (◀ = a escolhida), a câmera aberta, a resolução e o estado do
+rastreamento. Se a escolha estiver errada, `?cam=N` força a câmera N da lista.
 
 Testes da conversão de pose: `node "Assets/FreeWebAR/Tests~/freewebar.test.mjs"`.

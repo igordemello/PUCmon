@@ -1,7 +1,7 @@
 // node "Assets/FreeWebAR/Tests~/freewebar.test.mjs"
 // toCardPose: 8th Wall image target -> Unity camera space, Zappar-style card (full image 2 units tall, centred).
 import assert from 'node:assert/strict';
-import { toCardPose } from '../../WebGLTemplates/FreeWebAR/freewebar.js';
+import { toCardPose, mainBackCamera, pinCamera } from '../../WebGLTemplates/FreeWebAR/freewebar.js';
 
 const near = (got, want, what) => got.forEach((v, i) => assert.ok(Math.abs(v - want[i]) < 1e-9, `${what}: ${got} != ${want}`));
 const identity = { x: 0, y: 0, z: 0, w: 1 };
@@ -31,4 +31,27 @@ const pose = toCardPose(camera, { position: { x: 0, y: 2, z: 3 }, rotation: iden
 const units = 2 * 640 / 960;
 near(pose, [(640 - 320) * 2 / 960, (720 - 480) * 2 / 960, 3 * units, 0, 0, 1, 0, 1, 0], 'landscape crop');
 
+// Camera choice: the main rear lens, never the 0.5x ultra-wide or a virtual multi-lens camera.
+const pick = labels => mainBackCamera(labels.map(label => ({ label })))?.label;
+assert.equal(pick(['Front Camera', 'Back Camera', 'Back Dual Wide Camera', 'Back Ultra Wide Camera',
+  'Back Telephoto Camera', 'Back Triple Camera', 'Back Dual Camera']), 'Back Camera');                  // iPhone Pro, EN
+assert.equal(pick(['Câmera Frontal', 'Câmera Traseira Tripla', 'Câmera Traseira Dupla Grande-angular',
+  'Câmera Traseira Ultra-angular', 'Câmera Traseira', 'Câmera Traseira Teleobjetiva']), 'Câmera Traseira'); // iPhone Pro, PT
+assert.equal(pick(['Cámara frontal', 'Cámara trasera doble', 'Cámara trasera']), 'Cámara trasera');     // iPhone, ES
+assert.equal(pick(['camera2 1, facing front', 'camera2 2, facing back', 'camera2 0, facing back']),
+  'camera2 0, facing back');                                                                              // Android
+assert.equal(pick(['camera2 1, facing front', 'camera2 0, facing back']), undefined);                   // one rear lens
+assert.equal(pick(['Front Camera', 'Back Camera']), undefined);
+assert.equal(pick(['', '', '']), undefined);                                                             // no permission yet
+
+// pinCamera: the engine's facingMode requests (and iOS re-open) get the chosen deviceId.
+const seen = [];
+const md = { getUserMedia: async c => seen.push(c) };
+pinCamera(md, 'main');
+await md.getUserMedia({ video: { facingMode: ['environment'], width: { min: 1280 }, deviceId: 'ultra' } });
+await md.getUserMedia({ video: true });
+assert.deepEqual(seen, [
+  { video: { facingMode: ['environment'], width: { min: 1280 }, deviceId: { exact: 'main' } } },
+  { video: { deviceId: { exact: 'main' } } },
+]);
 console.log('freewebar.test: ok');

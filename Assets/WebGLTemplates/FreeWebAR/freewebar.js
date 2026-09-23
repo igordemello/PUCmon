@@ -9,6 +9,35 @@ function rotate(q, [x, y, z]) {
   ];
 }
 
+// Phones with several rear lenses: facingMode 'environment' may open the 0.5x ultra-wide, or iPhone Pro's virtual
+// Dual/Triple camera that jumps to it up close. The engine's iOS fix looks for the English label "Back Camera" only
+// (a Portuguese iPhone says "Câmera Traseira"), then falls back to the 2nd device. Pick the main lens from the
+// enumerateDevices() labels instead; undefined = nothing to choose, keep the browser's pick.
+export function mainBackCamera(cams) {
+  // Android: "camera2 0, facing back" is the main sensor; higher numbers are ultra-wide / tele / depth.
+  const android = cams.map(c => [c, /(\d+),\s*facing back/i.exec(c.label)]).filter(([, m]) => m)
+    .sort((a, b) => a[1][1] - b[1][1]);
+  if (android.length) return android.length > 1 ? android[0][0] : undefined;
+  // iOS, any language: all rear lens labels share a word the front camera's lacks ("Back", "Traseira", "Trasera"...),
+  // the most common word that is not in every label. The main lens is the one with no extra qualifiers: fewest words.
+  if (cams.length < 3) return undefined;  // front + one back: the browser already opens the right one
+  const words = cams.map(c => c.label.split(/\s+/).filter(Boolean));
+  const count = new Map();
+  for (const w of words.flatMap(ws => [...new Set(ws)])) count.set(w, (count.get(w) || 0) + 1);
+  const rear = [...count].filter(([, n]) => n < cams.length).sort((a, b) => b[1] - a[1])[0]?.[0];
+  let best;
+  cams.forEach((c, i) => { if (words[i].includes(rear) && (!best || words[i].length < best.n)) best = { c, n: words[i].length }; });
+  return best?.c;
+}
+
+// Make every video getUserMedia request open this device (the engine asks by facingMode, and re-asks on iOS).
+export function pinCamera(mediaDevices, deviceId) {
+  const open = mediaDevices.getUserMedia.bind(mediaDevices);
+  mediaDevices.getUserMedia = constraints => open(constraints?.video
+    ? { ...constraints, video: { ...(constraints.video === true ? {} : constraints.video), deviceId: { exact: deviceId } } }
+    : constraints);
+}
+
 // 8th Wall image target -> Unity camera-space pose of a Zappar-style card, returned as [position, forward, up].
 // 8th Wall (configured with leftHandedAxes, like Unity) reports the camera and the image in its world: the image is
 // the 3:4 crop made by image-target-cli, in the original image's orientation, facing the camera along -Z like
