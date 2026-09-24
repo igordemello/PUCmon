@@ -9,11 +9,25 @@
     #camerafeed, #unity-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; }
     #camerafeed { z-index: 0; }
     #unity-canvas { z-index: 1; background: transparent; touch-action: none; }
-    #status, #debug { z-index: 2; }
-    #status { position: fixed; left: 16px; right: 16px; bottom: 12%; text-align: center; color: #fff; pointer-events: none;
-              font: 600 17px/1.4 system-ui, -apple-system, sans-serif; text-shadow: 0 1px 6px rgba(0, 0, 0, .8); }
-    #debug { position: fixed; top: 8px; left: 8px; margin: 0; color: #fff; font: 11px/1.3 monospace; pointer-events: none;
-             text-shadow: 0 1px 3px #000; white-space: pre-wrap; }
+    #loading, #scan, #status { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 2; display: flex;
+      flex-direction: column; align-items: center; justify-content: center; gap: 20px; padding: 0 24px; color: #fff;
+      font: 600 16px/1.4 system-ui, -apple-system, sans-serif; text-align: center; text-shadow: 0 1px 6px rgba(0, 0, 0, .8);
+      pointer-events: none; transition: opacity .35s; }
+    #loading { background: #000; }
+    #status:empty, .off { opacity: 0; }
+    .bar { width: min(60vw, 260px); height: 4px; border-radius: 2px; background: rgba(255, 255, 255, .2); overflow: hidden; }
+    .bar i { display: block; height: 100%; width: 0; background: #fff; transition: width .2s; }
+    /* Scanning frame: four rounded corner brackets, gently breathing. */
+    .frame { position: relative; width: min(62vw, 300px); aspect-ratio: 3 / 4; animation: breathe 1.8s ease-in-out infinite; }
+    .frame b { position: absolute; width: 36px; height: 36px; border: 0 solid #fff; filter: drop-shadow(0 0 4px rgba(0, 0, 0, .6)); }
+    .frame b:nth-child(1) { top: 0; left: 0; border-width: 4px 0 0 4px; border-top-left-radius: 12px; }
+    .frame b:nth-child(2) { top: 0; right: 0; border-width: 4px 4px 0 0; border-top-right-radius: 12px; }
+    .frame b:nth-child(3) { bottom: 0; right: 0; border-width: 0 4px 4px 0; border-bottom-right-radius: 12px; }
+    .frame b:nth-child(4) { bottom: 0; left: 0; border-width: 0 0 4px 4px; border-bottom-left-radius: 12px; }
+    @keyframes breathe { 50% { transform: scale(.95); opacity: .75; } }
+    @media (prefers-reduced-motion: reduce) { .frame { animation: none; } }
+    #debug { position: fixed; top: 8px; left: 8px; z-index: 3; margin: 0; color: #fff; font: 11px/1.3 monospace;
+             pointer-events: none; text-shadow: 0 1px 3px #000; white-space: pre-wrap; }
   </style>
   <!-- 8th Wall open-source engine (MIT): camera, image target detection and tracking. "slam" = XrController chunk. -->
   <script src="xr/xr.js" data-preload-chunks="slam"></script>
@@ -21,24 +35,74 @@
 <body>
   <canvas id="camerafeed"></canvas>
   <canvas id="unity-canvas" tabindex="-1"></canvas>
-  <div id="status">Carregando…</div>
+  <div id="loading"><div class="bar"><i></i></div><div>Carregando…</div></div>
+  <div id="scan" class="off"><div class="frame"><b></b><b></b><b></b><b></b></div><div>Aponte a câmera para a imagem</div></div>
+  <div id="status"></div>
   <pre id="debug"></pre>
   <script src="Build/{{{ LOADER_FILENAME }}}"></script>
   <script type="module">
-    import { toCardPose, mainBackCamera, pinCamera } from './freewebar.js';
+    import {
+      toCardPose, mainBackCamera, pinCamera, frameIntrinsics, templateToCard, poseToHomography, homographyToPose,
+    } from './freewebar.js';
+    import { PlanarTracker, pyramid } from './tracker.js';
 
     const TARGETS = ['image-targets/pucmon.json'];  // made with: npx @8thwall/image-target-cli
-    const HINT = 'Aponte a câmera para a imagem';
     const q = new URLSearchParams(location.search);
-    const canvas = document.getElementById('unity-canvas');
-    const status = document.getElementById('status');
-    const debug = document.getElementById('debug');
+    const $ = id => document.getElementById(id);
+    const canvas = $('unity-canvas'), debug = $('debug');
     // [tracked, position xyz, forward xyz, up xyz, projection (16, column-major GL)] in Unity camera space.
     // FreeWebAR.jslib copies it into WebARImageTracker every frame.
     const pose = window.freeWebARPose = new Float32Array(26);
-    let unityReady = false, cameraReady = false, cameraLabel = '', cameraList = '';
-    const showHint = () => { if (unityReady && cameraReady) status.textContent = pose[0] ? '' : HINT; };
-    const fail = message => { status.textContent = message; };
+    let unityReady = false, cameraReady = false, failed = false, cameraLabel = '', cameraList = '', lastSeen = 0;
+    const showHint = () => {
+      const ready = unityReady && cameraReady && !failed;
+      $('loading').classList.toggle('off', ready || failed);
+      $('scan').classList.toggle('off', !ready || pose[0] === 1);
+    };
+    const fail = message => { failed = true; $('status').textContent = message; showHint(); };
+
+    // Dense tracking (tracker.js) on the exact camera frame shown on screen: the engine finds the card, then every
+    // frame is aligned pixel by pixel against the target image. Its pose wins while the match (ZNCC) holds.
+    const MIN_SCORE = 0.7;
+    let dense = null, templateCard = null, G = null, score = 0;
+
+    async function loadTemplate(target) {
+      const bitmap = await createImageBitmap(await (await fetch(target.imagePath)).blob());
+      const c = document.createElement('canvas');
+      [c.width, c.height] = [bitmap.width, bitmap.height];
+      const ctx = c.getContext('2d');
+      ctx.drawImage(bitmap, 0, 0);
+      const rgba = ctx.getImageData(0, 0, c.width, c.height).data, data = new Uint8Array(c.width * c.height);
+      for (let i = 0; i < data.length; i++) data[i] = rgba[4 * i];  // already grayscale
+      dense = new PlanarTracker({ data, width: c.width, height: c.height });
+      templateCard = templateToCard(target.properties);
+    }
+
+    // GL projection of a phone main camera (~63° across the long side) filling a w x h canvas.
+    function typicalLens(w, h) {
+      const t = Math.tan(63 * Math.PI / 360), fy = 1 / (t * Math.min(1, h / w)), fx = fy * h / w;
+      return [fx, 0, 0, 0, 0, fy, 0, 0, 0, 0, -1, -1, 0, 0, -0.02, 0];
+    }
+
+    const pool = {};  // pyramid buffers reused every frame
+    let lastGood = 0;
+    function track(r, image, cam) {
+      if (!dense) return null;
+      const K = frameIntrinsics(r.intrinsics, feed.width, feed.height, cam.cols, cam.rows);
+      const frame = pyramid({ data: cam.pixels, width: cam.cols, height: cam.rows }, undefined, pool);
+      const attempt = start => {
+        const res = dense.track(frame, start);
+        return res.score > MIN_SCORE && res.visible > 0.25 ? res : null;
+      };
+      // Follow from the last good alignment (kept for half a second after a miss: motion blur, a finger over the
+      // card), else (re)start from the engine's detection.
+      let res = G && attempt(G);
+      if (!res && image) res = attempt(poseToHomography(toCardPose(r, image), K, templateCard));
+      const now = performance.now();
+      if (res) { G = res.G; lastGood = now; } else if (now - lastGood > 500) G = null;
+      score = res ? res.score : 0;
+      return res ? homographyToPose(res.G, K, templateCard) : null;
+    }
 
     const unityBridge = {
       name: 'unity-bridge',
@@ -47,19 +111,28 @@
         if (s === 'hasVideo') { cameraReady = true; if (video) cameraLabel += ` ${video.videoWidth}x${video.videoHeight}`; showHint(); }
         if (s === 'failed') fail('Permita o acesso à câmera e recarregue a página.');
       },
-      onUpdate: ({ processCpuResult }) => {
+      onUpdate: ({ processCpuResult, processGpuResult }) => {
         const r = processCpuResult.reality;
         if (!r) return;
+        // The engine's lens model; if it has none (seen when the camera starts with a 0x0 video), a typical phone lens.
+        if (!r.intrinsics?.every(Number.isFinite)) r.intrinsics = typicalLens(feed.width, feed.height);
         pose.set(r.intrinsics, 10);
         // The engine's far plane is infinite; give Unity a finite one (card units) so culling and depth behave.
         const near = 0.05, far = 1000;
         pose[20] = -(far + near) / (far - near);
         pose[24] = -2 * far * near / (far - near);
         const image = r.detectedImages?.[0];
-        pose[0] = image ? 1 : 0;
-        if (image) pose.set(toCardPose(r, image), 1);
+        const cam = processGpuResult?.camerapixelarray;
+        const t0 = performance.now();
+        const densePose = cam?.pixels && track(r, image, cam);
+        const card = densePose || (image && toCardPose(r, image));
+        if (card) { pose[0] = 1; pose.set(card, 1); lastSeen = t0; }
+        else if (t0 - lastSeen > 250) pose[0] = 0;  // hold the last pose for a blink instead of flickering
         showHint();
-        if (q.has('debug')) debug.textContent = `${cameraList}\naberta: ${cameraLabel}\n${image ? 'rastreando' : 'procurando'}`;
+        if (q.has('debug')) {
+          debug.textContent = `${cameraList}\naberta: ${cameraLabel}\n` +
+            `${densePose ? 'denso' : image ? '8th Wall' : 'procurando'}  ZNCC ${score.toFixed(2)}  ${(performance.now() - t0).toFixed(1)} ms`;
+        }
       },
       onException: e => { console.error(e); fail(String(e.message || e)); },
     };
@@ -104,9 +177,13 @@
       const imageTargetData = await Promise.all(TARGETS.map(url => fetch(url).then(r => r.json())));
       // No world tracking: the card is tracked from the image alone, never "slides" onto world anchors.
       XR8.XrController.configure({ disableWorldTracking: true, leftHandedAxes: true, imageTargetData });
+      await loadTemplate(imageTargetData[0]);
       XR8.addCameraPipelineModules([
         XR8.GlTextureRenderer.pipelineModule(),  // draws the camera behind the transparent Unity canvas
         XR8.XrController.pipelineModule(),
+        // CPU copy of the frame for the dense tracker; the engine then shows that same frame, so pose and video match.
+        // After XrController: it leaves its framebuffer bound on the compute context.
+        XR8.CameraPixelArray.pipelineModule({ luminance: true, maxDimension: 480 }),
         unityBridge,
       ]);
       XR8.run({ canvas: feed, allowedDevices: XR8.XrConfig.device().ANY });
@@ -133,8 +210,8 @@
       productVersion: {{{ JSON.stringify(PRODUCT_VERSION) }}},
       devicePixelRatio: Math.min(window.devicePixelRatio, 2),
       webglContextAttributes: { premultipliedAlpha: true, preserveDrawingBuffer: false, powerPreference: 2 },  // 2 = high-performance
-    }, progress => { if (!unityReady) status.textContent = `Carregando ${Math.round(progress * 100)}%`; })
-      .then(() => { unityReady = true; status.textContent = ''; showHint(); })
+    }, progress => { document.querySelector('.bar i').style.width = `${Math.round(progress * 100)}%`; })
+      .then(() => { unityReady = true; showHint(); })
       .catch(e => { console.error(e); fail(String(e.message || e)); });
   </script>
 </body>
