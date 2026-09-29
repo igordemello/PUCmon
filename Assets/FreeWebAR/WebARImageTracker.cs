@@ -1,29 +1,27 @@
+using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using UnityEngine;
-using UnityEngine.Events;
 
 /// <summary>
-/// Moves <see cref="target"/> onto the printed image tracked by the 8th Wall engine in the page
-/// (WebGLTemplates/FreeWebAR) and gives this camera the engine's projection, so the overlay matches the camera feed.
-/// Target space matches Zappar's: image centred on the origin, 2 units tall, content towards the camera on local -Z.
-/// Only runs in WebGL builds; in the Editor the target stays where it was placed.
+/// Follows the printed images of the scene's <see cref="ImageTarget"/>s, tracked in the page (WebGLTemplates/FreeWebAR),
+/// one at a time: moves the one in view onto the image, shows it, and gives this camera the page's projection so the
+/// content matches the camera feed. Only runs in WebGL builds; in the Editor the targets stay where they were placed.
 /// </summary>
 [RequireComponent(typeof(Camera))]
 public class WebARImageTracker : MonoBehaviour
 {
-    public Transform target;
-    [Tooltip("Seconds the content takes to grow in when the image is found (0 = appear at once).")]
-    public float appearSeconds = 0.2f;
-    public UnityEvent onTargetFound = new UnityEvent();
-    public UnityEvent onTargetLost = new UnityEvent();
-
-    public bool IsTracked { get; private set; }
+    /// <summary>The target in view, or null.</summary>
+    public ImageTarget Current { get; private set; }
 
 #if UNITY_WEBGL && !UNITY_EDITOR
     [DllImport("__Internal")] static extern int FreeWebAR_ReadPose(float[] pose);
+    [DllImport("__Internal")] static extern string FreeWebAR_TargetName(int index);
 
-    // [tracked, position xyz, forward xyz, up xyz, projection 16 (column-major)], written by the page.
-    readonly float[] pose = new float[26];
+    // [tracked, position xyz, forward xyz, up xyz, projection 16 (column-major), target index], written by the page.
+    readonly float[] pose = new float[27];
+    readonly Dictionary<int, ImageTarget> byIndex = new Dictionary<int, ImageTarget>();
+    ImageTarget[] targets;
     Camera cam;
     float foundAt;
 
@@ -33,7 +31,9 @@ public class WebARImageTracker : MonoBehaviour
         // Transparent clear: the camera feed canvas behind this one shows through.
         cam.clearFlags = CameraClearFlags.SolidColor;
         cam.backgroundColor = Color.clear;
-        target.gameObject.SetActive(false);
+        targets = FindObjectsOfType<ImageTarget>(true);
+        foreach (var target in targets)
+            target.gameObject.SetActive(false);
     }
 
     void LateUpdate()
@@ -48,20 +48,46 @@ public class WebARImageTracker : MonoBehaviour
             cam.projectionMatrix = projection;
         }
 
-        bool tracked = pose[0] > 0.5f;
-        if (tracked != IsTracked)
+        var seen = pose[0] > 0.5f ? Find((int)pose[26]) : null;
+        if (seen != Current)
         {
-            IsTracked = tracked;
+            if (Current)
+            {
+                Current.IsTracked = false;
+                Current.gameObject.SetActive(false);
+                Current.onLost.Invoke();
+            }
+            Current = seen;
             foundAt = Time.unscaledTime;
-            target.gameObject.SetActive(tracked);
-            (tracked ? onTargetFound : onTargetLost).Invoke();
+            if (Current)
+            {
+                Current.IsTracked = true;
+                Current.gameObject.SetActive(true);
+                Current.onFound.Invoke();
+            }
         }
-        if (!tracked)
+        if (!Current)
             return;
+
+        var target = Current.transform;
         var rotation = Quaternion.LookRotation(new Vector3(pose[4], pose[5], pose[6]), new Vector3(pose[7], pose[8], pose[9]));
         target.SetPositionAndRotation(transform.TransformPoint(pose[1], pose[2], pose[3]), transform.rotation * rotation);
-        float t = appearSeconds > 0f ? Mathf.Clamp01((Time.unscaledTime - foundAt) / appearSeconds) : 1f;
+        float t = Current.appearSeconds > 0f ? Mathf.Clamp01((Time.unscaledTime - foundAt) / Current.appearSeconds) : 1f;
         target.localScale = Vector3.one * (1f - (1f - t) * (1f - t) * (1f - t));  // ease-out cubic
+    }
+
+    // The page numbers its targets; match the number to the ImageTarget whose image has that name.
+    ImageTarget Find(int index)
+    {
+        if (!byIndex.TryGetValue(index, out var target))
+        {
+            string name = FreeWebAR_TargetName(index);
+            target = Array.Find(targets, t => t.image && t.image.name == name);
+            if (!target)
+                Debug.LogWarning($"Free WebAR: no ImageTarget in the scene uses the image \"{name}\".");
+            byIndex[index] = target;
+        }
+        return target;
     }
 #endif
 }

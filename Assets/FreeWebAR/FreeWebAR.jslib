@@ -1,10 +1,18 @@
 mergeInto(LibraryManager.library, {
-  // Copies window.freeWebARPose (26 floats, written by the FreeWebAR WebGL template) into a C# float[26].
+  // Copies window.freeWebARPose (27 floats, written by the FreeWebAR WebGL template) into a C# float[27].
   FreeWebAR_ReadPose: function (ptr) {
     var pose = window.freeWebARPose;
     if (!pose) return 0;
     HEAPF32.set(pose, ptr >> 2);
     return 1;
+  },
+
+  // Name of the page's image target number `index` (the image's asset name), as a C# string.
+  FreeWebAR_TargetName: function (index) {
+    var name = (window.freeWebARTargets || [])[index] || '';
+    var size = lengthBytesUTF8(name) + 1, buffer = _malloc(size);
+    stringToUTF8(name, buffer, size);
+    return buffer;
   },
 
   // Unity ends each frame with an alpha-only clear to 1. Skipping it keeps the pixels the camera

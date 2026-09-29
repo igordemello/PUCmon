@@ -14,26 +14,35 @@ serviço externo. A Unity só desenha o conteúdo por cima do vídeo da câmera,
 3. **Sincronia:** a pose é calculada sobre o mesmo quadro que aparece na tela, então o conteúdo não "escorrega"
    atrás do vídeo.
 4. `freewebar.js` converte tudo para o espaço da câmera da Unity. `FreeWebAR.jslib` + `WebARImageTracker.cs` (na
-   **AR Camera**) aplicam a projeção, movem o **Image Target** (com uma entrada suave de 0,2 s, ajustável) e disparam
-   `onTargetFound` / `onTargetLost`.
+   **AR Camera**) aplicam a projeção, movem o `ImageTarget` do cartaz visto (com uma entrada suave de 0,2 s,
+   ajustável), ativam só ele e disparam `onFound` / `onLost`.
 
 O espaço do alvo é o mesmo da Zappar: imagem inteira centrada na origem, **2 unidades de altura**, conteúdo "saindo"
-da imagem em **-Z local**. Monte o conteúdo como filho do **Image Target**.
+da imagem em **-Z local**. Monte o conteúdo como filho do objeto com `ImageTarget`.
 
 Medido com uma câmera sintética 3D (cartão inclinando até 40°, ruído e tremor de mão), comparando o conteúdo com o
 quadro exibido, com a imagem vermelha de teste: cantos a 0,5 px e um ponto 3D acima do cartão a 1,6 px em movimento,
-sem nenhum episódio de inclinação errada. O rastreador gasta ~2–4 ms por quadro.
+sem nenhum episódio de inclinação errada; com `image1`/`image2`: cantos a 0,5–0,7 px, encontrados em 0,2–0,4 s. O rastreador gasta ~2–4 ms por quadro.
 
-## Trocar a imagem-alvo
+## Cartazes (vários, um de cada vez)
 
-1. No terminal: `npx @8thwall/image-target-cli@latest`. Informe o caminho da imagem, escolha `flat`, aceite o
-   recorte padrão, dê uma pasta de saída e um nome (ex.: `cartao`).
-2. Copie `cartao.json` e `cartao_luminance.*` para `Assets/WebGLTemplates/FreeWebAR/image-targets/`.
-3. Em `index.html`, troque `TARGETS` para `['image-targets/cartao.json']`.
-4. Troque a textura de `Target Preview.mat` e ajuste a escala X do *Preview Object* para `2 × largura / altura`.
+Cada cartaz é um objeto da cena com o componente `ImageTarget`:
+
+1. Coloque a imagem em `Assets/ImagesToTracker` (mínimo 480×640 px).
+2. Crie um GameObject vazio, adicione `ImageTarget` e arraste a imagem para o campo **Image**.
+3. Ponha o conteúdo (modelos, textos, etc.) como filho dele. Os cartazes `image1`/`image2` da `SampleScene` têm um
+   filho *Content (Y = out of the card)* girado -90° em X: dentro dele o cartaz é o "chão" (Y para fora da imagem, Z
+   para o topo), o jeito mais fácil de pôr um modelo em pé sobre ele.
+4. Use `onFound` / `onLost` do componente para reagir (ex.: o cartaz antigo chama `ImageTrackingFunctions`).
+
+No build WebGL, `Editor/ImageTargetBuild.cs` gera sozinho os dados de rastreamento (`image-targets/` no build) de
+todas as imagens usadas na cena; não há mais CLI nem lista para editar. Aparece um cartaz por vez: o que está sendo
+seguido fica até sair de vista, e então vale o próximo que a câmera encontrar. O nome do asset da imagem identifica o
+cartaz, então não repita nomes.
 
 O rastreamento usa o recorte 3:4 central da imagem (4:3 se ela for paisagem). A posição do conteúdo continua relativa
-à imagem inteira. Quanto mais bordas e detalhe a arte tiver, mais rápido ela é encontrada.
+à imagem inteira. Quanto mais bordas e detalhe a arte tiver, mais rápido ela é encontrada. Modelos `.glb`/`.gltf`
+entram pelo pacote glTFast (já no `manifest.json`): basta soltá-los em `Assets`.
 
 ## Build e publicação (Netlify)
 

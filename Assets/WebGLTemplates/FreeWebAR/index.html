@@ -46,13 +46,12 @@
     } from './freewebar.js';
     import { PlanarTracker, pyramid } from './tracker.js';
 
-    const TARGETS = ['image-targets/pucmon.json'];  // made with: npx @8thwall/image-target-cli
     const q = new URLSearchParams(location.search);
     const $ = id => document.getElementById(id);
     const canvas = $('unity-canvas'), debug = $('debug');
-    // [tracked, position xyz, forward xyz, up xyz, projection (16, column-major GL)] in Unity camera space.
-    // FreeWebAR.jslib copies it into WebARImageTracker every frame.
-    const pose = window.freeWebARPose = new Float32Array(26);
+    // [tracked, position xyz, forward xyz, up xyz, projection (16, column-major GL), target index] in Unity camera
+    // space. FreeWebAR.jslib copies it into WebARImageTracker every frame.
+    const pose = window.freeWebARPose = new Float32Array(27);
     let unityReady = false, cameraReady = false, failed = false, cameraLabel = '', cameraList = '', lastSeen = 0;
     const showHint = () => {
       const ready = unityReady && cameraReady && !failed;
@@ -61,22 +60,30 @@
     };
     const fail = message => { failed = true; $('status').textContent = message; showHint(); };
 
-    // Dense tracking (tracker.js) on the exact camera frame shown on screen: the engine finds the card, then every
-    // frame is aligned pixel by pixel against the target image. Its pose wins while the match (ZNCC) holds.
+    // Dense tracking (tracker.js) on the exact camera frame shown on screen: the engine finds a poster, then every
+    // frame is aligned pixel by pixel against that poster's image. Its pose wins while the match (ZNCC) holds.
+    // One poster at a time: the one being followed stays until it is lost, then whichever the engine sees next.
     const MIN_SCORE = 0.7;
-    let dense = null, templateCard = null, G = null, score = 0;
+    let targets = [], active = -1, G = null, score = 0;
 
-    async function loadTemplate(target) {
-      const bitmap = await createImageBitmap(await (await fetch(target.imagePath)).blob());
-      const c = document.createElement('canvas');
-      [c.width, c.height] = [bitmap.width, bitmap.height];
-      const ctx = c.getContext('2d');
-      ctx.drawImage(bitmap, 0, 0);
-      const rgba = ctx.getImageData(0, 0, c.width, c.height).data, data = new Uint8Array(c.width * c.height);
-      for (let i = 0; i < data.length; i++) data[i] = rgba[4 * i];  // already grayscale
-      dense = new PlanarTracker({ data, width: c.width, height: c.height });
-      templateCard = templateToCard(target.properties);
+    // image-targets/targets.json and the luminance images are written by the Unity build (ImageTargetBuild.cs),
+    // one per ImageTarget image in the scene.
+    async function loadTargets() {
+      const list = await (await fetch('image-targets/targets.json')).json();
+      targets = await Promise.all(list.map(async data => {
+        const bitmap = await createImageBitmap(await (await fetch(data.imagePath)).blob());
+        const c = document.createElement('canvas');
+        [c.width, c.height] = [bitmap.width, bitmap.height];
+        const ctx = c.getContext('2d');
+        ctx.drawImage(bitmap, 0, 0);
+        const rgba = ctx.getImageData(0, 0, c.width, c.height).data, gray = new Uint8Array(c.width * c.height);
+        for (let i = 0; i < gray.length; i++) gray[i] = rgba[4 * i];  // already grayscale
+        return { name: data.name, card: templateToCard(data.properties), tracker: new PlanarTracker({ data: gray, width: c.width, height: c.height }) };
+      }));
+      window.freeWebARTargets = targets.map(t => t.name);  // FreeWebAR_TargetName reads these
+      return list;
     }
+    const indexOf = image => targets.findIndex(t => t.name === image.name);
 
     // GL projection of a phone main camera (~63° across the long side) filling a w x h canvas.
     function typicalLens(w, h) {
@@ -86,22 +93,24 @@
 
     const pool = {};  // pyramid buffers reused every frame
     let lastGood = 0;
-    function track(r, image, cam) {
-      if (!dense) return null;
+    function track(r, images, cam) {
       const K = frameIntrinsics(r.intrinsics, feed.width, feed.height, cam.cols, cam.rows);
       const frame = pyramid({ data: cam.pixels, width: cam.cols, height: cam.rows }, undefined, pool);
-      const attempt = start => {
-        const res = dense.track(frame, start);
+      const attempt = (i, start) => {
+        const res = targets[i].tracker.track(frame, start);
         return res.score > MIN_SCORE && res.visible > 0.25 ? res : null;
       };
-      // Follow from the last good alignment (kept for half a second after a miss: motion blur, a finger over the
-      // card), else (re)start from the engine's detection.
-      let res = G && attempt(G);
-      if (!res && image) res = attempt(poseToHomography(toCardPose(r, image), K, templateCard));
+      // Follow the current poster from its last good alignment (kept for half a second after a miss: motion blur,
+      // a finger over the card), else (re)start from a poster the engine detects.
+      let res = G && attempt(active, G);
+      for (const image of res ? [] : images) {
+        const i = indexOf(image);
+        if (i >= 0 && (res = attempt(i, poseToHomography(toCardPose(r, image), K, targets[i].card)))) { active = i; break; }
+      }
       const now = performance.now();
       if (res) { G = res.G; lastGood = now; } else if (now - lastGood > 500) G = null;
       score = res ? res.score : 0;
-      return res ? homographyToPose(res.G, K, templateCard) : null;
+      return res ? homographyToPose(res.G, K, targets[active].card) : null;
     }
 
     const unityBridge = {
@@ -121,17 +130,23 @@
         const near = 0.05, far = 1000;
         pose[20] = -(far + near) / (far - near);
         pose[24] = -2 * far * near / (far - near);
-        const image = r.detectedImages?.[0];
+        const images = (r.detectedImages || []).filter(image => indexOf(image) >= 0);
         const cam = processGpuResult?.camerapixelarray;
         const t0 = performance.now();
-        const densePose = cam?.pixels && track(r, image, cam);
-        const card = densePose || (image && toCardPose(r, image));
-        if (card) { pose[0] = 1; pose.set(card, 1); lastSeen = t0; }
+        const densePose = cam?.pixels && targets.length ? track(r, images, cam) : null;
+        let card = densePose;
+        if (!card && images.length) {  // dense alignment not holding: the engine's own pose
+          if (indexOf(images[0]) !== active) G = null;  // a different poster: the last alignment was for another image
+          active = indexOf(images[0]);
+          card = toCardPose(r, images[0]);
+        }
+        if (card) { pose[0] = 1; pose.set(card, 1); pose[26] = active; lastSeen = t0; }
         else if (t0 - lastSeen > 250) pose[0] = 0;  // hold the last pose for a blink instead of flickering
         showHint();
         if (q.has('debug')) {
           debug.textContent = `${cameraList}\naberta: ${cameraLabel}\n` +
-            `${densePose ? 'denso' : image ? '8th Wall' : 'procurando'}  ZNCC ${score.toFixed(2)}  ${(performance.now() - t0).toFixed(1)} ms`;
+            `${densePose ? 'denso' : card ? '8th Wall' : 'procurando'}  ${card ? targets[active].name : ''}  ` +
+            `ZNCC ${score.toFixed(2)}  ${(performance.now() - t0).toFixed(1)} ms`;
         }
       },
       onException: e => { console.error(e); fail(String(e.message || e)); },
@@ -174,10 +189,9 @@
           console.warn('Keeping the default camera:', e);
         }
       }
-      const imageTargetData = await Promise.all(TARGETS.map(url => fetch(url).then(r => r.json())));
+      const imageTargetData = await loadTargets();
       // No world tracking: the card is tracked from the image alone, never "slides" onto world anchors.
       XR8.XrController.configure({ disableWorldTracking: true, leftHandedAxes: true, imageTargetData });
-      await loadTemplate(imageTargetData[0]);
       XR8.addCameraPipelineModules([
         XR8.GlTextureRenderer.pipelineModule(),  // draws the camera behind the transparent Unity canvas
         XR8.XrController.pipelineModule(),
