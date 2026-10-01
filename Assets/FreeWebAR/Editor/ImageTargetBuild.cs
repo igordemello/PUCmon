@@ -13,41 +13,76 @@ using UnityEngine.SceneManagement;
 /// WebGL builds: writes image-targets/targets.json plus one luminance image per <see cref="ImageTarget"/> image used
 /// in the built scenes, in the format of 8th Wall's image-target-cli (default crop): the page loads them at start.
 /// </summary>
-class ImageTargetBuild : IPreprocessBuildWithReport, IProcessSceneWithReport, IPostprocessBuildWithReport
+class ImageTargetBuild : IProcessSceneWithReport, IPostprocessBuildWithReport
 {
     const int LuminanceHeight = 640, MinWidth = 480, MinHeight = 640;  // image-target-cli constants
-    static readonly List<Texture2D> images = new List<Texture2D>();
+    // Unity skips OnProcessScene for scenes unchanged since the last build (it reuses that build's data), so each
+    // scene's images are kept here, per scene: "scene path|image path" lines.
+    const string CacheFile = "Library/FreeWebAR-ImageTargets.txt";
+    static string[] builtScenes = new string[0];
+
+    // Runs first, for the Build button and BuildPipeline.BuildPlayer alike: which scenes this build has.
+    class Scenes : BuildPlayerProcessor
+    {
+        public override void PrepareForBuild(BuildPlayerContext context) => builtScenes = context.BuildPlayerOptions.scenes ?? new string[0];
+    }
 
     public int callbackOrder => 0;
-
-    public void OnPreprocessBuild(BuildReport report) => images.Clear();
 
     public void OnProcessScene(Scene scene, BuildReport report)
     {
         if (report == null || report.summary.platform != BuildTarget.WebGL)
             return;  // entering Play mode, or another platform
+        var images = new List<string>();
         foreach (var root in scene.GetRootGameObjects())
         foreach (var target in root.GetComponentsInChildren<ImageTarget>(true))
         {
             if (!target.image)
                 Debug.LogWarning($"Free WebAR: ImageTarget \"{target.name}\" has no image; it can never be found.", target);
-            else if (!images.Contains(target.image))
-                images.Add(target.image);
+            else
+                images.Add(AssetDatabase.GetAssetPath(target.image));
         }
+        var cache = ReadCache();
+        cache[scene.path] = images.Distinct().ToList();
+        File.WriteAllLines(CacheFile, cache.SelectMany(kv =>
+            kv.Value.Count == 0 ? new[] { kv.Key + "|" } : kv.Value.Select(image => kv.Key + "|" + image)));
     }
 
     public void OnPostprocessBuild(BuildReport report)
     {
         if (report.summary.platform != BuildTarget.WebGL)
             return;
+        var cache = ReadCache();
+        var unknown = builtScenes.Where(scene => !cache.ContainsKey(scene)).ToArray();
+        if (unknown.Length > 0)
+            throw new BuildFailedException($"Free WebAR: Unity reused {string.Join(", ", unknown)} from an earlier build, so its " +
+                "image targets are unknown. Build once with Clean Build (Build Settings > arrow next to Build).");
+        var images = builtScenes.SelectMany(scene => cache[scene]).Distinct()
+            .Select(AssetDatabase.LoadAssetAtPath<Texture2D>).Where(image => image).ToList();
         if (images.Count == 0)
             throw new BuildFailedException("Free WebAR: the scene has no ImageTarget with an image.");
         var dir = Path.Combine(report.summary.outputPath, "image-targets");
+        if (Directory.Exists(dir))
+            Directory.Delete(dir, true);  // drop the files of images no longer in the scene
         Directory.CreateDirectory(dir);
         var entries = images.Select(image => Write(image, dir)).ToArray();
         File.WriteAllText(Path.Combine(dir, "targets.json"), "[\n" + string.Join(",\n", entries) + "\n]\n");
         Debug.Log($"Free WebAR: {images.Count} image target(s): {string.Join(", ", images.Select(i => i.name))}");
-        images.Clear();
+    }
+
+    static Dictionary<string, List<string>> ReadCache()
+    {
+        var cache = new Dictionary<string, List<string>>();
+        if (File.Exists(CacheFile))
+            foreach (var line in File.ReadAllLines(CacheFile))
+            {
+                var parts = line.Split('|');
+                if (!cache.TryGetValue(parts[0], out var images))
+                    cache[parts[0]] = images = new List<string>();
+                if (parts.Length > 1 && parts[1] != "")
+                    images.Add(parts[1]);
+            }
+        return cache;
     }
 
     // One target: luminance crop + its image-target-cli style JSON entry.

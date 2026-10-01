@@ -15,6 +15,21 @@ mergeInto(LibraryManager.library, {
     return buffer;
   },
 
+  // Opens the camera and starts tracking (see startAR in the FreeWebAR WebGL template).
+  FreeWebAR_Start: function () {
+    if (window.freeWebARStart) window.freeWebARStart();
+  },
+
+  // Closes the camera.
+  FreeWebAR_Stop: function () {
+    if (window.freeWebARStop) window.freeWebARStop();
+  },
+
+  // Shows (1) or hides (0) the page's "point the camera at the image" hint.
+  FreeWebAR_SetHint: function (show) {
+    window.freeWebARHint = !!show;
+  },
+
   // Unity ends each frame with an alpha-only clear to 1. Skipping it keeps the pixels the camera
   // cleared to Color.clear transparent, so the camera feed canvas behind this one shows through.
   glClear: function (mask) {

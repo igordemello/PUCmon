@@ -14,9 +14,23 @@ public class WebARImageTracker : MonoBehaviour
     /// <summary>The target in view, or null.</summary>
     public ImageTarget Current { get; private set; }
 
+    /// <summary>Whether the page shows its "point the camera at the image" hint while no image is in view.</summary>
+    public static bool ShowScanHint
+    {
+        set
+        {
+#if UNITY_WEBGL && !UNITY_EDITOR
+            FreeWebAR_SetHint(value ? 1 : 0);
+#endif
+        }
+    }
+
 #if UNITY_WEBGL && !UNITY_EDITOR
     [DllImport("__Internal")] static extern int FreeWebAR_ReadPose(float[] pose);
     [DllImport("__Internal")] static extern string FreeWebAR_TargetName(int index);
+    [DllImport("__Internal")] static extern void FreeWebAR_Start();
+    [DllImport("__Internal")] static extern void FreeWebAR_Stop();
+    [DllImport("__Internal")] static extern void FreeWebAR_SetHint(int show);
 
     // [tracked, position xyz, forward xyz, up xyz, projection 16 (column-major), target index], written by the page.
     readonly float[] pose = new float[27];
@@ -34,6 +48,14 @@ public class WebARImageTracker : MonoBehaviour
         targets = FindObjectsOfType<ImageTarget>(true);
         foreach (var target in targets)
             target.gameObject.SetActive(false);
+    }
+
+    // The page opens the camera only while this scene runs: other scenes (login, menus) go without it.
+    void Start() => FreeWebAR_Start();
+    void OnDestroy()
+    {
+        FreeWebAR_Stop();
+        FreeWebAR_SetHint(1);
     }
 
     void LateUpdate()

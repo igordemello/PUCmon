@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-visual">
   <title>{{{ PRODUCT_NAME }}}</title>
   <style>
     html, body { margin: 0; height: 100%; overflow: hidden; background: #000; }
@@ -52,11 +52,11 @@
     // [tracked, position xyz, forward xyz, up xyz, projection (16, column-major GL), target index] in Unity camera
     // space. FreeWebAR.jslib copies it into WebARImageTracker every frame.
     const pose = window.freeWebARPose = new Float32Array(27);
-    let unityReady = false, cameraReady = false, failed = false, cameraLabel = '', cameraList = '', lastSeen = 0;
+    let unityReady = false, arStarted = false, cameraReady = false, failed = false, cameraLabel = '', cameraList = '', lastSeen = 0;
     const showHint = () => {
-      const ready = unityReady && cameraReady && !failed;
+      const ready = unityReady && (cameraReady || !arStarted) && !failed;  // before the AR scene (a login screen) only Unity counts
       $('loading').classList.toggle('off', ready || failed);
-      $('scan').classList.toggle('off', !ready || pose[0] === 1);
+      $('scan').classList.toggle('off', !ready || !arStarted || pose[0] === 1 || window.freeWebARHint === false);
     };
     const fail = message => { failed = true; $('status').textContent = message; showHint(); };
 
@@ -178,7 +178,8 @@
       cameraList = cams.map((c, i) => `${i}: ${c.label}${c === main ? ' ◀' : ''}`).join('\n');
     }
 
-    async function startAR() {
+    // Once: pin the camera, load the image targets, set up the engine. Then it runs or stops with the AR scene.
+    async function setUpAR() {
       const phone = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ||
         (/Mac/.test(navigator.platform) && navigator.maxTouchPoints > 1);  // iPadOS reports a Mac
       if (phone || q.has('cam')) {
@@ -200,11 +201,36 @@
         XR8.CameraPixelArray.pipelineModule({ luminance: true, maxDimension: 480 }),
         unityBridge,
       ]);
-      XR8.run({ canvas: feed, allowedDevices: XR8.XrConfig.device().ANY });
     }
-    if (!window.isSecureContext) fail('A câmera só funciona em HTTPS.');
-    else if (window.XR8) startAR();
-    else window.addEventListener('xrloaded', startAR);
+    // Leaving the AR scene pauses the engine, which releases the camera; coming back resumes it. (Stopping and running
+    // again would ask for motion permissions again, outside a tap, which iOS refuses.)
+    let setUp = null, engine = 'off';  // 'off', 'running' or 'paused'
+    async function startAR() {
+      if (!window.XR8) await new Promise(done => window.addEventListener('xrloaded', done, { once: true }));
+      await (setUp ??= setUpAR());
+      if (!arStarted || failed || engine === 'running') return;  // left the AR scene meanwhile
+      if (engine === 'paused') XR8.resume();
+      else XR8.run({ canvas: feed, allowedDevices: XR8.XrConfig.device().ANY });
+      engine = 'running';
+    }
+    // Unity opens the camera when the AR scene starts and closes it when the scene ends (FreeWebAR.jslib).
+    window.freeWebARStart = () => {
+      if (arStarted) return;
+      arStarted = true;
+      sizeFeed();  // the page may have been sized while hidden or loading
+      showHint();
+      if (!window.isSecureContext) fail('A câmera só funciona em HTTPS.');
+      else startAR();
+    };
+    window.freeWebARStop = () => {
+      arStarted = false;
+      pose[0] = 0;
+      if (engine === 'running') {
+        XR8.pause();
+        if (XR8.isPaused()) engine = 'paused';  // too early to pause: it just keeps running
+      }
+      showHint();
+    };
 
     createUnityInstance(canvas, {
       dataUrl: "Build/{{{ DATA_FILENAME }}}",
