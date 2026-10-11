@@ -20,7 +20,7 @@ public class WallHole : MonoBehaviour
     [Tooltip("Change it for a different break and different cracks.")]
     public int seed = 1;
     public Color plaster = new Color(0.86f, 0.83f, 0.78f);
-    public Color deep = new Color(0.07f, 0.03f, 0.14f);
+    public Color deep = new Color32(0x0B, 0x16, 0x2E, 0xFF);
 
     const int Sides = 32, Rings = 14;
     const float WallThickness = 0.07f, MaskRadius = 12f;

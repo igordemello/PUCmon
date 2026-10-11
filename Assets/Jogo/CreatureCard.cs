@@ -11,7 +11,7 @@ public class CreatureCard : MonoBehaviour
     public void Show(Catalog.Creature creature, bool caught)
     {
         portrait.sprite = creature.portrait;
-        portrait.color = caught ? Color.white : new Color(0.07f, 0.04f, 0.15f, 1f);
+        portrait.color = caught ? Color.white : new Color32(0x10, 0x1F, 0x3F, 0xFF);  // navy silhouette
         label.text = caught ? creature.displayName : "???";
     }
 }

@@ -21,7 +21,7 @@ public static class Supabase
 
     public static Task<Response> Send(string method, string path, string json = null, string token = null, string prefer = null)
     {
-        var request = new UnityWebRequest(Url + path, method) { downloadHandler = new DownloadHandlerBuffer() };
+        var request = new UnityWebRequest(Url + path, method) { downloadHandler = new DownloadHandlerBuffer(), timeout = 15 };  // seconds; then "no connection"
         if (json != null)
         {
             request.uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(json));

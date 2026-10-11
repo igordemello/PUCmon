@@ -53,6 +53,7 @@ public class HomeScreen : MonoBehaviour
         Show(openCollection);
         openCollection = false;
         Refresh();
+        Page.Ready();
 
         await Account.LoadCollection();  // may have changed on another device
         if (this)

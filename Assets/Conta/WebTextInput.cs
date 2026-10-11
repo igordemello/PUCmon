@@ -2,7 +2,6 @@ using System.Runtime.InteropServices;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
 /// <summary>
 /// WebGL builds: edits this TextMeshPro field through a browser input laid over it (WebTextInput.jslib), so phones
@@ -43,22 +42,18 @@ public class WebTextInput : MonoBehaviour, IPointerDownHandler
             "#" + ColorUtility.ToHtmlStringRGB(field.textComponent.color), "#" + ColorUtility.ToHtmlStringRGB(field.targetGraphic.color));
     }
 
-    // The field in screen pixels from the top left, its text size, side padding and corner radius.
+    // The field's text area in screen pixels from the top left (its frame stays visible around the input), and the
+    // text size; no extra padding or rounded corners.
     void Measure(TMP_InputField field)
     {
         var corners = new Vector3[4];  // overlay canvas: world corners are screen pixels, origin bottom left
-        ((RectTransform)transform).GetWorldCorners(corners);
-        var canvas = GetComponentInParent<Canvas>().rootCanvas;
-        float scale = canvas.scaleFactor, radius = 0f;
-        if (field.targetGraphic is Image image && image.sprite)
-            radius = image.sprite.border.x / image.pixelsPerUnitMultiplier * canvas.referencePixelsPerUnit / image.sprite.pixelsPerUnit * scale;
+        field.textViewport.GetWorldCorners(corners);
         geometry[0] = corners[0].x;
         geometry[1] = Screen.height - corners[1].y;
         geometry[2] = corners[2].x - corners[0].x;
         geometry[3] = corners[1].y - corners[0].y;
-        geometry[4] = field.pointSize * scale;
-        geometry[5] = field.textViewport.offsetMin.x * scale;
-        geometry[6] = radius;
+        geometry[4] = field.pointSize * GetComponentInParent<Canvas>().rootCanvas.scaleFactor;
+        geometry[5] = geometry[6] = 0f;
     }
 
     void Update()

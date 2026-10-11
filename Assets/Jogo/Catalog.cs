@@ -15,6 +15,16 @@ public class Catalog : ScriptableObject
         public string displayName;
         [Tooltip("2D picture for the collection and the capture screen.")]
         public Sprite portrait;
+        [HideInInspector, Tooltip("Model and pose the picture was made from (PortraitMaker redoes it when they change).")]
+        public string portraitOf;
+
+        [Header("Minigame")]
+        [Tooltip("Chance that a hit catches it, before the ring bonus (see CaptureMinigame).")]
+        [Range(0.05f, 1f)] public float catchRate = 0.5f;
+        [Tooltip("How fast it sways around in its hole (1 = normal).")]
+        [Range(0.3f, 3f)] public float agility = 1f;
+        [Tooltip("How often it hides back in the hole (1 = normal, 0 = never).")]
+        [Range(0f, 3f)] public float shyness = 1f;
     }
 
     public List<Creature> creatures = new List<Creature>();

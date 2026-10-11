@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 /// <summary>
-/// The AR scene's interface: while a PUCmon's poster is in view, a "Capturar" button (or "you already caught it"),
+/// The AR scene's interface: while a PUCmon's poster is in view, the capture minigame (or "you already caught it"),
 /// and the capture screen that saves it into the player's collection.
 /// </summary>
 public class CaptureScreen : MonoBehaviour
@@ -17,7 +17,7 @@ public class CaptureScreen : MonoBehaviour
     [Header("Sobre o AR")]
     public Button homeButton;
     public TMP_Text counter;
-    public Button captureButton;
+    public CaptureMinigame minigame;
     public GameObject caughtLabel;
     public TMP_Text caughtText;
 
@@ -25,6 +25,8 @@ public class CaptureScreen : MonoBehaviour
     public CanvasGroup capturePanel;
     public Image flash, portrait;
     public RectTransform glow;
+    [Tooltip("Pictures the glow cycles through (pixel-art animation).")]
+    public Sprite[] glowFrames;
     public TMP_Text title, status;
     public Button continueButton, collectionButton, retryButton;
 
@@ -40,7 +42,7 @@ public class CaptureScreen : MonoBehaviour
             return;
         }
         homeButton.onClick.AddListener(() => SceneManager.LoadScene(homeScene));
-        captureButton.onClick.AddListener(Capture);
+        minigame.Caught += Capture;
         continueButton.onClick.AddListener(() => capturePanel.gameObject.SetActive(false));
         collectionButton.onClick.AddListener(() =>
         {
@@ -49,6 +51,7 @@ public class CaptureScreen : MonoBehaviour
         });
         retryButton.onClick.AddListener(Save);
         capturePanel.gameObject.SetActive(false);
+        Page.Ready();
     }
 
     void Update()
@@ -61,27 +64,23 @@ public class CaptureScreen : MonoBehaviour
             inViewSince = Time.unscaledTime;
         }
         bool panel = capturePanel.gameObject.activeSelf, caught = inView != null && Account.Collection.Contains(inView.poster);
-        Toggle(captureButton.gameObject, inView != null && !caught && !panel);
+        minigame.Play(inView != null && !caught && !panel ? target : null, inView);
         Toggle(caughtLabel, inView != null && caught && !panel);
         if (caught)
             caughtText.text = $"Você já capturou {inView.displayName}!";
 
-        // Pop in when a poster shows up; the capture button keeps pulsing a little.
-        float pop = Overshoot(Mathf.Clamp01((Time.unscaledTime - inViewSince) / 0.35f));
-        captureButton.transform.localScale = Vector3.one * (pop * (1f + 0.04f * Mathf.Sin(Time.unscaledTime * 5f)));
-        caughtLabel.transform.localScale = Vector3.one * pop;
+        // Pop in when a poster shows up.
+        caughtLabel.transform.localScale = Vector3.one * Overshoot(Mathf.Clamp01((Time.unscaledTime - inViewSince) / 0.35f));
         counter.text = $"{catalog.Caught}/{catalog.creatures.Count}";
         if (panel)
-            glow.Rotate(0f, 0f, -25f * Time.unscaledDeltaTime);
+            glow.GetComponent<Image>().sprite = glowFrames[(int)(Time.unscaledTime * 4f) % glowFrames.Length];
         if (panel != hintHidden)
             WebARImageTracker.ShowScanHint = !(hintHidden = panel);  // no "point the camera" hint over the capture screen
     }
 
-    void Capture()
+    void Capture(Catalog.Creature creature)
     {
-        if (inView == null)
-            return;
-        capturing = inView;
+        capturing = creature;
         portrait.sprite = capturing.portrait;
         capturePanel.gameObject.SetActive(true);
         StartCoroutine(Reveal());

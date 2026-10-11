@@ -16,15 +16,42 @@ MonoBehaviour:
   - poster: 1
     displayName: Corvo
     portrait: {fileID: 21300000, guid: 6ff213a687d892d45806233e3b16f00e, type: 3}
+    portraitOf: c89fd2b9837aaba40b8ad4461b9c9bf8/Corvo_LowPoly@-0.37,0.00,0.00,0.00,0.00,0.36,-0.09,0.00,0.00,-0.09,-0.36,0.00,0.00,-0.52,0.01,1.00
+    catchRate: 0.55
+    agility: 1
+    shyness: 1
   - poster: 2
     displayName: Mascote
     portrait: {fileID: 21300000, guid: f13be9748af541f4b9c217e5c8767d59, type: 3}
+    portraitOf: 77d73ed9339ba434abd81b79135e7217/Mascote_LowPoly@-0.37,0.00,0.00,0.00,0.00,0.36,-0.09,0.00,0.00,-0.09,-0.36,0.00,-0.01,-0.52,0.01,1.00
+    catchRate: 0.5
+    agility: 1.2
+    shyness: 0.8
   - poster: 3
     displayName: Espiral
     portrait: {fileID: 21300000, guid: fc4f0bf7e88ba7a48a139a42d6ba1d16, type: 3}
+    portraitOf: d080fb61d84ea0a48a37c5d94f40ce83/Espiral_LowPoly@-0.37,0.00,0.00,0.00,0.00,0.36,-0.09,0.00,0.00,-0.09,-0.36,0.00,-0.02,-0.52,0.01,1.00
+    catchRate: 0.6
+    agility: 0.8
+    shyness: 1.2
   - poster: 4
     displayName: Guaxinim
     portrait: {fileID: 21300000, guid: 88fd44b94460f1b46adf90ce39460eaf, type: 3}
+    portraitOf: b5c627828d6ead542892ab92cc5ea2c0/Guaxinim_LowPoly@-0.37,0.00,0.00,0.00,0.00,0.36,-0.09,0.00,0.00,-0.09,-0.36,0.00,-0.01,-0.52,0.01,1.00
+    catchRate: 0.4
+    agility: 1.5
+    shyness: 1
   - poster: 5
     displayName: Polvo
     portrait: {fileID: 21300000, guid: fb3ccf8cf11c667429da5e56f4cb4706, type: 3}
+    portraitOf: 0644d33940ac33d4ca70673f81b43e48/Polvo_LowPoly@-0.37,0.00,0.00,0.00,0.00,0.36,-0.09,0.00,0.00,-0.09,-0.36,0.00,-0.01,-0.52,0.01,1.00
+    catchRate: 0.5
+    agility: 0.7
+    shyness: 1.6
+  - poster: 6
+    displayName: 6
+    portrait: {fileID: 21300000, guid: 6b7e699b3e295004a872476077a2aeb1, type: 3}
+    portraitOf: 5b196e702cf40e44aa846116aa44b1e1/Cardinal_LowPoly@-0.37,0.00,0.00,0.00,0.00,0.36,-0.09,0.00,0.00,-0.09,-0.36,0.00,-0.01,-0.52,0.01,1.00
+    catchRate: 0.5
+    agility: 1
+    shyness: 1

@@ -35,7 +35,7 @@ mergeInto(LibraryManager.library, {
     input.spellcheck = false;
     if (maxLength > 0) input.maxLength = maxLength;
     input.style.cssText = 'position:fixed; z-index:4; box-sizing:border-box; margin:0; border:0; outline:0;' +
-      'pointer-events:none; font-family:Arial,"Liberation Sans",sans-serif;' +
+      'pointer-events:none; font-family:"PUCmon Texto",Arial,sans-serif;' +  // @font-face in the page template
       'color:' + UTF8ToString(color) + '; background:' + UTF8ToString(background) + '; caret-color:' + UTF8ToString(color);
     document.body.appendChild(input);
 

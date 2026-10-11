@@ -46,21 +46,28 @@ public class LoginScreen : MonoBehaviour
         signUpPassword.onSubmit.AddListener(_ => SignUp());
         showSignUp.onClick.AddListener(() => Show(signUpPanel));
         showSignIn.onClick.AddListener(() => Show(signInPanel));
-        Show(signInPanel);
-        if (Account.Notice != null)
-        {
-            Fail(signInMessage, Account.Notice);
-            Account.Notice = null;
-        }
 
+        // A session saved on this device: check it before showing anything (the page's loading screen stays up), then
+        // go straight in, or show the form if it no longer works.
+        string error = Account.Notice;
+        Account.Notice = null;
         if (Account.HasSavedSession)
         {
-            var error = await Run(signInButton, Account.Resume());
+            card.gameObject.SetActive(false);
+            busy = true;
+            error = await Account.Resume();
+            busy = false;
             if (error == null)
-                EnterGame();
-            else
-                Fail(signInMessage, error);
+            {
+                EnterGame();  // the next scene takes the loading screen away
+                return;
+            }
+            card.gameObject.SetActive(true);
         }
+        Show(signInPanel);
+        if (error != null)
+            Fail(signInMessage, error);
+        Page.Ready();
     }
 
     async void SignIn()
@@ -170,7 +177,6 @@ public class LoginScreen : MonoBehaviour
     {
         float t = Time.unscaledTime;
         logo.anchoredPosition = logoHome + Vector2.up * (Mathf.Sin(t * 2f) * 12f);
-        logo.localRotation = Quaternion.Euler(0f, 0f, Mathf.Sin(t * 1.3f) * 2f);
         for (int i = 0; i < bubbles.Length; i++)
             bubbles[i].anchoredPosition = bubbleHomes[i] + new Vector2(Mathf.Sin(t * 0.3f + i * 1.7f) * 40f, Mathf.Sin(t * 0.4f + i * 2.3f) * 60f);
     }
