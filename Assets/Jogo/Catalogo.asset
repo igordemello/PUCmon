@@ -28,7 +28,7 @@ MonoBehaviour:
     agility: 1.2
     shyness: 0.8
   - poster: 3
-    displayName: Espiral
+    displayName: Psoneco
     portrait: {fileID: 21300000, guid: fc4f0bf7e88ba7a48a139a42d6ba1d16, type: 3}
     portraitOf: d080fb61d84ea0a48a37c5d94f40ce83/Espiral_LowPoly@-0.37,0.00,0.00,0.00,0.00,0.36,-0.09,0.00,0.00,-0.09,-0.36,0.00,-0.02,-0.52,0.01,1.00
     catchRate: 0.6
@@ -42,14 +42,14 @@ MonoBehaviour:
     agility: 1.5
     shyness: 1
   - poster: 5
-    displayName: Polvo
+    displayName: Ventintoso
     portrait: {fileID: 21300000, guid: fb3ccf8cf11c667429da5e56f4cb4706, type: 3}
     portraitOf: 0644d33940ac33d4ca70673f81b43e48/Polvo_LowPoly@-0.37,0.00,0.00,0.00,0.00,0.36,-0.09,0.00,0.00,-0.09,-0.36,0.00,-0.01,-0.52,0.01,1.00
     catchRate: 0.5
     agility: 0.7
     shyness: 1.6
   - poster: 6
-    displayName: 6
+    displayName: "Sant\xEDdeo"
     portrait: {fileID: 21300000, guid: 6b7e699b3e295004a872476077a2aeb1, type: 3}
     portraitOf: 5b196e702cf40e44aa846116aa44b1e1/Cardinal_LowPoly@-0.37,0.00,0.00,0.00,0.00,0.36,-0.09,0.00,0.00,-0.09,-0.36,0.00,-0.01,-0.52,0.01,1.00
     catchRate: 0.5
