@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Rastreamento planar denso para Realidade Aumentada na Web</title>
+<style>
+  @page { size: A4; margin: 3cm 2.6cm 2.6cm 2.6cm; @bottom-center { content: counter(page); font: 10pt "Times New Roman", serif; } }
+  html { font: 11.5pt/1.32 "Times New Roman", Times, serif; color: #000; }
+  body { margin: 0; text-align: justify; hyphens: auto; }
+  h1 { font-size: 16pt; text-align: center; margin: 0 0 14pt; line-height: 1.2; }
+  .authors { text-align: center; font-size: 12pt; font-weight: bold; margin-bottom: 4pt; }
+  .affil { text-align: center; font-size: 11pt; margin-bottom: 14pt; }
+  .abstract { margin: 0 0.9cm 10pt; font-style: italic; }
+  .abstract b { font-style: normal; }
+  .keywords { margin: 0 0.9cm 14pt; font-size: 10.5pt; }
+  h2 { font-size: 13pt; margin: 16pt 0 6pt; break-after: avoid; }
+  h3 { font-size: 11.5pt; margin: 11pt 0 4pt; break-after: avoid; }
+  p { margin: 0 0 6pt; text-indent: 0; orphans: 3; widows: 3; }
+  figure { margin: 10pt 0 10pt; text-align: center; break-inside: avoid; }
+  figure img { max-width: 100%; }
+  figcaption, .tcap { font-size: 10pt; text-align: justify; margin-top: 4pt; line-height: 1.25; }
+  figcaption b, .tcap b { font-weight: bold; }
+  .tcap { margin: 10pt 0 4pt; }
+  table { border-collapse: collapse; width: 100%; font-size: 9.6pt; margin: 0 0 10pt; break-inside: avoid; }
+  th, td { padding: 2.2pt 4pt; text-align: center; }
+  thead tr:first-child th { border-top: 1.2pt solid #000; }
+  thead tr:last-child th { border-bottom: 0.7pt solid #000; }
+  tbody tr:last-child td { border-bottom: 1.2pt solid #000; }
+  tr.sep td { border-top: 0.5pt solid #000; }
+  td.l, th.l { text-align: left; }
+  .tblock { break-inside: avoid; }
+  math[display="block"] { margin: 6pt 0; }
+  .eq { display: flex; align-items: center; justify-content: center; position: relative; margin: 5pt 0; }
+  .eq .n { position: absolute; right: 0; }
+  .algo { border-top: 1.2pt solid #000; border-bottom: 1.2pt solid #000; padding: 4pt 0; margin: 10pt 0; font-size: 10pt; break-inside: avoid; }
+  .algo .t { border-bottom: 0.7pt solid #000; padding-bottom: 3pt; margin-bottom: 3pt; }
+  .algo ol { margin: 0; padding-left: 20pt; }
+  .algo li { margin: 1pt 0; }
+  ul.contrib { margin: 2pt 0 6pt; padding-left: 18pt; }
+  ul.contrib li { margin-bottom: 3pt; }
+  .refs p { padding-left: 1.2em; text-indent: -1.2em; font-size: 10pt; margin-bottom: 4pt; text-align: left; }
+  .targets { display: flex; justify-content: center; gap: 18pt; }
+  .targets div { font-size: 10pt; }
+  .targets img { height: 3.6cm; border: 0.5pt solid #888; display: block; margin-bottom: 2pt; }
+  .note { font-size: 10pt; }
+  mi.b { font-weight: bold; font-style: normal; text-transform: none; }
+  code { font-family: Consolas, "Courier New", monospace; font-size: 9.6pt; }
+</style>
+</head>
+<body>
+
+<h1>Rastreamento planar denso com precisão sub-pixel para Realidade Aumentada na Web: refinamento Lucas–Kanade inverso-composicional sobre um motor aberto, integrado ao Unity WebGL</h1>
+
+<div class="authors">Igor Mello<sup>1</sup></div>
+<div class="affil"><sup>1</sup>[Departamento — Instituição — Cidade, UF — Brasil]<br>[e-mail]</div>
+
+<p class="abstract"><b>Abstract.</b> Web-based augmented reality (WebAR) reaches users through a link, with no app to install, but image-target tracking in the browser usually relies on sparse keypoints matched on low-resolution frames, which leaves visible jitter and registration bias. We present a hybrid architecture in which an open-source engine (8th Wall) detects the target and estimates a coarse pose, and a dense direct aligner — inverse-compositional Lucas–Kanade on an 8-DoF homography, coarse to fine, with affine photometric compensation and robust weights — refines it on the very frame that is displayed. We derive the pixel intrinsics from the engine's GL projection under “cover” cropping, recover the 6-DoF pose from the homography by polar decomposition, and composite a Unity WebGL scene over the camera feed through a transparent canvas. In a reproducible in-browser benchmark with exact ground truth (7 targets, static and moving camera), the refinement lowered the RMS corner error from 2.6% to 0.50–0.58% of the target height and the frame-to-frame jitter about 30-fold, at 3.7–3.9 ms per frame in JavaScript; with a matched field of view, the error on the game posters fell to 0.08–0.12% (0.25–0.29 px). On a low-texture target in motion, the hybrid tracked 100% of the frames, against 72% for the engine alone. An ablation following the Baker–Matthews protocol shows that the pyramid and the photometric model are essential, that the Huber weights have negligible effect, and that a Tukey biweight with MAD scale raises convergence under 20% occlusion from 60% to 80%.</p>
+
+<p class="abstract"><b>Resumo.</b> A realidade aumentada na Web (WebAR) chega ao usuário por um link, sem instalação, mas o rastreamento de imagens no navegador costuma depender de pontos-chave esparsos casados em quadros de baixa resolução, o que deixa tremor visível e viés de registro. Apresentamos uma arquitetura híbrida em que um motor de código aberto (8th Wall) detecta o alvo e estima uma pose inicial, e um alinhador denso direto — Lucas–Kanade inverso-composicional sobre uma homografia de 8 graus de liberdade, em pirâmide, com compensação fotométrica afim e pesos robustos — a refina no mesmo quadro que é exibido. Derivamos os intrínsecos em pixels a partir da projeção GL do motor sob corte “cover”, recuperamos a pose de 6 graus de liberdade da homografia por decomposição polar e compomos uma cena Unity WebGL sobre a imagem da câmera por um canvas transparente. Em um banco de testes reprodutível no navegador, com verdade de campo exata (7 alvos, câmera parada e em movimento), o refinamento reduziu o erro RMS dos cantos de 2,6% para 0,50–0,58% da altura do alvo e o tremor entre quadros em cerca de 30 vezes, a 3,7–3,9 ms por quadro em JavaScript; com campo de visão casado, o erro nos cartazes do jogo caiu para 0,08–0,12% (0,25–0,29 px). Em um alvo de baixa textura em movimento, o sistema híbrido rastreou 100% dos quadros, contra 72% do motor sozinho. Uma ablação no protocolo de Baker e Matthews mostra que a pirâmide e o modelo fotométrico são essenciais, que os pesos de Huber têm efeito desprezível e que o estimador biquadrado de Tukey com escala MAD eleva a convergência sob 20% de oclusão de 60% para 80%.</p>
+
+<p class="keywords"><b>Palavras-chave:</b> realidade aumentada na Web; rastreamento planar; Lucas–Kanade; alinhamento direto; homografia; Unity WebGL.</p>
+
+<h2>1. Introdução</h2>
+
+<p>Jogos de realidade aumentada (RA) baseados em localização mostraram que sobrepor conteúdo virtual ao ambiente físico pode engajar grandes públicos [Paavilainen et al. 2017]. Para experiências em espaços físicos delimitados — um campus, um museu, um evento —, a RA na Web (WebAR) é especialmente atraente: o usuário aponta a câmera para um QR code ou abre um link, e a experiência roda no navegador, sem instalação [Qiao et al. 2019]. Em contrapartida, o navegador impõe restrições severas: acesso à câmera mediado por APIs de vídeo, orçamento de processamento compartilhado com a página e com o motor gráfico, quadros reduzidos para análise e, até o momento desta escrita, ausência de suporte amplo e multiplataforma ao rastreamento de imagens pela WebXR Device API [W3C 2022].</p>
+
+<p>Na prática, o rastreamento de alvos planares (cartazes, cartas, embalagens) na Web é oferecido por SDKs comerciais licenciados e por bibliotecas abertas como AR.js e MindAR. Em 2026, o motor do 8th Wall foi disponibilizado como código aberto sob licença MIT [Niantic Spatial 2026], tornando acessível um pipeline completo de câmera, detecção de alvos e estimação de pose para o navegador. Esses sistemas seguem, em essência, o paradigma de características esparsas: detectar pontos-chave, casá-los com um modelo do alvo e estimar a pose de forma robusta [Lowe 2004; Rublee et al. 2011; Wagner et al. 2010]. Em quadros de cerca de 480 pixels no maior lado e com poucas centenas de correspondências, a posição quantizada dos pontos e a variação do conjunto casado entre quadros produzem tremor (<i>jitter</i>) e viés de registro, que são perceptíveis em RA [Azuma 1997; Holloway 1997]. Há ainda um problema de sincronização: se a pose é calculada sobre um quadro diferente do que está na tela, o conteúdo virtual “desliza” sobre o alvo.</p>
+
+<p>Este trabalho propõe e avalia uma arquitetura híbrida para WebAR que mantém o motor aberto para aquilo em que métodos esparsos são bons — detectar o alvo em qualquer pose e escala, sem estimativa prévia — e acrescenta um refinamento denso e direto para aquilo em que eles são fracos: precisão e estabilidade quadro a quadro. O refinamento é um alinhamento Lucas–Kanade inverso-composicional [Lucas e Kanade 1981; Baker e Matthews 2004] sobre uma homografia, executado em JavaScript sobre a cópia em luminância do <em>mesmo</em> quadro que o motor desenha na tela. Como usa milhares de pixels com gradiente, em vez de algumas centenas de pontos, o alinhamento atinge precisão sub-pixel e continua funcionando em artes de pouca textura. Um portão de confiança por correlação cruzada normalizada decide, a cada quadro, entre a pose refinada e a pose do motor.</p>
+
+<p>As contribuições são:</p>
+<ul class="contrib">
+  <li>uma arquitetura híbrida de rastreamento planar para o navegador, com detecção pelo motor e refinamento denso síncrono ao quadro exibido (Seção 3);</li>
+  <li>uma ponte geométrica fechada entre a projeção GL do motor e os intrínsecos em pixels do quadro de análise sob corte “cover”, e a recuperação da pose a partir da homografia por decomposição polar (Seção 3.4);</li>
+  <li>a integração com o Unity WebGL por composição transparente de canvases, um pipeline de build para múltiplos alvos e a seleção da lente principal em celulares com várias câmeras (Seção 3.6);</li>
+  <li>uma avaliação reprodutível no navegador, com câmera sintética e verdade de campo exata por quadro exibido, uma ablação dos componentes do alinhador e um controle que separa o erro de registro do erro de modelo de lente (Seções 4 e 5).</li>
+</ul>
+
+<p>O sistema está em uso em um jogo de coleção de criaturas em um campus universitário (PUCmon), no qual cada cartaz afixado em uma parede faz surgir uma criatura em 3D.</p>
+
+<h2>2. Trabalhos relacionados</h2>
+
+<h3>2.1. Rastreamento de alvos planares em RA</h3>
+<p>Os primeiros sistemas de RA de grande difusão usavam marcadores fiduciais quadrados [Kato e Billinghurst 1999]. O rastreamento de características naturais permitiu usar imagens arbitrárias como alvo, a partir de detectores e descritores como SIFT [Lowe 2004], FAST [Rosten e Drummond 2006] e ORB [Rublee et al. 2011]; o levantamento de Lepetit e Fua [2005] organiza as abordagens baseadas em modelo. Wagner et al. [2010] mostraram em celulares a combinação que inspira este trabalho: um detector por características para (re)inicialização e um rastreador de <i>patches</i> mais barato e preciso entre quadros. PTAM [Klein e Murray 2007] separou rastreamento e mapeamento em <i>threads</i> distintas. Nosso foco é o caso planar com alvo conhecido, sem mapeamento, mas executado inteiramente no navegador.</p>
+
+<h3>2.2. Alinhamento direto de imagens</h3>
+<p>O alinhamento direto minimiza diferenças de intensidade em vez de distâncias entre pontos. Desde Lucas e Kanade [1981], a formulação foi estendida a modelos paramétricos de geometria e iluminação, com tratamento de oclusões [Hager e Belhumeur 1998]. Baker e Matthews [2004] unificaram as variantes e mostraram que a forma inverso-composicional (IC) permite pré-calcular as imagens de descida mais íngreme e, sem pesos, a própria Hessiana. A minimização de segunda ordem eficiente (ESM) [Benhimane e Malis 2004] amplia a bacia de convergência no rastreamento de planos. Estimadores M robustos [Huber 1964; Black e Anandan 1996], incluindo o biquadrado de Tukey [Beaton e Tukey 1974], reduzem a influência de pixels discrepantes. Métodos diretos também sustentam sistemas densos e semi-densos de SLAM [Newcombe et al. 2011; Engel et al. 2014].</p>
+
+<h3>2.3. Pose a partir de homografia</h3>
+<p>Para um plano observado por uma câmera calibrada, a homografia determina a pose a menos de escala [Zhang 2000; Hartley e Zisserman 2004]; Malis e Vargas [2007] analisam a decomposição, e o IPPE [Collins e Bartoli 2014] trata a ambiguidade de poses planares a partir de correspondências. Com intrínsecos conhecidos e o plano à frente da câmera, a solução é única; o passo delicado é projetar as colunas estimadas, contaminadas por ruído e por erro de intrínsecos, na rotação mais próxima, o que fazemos pela iteração de Newton da decomposição polar [Higham 1986].</p>
+
+<h3>2.4. RA no navegador</h3>
+<p>Qiao et al. [2019] discutem os desafios da WebAR: desempenho, acesso a sensores e fragmentação entre navegadores. WebAssembly [Haas et al. 2017] e compiladores como o Emscripten [Zakai 2011] permitem rodar motores nativos no navegador; é assim que o Unity gera builds WebGL. Bibliotecas abertas como AR.js [AR.js] e MindAR [MindAR] oferecem marcadores e alvos de imagem. Até onde sabemos, não há na literatura uma avaliação com verdade de campo do refinamento denso de alvos de imagem no navegador, nem da integração dessa pose a um motor de jogos compilado para WebGL.</p>
+
+<h2>3. Método</h2>
+
+<h3>3.1. Visão geral</h3>
+<p>A Figura 1 resume a arquitetura. A câmera é aberta por <code>getUserMedia</code> e entregue ao pipeline do motor, composto por três módulos em ordem: <code>GlTextureRenderer</code>, que desenha o quadro no canvas da câmera; <code>XrController</code>, que detecta os alvos e estima suas poses; e <code>CameraPixelArray</code>, que copia para a CPU a luminância do quadro processado, reduzida a 480 pixels no maior lado. Como os três operam sobre o mesmo quadro, o rastreador denso alinha exatamente a imagem que o usuário vê — propriedade que verificamos com marcas de identificação nos quadros (Seção 4.1). A pose resultante é escrita em um vetor de 27 números lido pelo Unity a cada quadro, e o navegador compõe o canvas transparente do Unity sobre o canvas da câmera.</p>
+
+<figure>
+  <img src="figuras/fig-arquitetura.svg" style="width:100%">
+  <figcaption><b>Figura 1. Arquitetura.</b> O motor detecta o alvo e fornece a pose inicial; o rastreador denso refina a pose no mesmo quadro desenhado na tela. Se o portão de confiança rejeita o alinhamento, usa-se a pose do motor. A pose segue para o Unity WebGL, cujo canvas transparente é composto sobre o da câmera.</figcaption>
+</figure>
+
+<h3>3.2. Modelo do alvo e coordenadas</h3>
+<p>Cada alvo é a imagem de um cartaz. No build, o seu recorte em luminância (no formato da ferramenta de alvos do motor: 480 × 640 pixels, proporção 3:4) é gravado junto com a posição do recorte no cartaz original. O rastreador reamostra esse recorte para 240 pixels de altura por média exata de área e endereça o modelo <i>T</i> em coordenadas normalizadas, independentes do nível da pirâmide:</p>
+<div class="eq"><math display="block"><mrow><mover accent="true"><mi>x</mi><mo>˜</mo></mover><mo>=</mo><mfrac><mrow><mi>x</mi><mo>−</mo><mi>W</mi><mo>/</mo><mn>2</mn></mrow><mrow><mi>H</mi><mo>/</mo><mn>2</mn></mrow></mfrac><mo>,</mo><mspace width="1em"/><mover accent="true"><mi>y</mi><mo>˜</mo></mover><mo>=</mo><mfrac><mrow><mi>y</mi><mo>−</mo><mi>H</mi><mo>/</mo><mn>2</mn></mrow><mrow><mi>H</mi><mo>/</mo><mn>2</mn></mrow></mfrac><mo>,</mo></mrow></math><span class="n">(1)</span></div>
+<p>em que (<i>x</i>, <i>y</i>) é o centro de um pixel no recorte original de <i>W</i> × <i>H</i> pixels. A transformação procurada é uma homografia <b>G</b> que leva <span><math><mover accent="true"><mi>x</mi><mo>˜</mo></mover></math></span> a pixels do quadro. O cartaz inteiro define o sistema de coordenadas do conteúdo virtual (origem no centro, 2 unidades de altura), e uma transformação afim <b>A</b>, obtida dos metadados do recorte, leva as coordenadas normalizadas do recorte às do cartaz.</p>
+
+<h3>3.3. Alinhamento denso inverso-composicional</h3>
+<p><b>Modelo de deformação.</b> Usamos a parametrização de Baker e Matthews [2004] para a homografia incremental:</p>
+<div class="eq"><math display="block"><mrow><mi>𝐖</mi><mo stretchy="false">(</mo><mi>𝐩</mi><mo stretchy="false">)</mo><mo>=</mo><mrow><mo>[</mo><mtable><mtr><mtd><mn>1</mn><mo>+</mo><msub><mi>p</mi><mn>1</mn></msub></mtd><mtd><msub><mi>p</mi><mn>3</mn></msub></mtd><mtd><msub><mi>p</mi><mn>5</mn></msub></mtd></mtr><mtr><mtd><msub><mi>p</mi><mn>2</mn></msub></mtd><mtd><mn>1</mn><mo>+</mo><msub><mi>p</mi><mn>4</mn></msub></mtd><mtd><msub><mi>p</mi><mn>6</mn></msub></mtd></mtr><mtr><mtd><msub><mi>p</mi><mn>7</mn></msub></mtd><mtd><msub><mi>p</mi><mn>8</mn></msub></mtd><mtd><mn>1</mn></mtd></mtr></mtable><mo>]</mo></mrow><mo>.</mo></mrow></math><span class="n">(2)</span></div>
+<p><b>Pontos do modelo.</b> Em cada nível da pirâmide do modelo, selecionamos os pixels com gradiente acima de 2 níveis de cinza por pixel, longe da borda, e os rarefazemos uniformemente até 2400, 1200 e 600 pontos (do nível mais fino ao mais grosso). Para cada ponto <i>k</i>, com coordenadas (<i>u</i>, <i>v</i>) e gradiente (<i>g<sub>x</sub></i>, <i>g<sub>y</sub></i>) expresso por unidade normalizada, pré-calculamos a linha da imagem de descida mais íngreme, isto é, o gradiente do modelo vezes o jacobiano da deformação em <b>p</b> = <b>0</b>:</p>
+<div class="eq"><math display="block"><mrow><msub><mi>𝐉</mi><mi>k</mi></msub><mo>=</mo><mrow><mo>[</mo><msub><mi>g</mi><mi>x</mi></msub><mi>u</mi><mo>,</mo><mspace width="0.3em"/><msub><mi>g</mi><mi>y</mi></msub><mi>u</mi><mo>,</mo><mspace width="0.3em"/><msub><mi>g</mi><mi>x</mi></msub><mi>v</mi><mo>,</mo><mspace width="0.3em"/><msub><mi>g</mi><mi>y</mi></msub><mi>v</mi><mo>,</mo><mspace width="0.3em"/><msub><mi>g</mi><mi>x</mi></msub><mo>,</mo><mspace width="0.3em"/><msub><mi>g</mi><mi>y</mi></msub><mo>,</mo><mspace width="0.3em"/><mo>−</mo><mi>u</mi><mi>d</mi><mo>,</mo><mspace width="0.3em"/><mo>−</mo><mi>v</mi><mi>d</mi><mo>]</mo></mrow><mo>,</mo><mspace width="1em"/><mi>d</mi><mo>=</mo><msub><mi>g</mi><mi>x</mi></msub><mi>u</mi><mo>+</mo><msub><mi>g</mi><mi>y</mi></msub><mi>v</mi><mo>.</mo></mrow></math><span class="n">(3)</span></div>
+<p><b>Compensação fotométrica.</b> A cada iteração, amostramos o quadro <i>I</i> por interpolação bilinear nos pontos deformados e ajustamos por mínimos quadrados um modelo afim de brilho e contraste <i>I</i> ≈ <i>aT</i> + <i>b</i>, com solução fechada <i>a</i> = cov(<i>T</i>, <i>I</i>)/var(<i>T</i>) e <i>b</i> = <i>Ī</i> − <i>a</i><i>T̄</i>. O resíduo de cada ponto compara a intensidade corrigida com o modelo:</p>
+<div class="eq"><math display="block"><mrow><msub><mi>e</mi><mi>k</mi></msub><mo>=</mo><mfrac><mrow><mi>I</mi><mo stretchy="false">(</mo><mi>π</mi><mo stretchy="false">(</mo><mi>𝐆</mi><msub><mover accent="true"><mi>𝐱</mi><mo>˜</mo></mover><mi>k</mi></msub><mo stretchy="false">)</mo><mo stretchy="false">)</mo><mo>−</mo><mi>b</mi></mrow><mi>a</mi></mfrac><mo>−</mo><mi>T</mi><mo stretchy="false">(</mo><msub><mover accent="true"><mi>𝐱</mi><mo>˜</mo></mover><mi>k</mi></msub><mo stretchy="false">)</mo><mo>,</mo></mrow></math><span class="n">(4)</span></div>
+<p>em que <i>π</i> é a desomogeneização. O mesmo ajuste fornece o escore de correlação cruzada normalizada de média zero (ZNCC) [Lewis 1995] entre <i>T</i> e <i>I</i> sobre os pontos visíveis, usado como medida de confiança.</p>
+<p><b>Pesos robustos e passo de Gauss–Newton.</b> Cada ponto recebe peso de Huber <i>w<sub>k</sub></i> = 1 se |<i>e<sub>k</sub></i>| ≤ <i>c</i> e <i>w<sub>k</sub></i> = <i>c</i>/|<i>e<sub>k</sub></i>| caso contrário, com <i>c</i> = 1,5 · √(π/2) · média(|<i>e</i>|) — o fator √(π/2) converte o desvio absoluto médio no desvio-padrão de uma gaussiana. O incremento e a atualização inverso-composicional são</p>
+<div class="eq"><math display="block"><mrow><mi>Δ</mi><mi>𝐩</mi><mo>=</mo><msup><mrow><mo>(</mo><munder><mo>∑</mo><mi>k</mi></munder><msub><mi>w</mi><mi>k</mi></msub><msubsup><mi>𝐉</mi><mi>k</mi><mi mathvariant="normal">⊤</mi></msubsup><msub><mi>𝐉</mi><mi>k</mi></msub><mo>)</mo></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><munder><mo>∑</mo><mi>k</mi></munder><msub><mi>w</mi><mi>k</mi></msub><msubsup><mi>𝐉</mi><mi>k</mi><mi mathvariant="normal">⊤</mi></msubsup><msub><mi>e</mi><mi>k</mi></msub><mo>,</mo><mspace width="1.5em"/><mi>𝐆</mi><mo>←</mo><mi>𝐆</mi><mspace width="0.2em"/><mi>𝐖</mi><msup><mrow><mo stretchy="false">(</mo><mi>Δ</mi><mi>𝐩</mi><mo stretchy="false">)</mo></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><mo>.</mo></mrow></math><span class="n">(5)</span></div>
+<p>Como os pesos mudam a cada iteração, a Hessiana 8 × 8 é reacumulada (custo O(64<i>n</i>) para <i>n</i> pontos), mas as imagens de descida mais íngreme continuam pré-calculadas, que é o principal ganho da forma IC. O sistema é resolvido por eliminação gaussiana com pivoteamento parcial. Cada nível faz no máximo 12 iterações e para quando max|Δ<i>p<sub>i</sub></i>| &lt; 10<sup>−4</sup>.</p>
+<p><b>Pirâmides e escolha de nível.</b> Quadro e modelo passam pelos mesmos filtros: suavização binomial separável [1 4 6 4 1]/16 [Burt e Adelson 1983] e redução 2 × 2 por média, em 3 níveis. A suavização alarga as bordas, o que amplia a bacia de convergência, e aproxima o modelo da imagem opticamente borrada da câmera. Para cada nível do modelo, o nível do quadro é escolhido pela escala corrente: <i>L</i> = round(log<sub>2</sub> <i>s</i>), em que <i>s</i> é o número de pixels do quadro por pixel do modelo, estimado pela imagem do eixo vertical do alvo sob <b>G</b>. Assim, alvos pequenos ou distantes são comparados em resoluções equivalentes, sem <i>aliasing</i>.</p>
+
+<h3>3.4. Ponte geométrica entre motor, homografia e pose</h3>
+<p><b>Intrínsecos do quadro de análise.</b> O motor fornece uma matriz de projeção GL <b>P</b> para o canvas exibido, de <i>w<sub>c</sub></i> × <i>h<sub>c</sub></i> pixels, enquanto o rastreador trabalha no quadro da CPU, de <i>w<sub>f</sub></i> × <i>h<sub>f</sub></i> pixels, que é escalado para cobrir o canvas (corte “cover”). Com <i>s</i> = max(<i>w<sub>c</sub></i>/<i>w<sub>f</sub></i>, <i>h<sub>c</sub></i>/<i>h<sub>f</sub></i>) pixels de canvas por pixel de quadro,</p>
+<div class="eq"><math display="block"><mrow><msub><mi>f</mi><mi>x</mi></msub><mo>=</mo><mfrac><mrow><msub><mi>P</mi><mn>00</mn></msub><msub><mi>w</mi><mi>c</mi></msub></mrow><mrow><mn>2</mn><mi>s</mi></mrow></mfrac><mo>,</mo><mspace width="0.8em"/><msub><mi>f</mi><mi>y</mi></msub><mo>=</mo><mfrac><mrow><msub><mi>P</mi><mn>11</mn></msub><msub><mi>h</mi><mi>c</mi></msub></mrow><mrow><mn>2</mn><mi>s</mi></mrow></mfrac><mo>,</mo><mspace width="0.8em"/><msub><mi>c</mi><mi>x</mi></msub><mo>=</mo><mfrac><msub><mi>w</mi><mi>f</mi></msub><mn>2</mn></mfrac><mo>−</mo><mfrac><mrow><msub><mi>P</mi><mn>02</mn></msub><msub><mi>w</mi><mi>c</mi></msub></mrow><mrow><mn>2</mn><mi>s</mi></mrow></mfrac><mo>,</mo><mspace width="0.8em"/><msub><mi>c</mi><mi>y</mi></msub><mo>=</mo><mfrac><msub><mi>h</mi><mi>f</mi></msub><mn>2</mn></mfrac><mo>+</mo><mfrac><mrow><msub><mi>P</mi><mn>12</mn></msub><msub><mi>h</mi><mi>c</mi></msub></mrow><mrow><mn>2</mn><mi>s</mi></mrow></mfrac><mo>.</mo></mrow></math><span class="n">(6)</span></div>
+<p><b>Pose → homografia.</b> Na (re)aquisição, a pose do motor (posição <b>t</b> e eixos <b>r</b><sub>1</sub>, <b>r</b><sub>2</sub> do cartaz no referencial da câmera, convertidos da convenção do Unity, com eixo <i>y</i> para cima, para a convenção de visão computacional, com <i>y</i> para baixo) gera a estimativa inicial</p>
+<div class="eq"><math display="block"><mrow><msub><mi>𝐆</mi><mn>0</mn></msub><mo>=</mo><mi>𝐊</mi><mspace width="0.2em"/><mrow><mo>[</mo><msub><mi>𝐫</mi><mn>1</mn></msub><mspace width="0.4em"/><msub><mi>𝐫</mi><mn>2</mn></msub><mspace width="0.4em"/><mi>𝐭</mi><mo>]</mo></mrow><mspace width="0.2em"/><mi>𝐀</mi><mo>.</mo></mrow></math><span class="n">(7)</span></div>
+<p><b>Homografia → pose.</b> Após o alinhamento, <b>M</b> = <b>K</b><sup>−1</sup><b>G</b><b>A</b><sup>−1</sup> = λ[<b>r</b><sub>1</sub> <b>r</b><sub>2</sub> <b>t</b>]. Tomamos λ = ±(‖<b>m</b><sub>1</sub>‖ + ‖<b>m</b><sub>2</sub>‖)/2, com o sinal escolhido para que o cartaz fique à frente da câmera (<i>t<sub>z</sub></i> &gt; 0), normalizamos <b>m̂</b><sub><i>i</i></sub> = <b>m</b><sub><i>i</i></sub>/λ e partimos de <b>R</b><sub>0</sub> = [<b>m̂</b><sub>1</sub> <b>m̂</b><sub>2</sub> <b>m̂</b><sub>1</sub> × <b>m̂</b><sub>2</sub>]. A rotação mais próxima vem da iteração de Newton para o fator polar [Higham 1986]:</p>
+<div class="eq"><math display="block"><mrow><msub><mi>𝐑</mi><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mrow><mo>(</mo><msub><mi>𝐑</mi><mi>i</mi></msub><mo>+</mo><msubsup><mi>𝐑</mi><mi>i</mi><mrow><mo>−</mo><mi mathvariant="normal">⊤</mi></mrow></msubsup><mo>)</mo></mrow><mo>,</mo></mrow></math><span class="n">(8)</span></div>
+<p>com 8 iterações, que convergem quadraticamente a partir de <b>R</b><sub>0</sub>, já próxima de uma rotação. A pose é devolvida ao Unity na convenção dele: posição, vetor “frente” (normal do cartaz) e vetor “cima”.</p>
+<p>Um ponto merece destaque: sobre o plano do cartaz, <b>G</b> é reproduzida exatamente por qualquer <b>K</b> usado tanto na decomposição quanto na renderização; é a ortonormalização (8) que torna o resultado sensível a erros de intrínsecos. A Seção 5.2 quantifica esse efeito.</p>
+
+<h3>3.5. Política de rastreamento</h3>
+<p>O Algoritmo 1 resume o laço executado a cada quadro. O rastreador segue o alvo a partir do seu próprio alinhamento no quadro anterior; só recorre à pose do motor para adquirir ou readquirir o alvo. Um alinhamento é aceito se ZNCC &gt; 0,7 e se mais de 25% dos pontos caem dentro do quadro. A última homografia aceita é mantida por 500 ms após uma falha (desfoque de movimento, um dedo sobre o cartaz), e a última pose é mantida por 250 ms antes de o alvo ser dado como perdido, o que evita piscadas do conteúdo. Há um alvo ativo por vez: o seguido permanece até ser perdido.</p>
+
+<div class="algo">
+  <div class="t"><b>Algoritmo 1.</b> Laço por quadro (executado no <code>onUpdate</code> do pipeline do motor).</div>
+  <ol>
+    <li>Ler o quadro em luminância e construir sua pirâmide (buffers reaproveitados entre quadros); calcular <b>K</b> por (6).</li>
+    <li>Se existe homografia anterior <b>G</b>: alinhar o alvo ativo a partir de <b>G</b>.</li>
+    <li>Senão, ou se rejeitado: para cada alvo detectado pelo motor, alinhar a partir de <b>G</b><sub>0</sub> por (7); o primeiro aceito torna-se o ativo.</li>
+    <li>Se aceito: guardar <b>G</b> e o instante; pose ← (8). Senão, se a última aceitação tem mais de 500 ms: descartar <b>G</b>.</li>
+    <li>Sem pose densa e com alvo detectado: pose ← pose do motor (se for outro alvo, descartar <b>G</b>).</li>
+    <li>Com pose: publicar [1, pose, projeção, índice do alvo]. Sem pose há mais de 250 ms: publicar “não rastreado”.</li>
+  </ol>
+</div>
+
+<h3>3.6. Integração com o Unity WebGL</h3>
+<p><b>Ponte de pose.</b> A página mantém um <code>Float32Array</code> de 27 posições: estado, posição (3), frente (3), cima (3), projeção 4 × 4 (16) e índice do alvo. Uma biblioteca JavaScript do Unity (<code>.jslib</code>) copia o vetor para a memória do WebAssembly no <code>LateUpdate</code>, e o componente C# aplica a projeção à câmera virtual e posiciona o alvo correspondente. Como o plano distante da projeção do motor é infinito, a página o substitui por um finito, para que o recorte e a profundidade do Unity funcionem. Não há cópia de vídeo para texturas do Unity.</p>
+<p><b>Composição transparente.</b> O canvas do Unity fica acima do canvas da câmera, com contexto WebGL de alfa pré-multiplicado, e a câmera do Unity limpa a tela com cor transparente. O runtime WebGL do Unity, porém, termina cada quadro com uma limpeza apenas do canal alfa para 1, o que tornaria o canvas opaco. A biblioteca intercepta <code>glClear</code> e ignora as limpezas cuja máscara de escrita de cor é só alfa; o navegador então compõe os dois canvases, e o quadro da câmera exibido é o mesmo que foi rastreado.</p>
+<p><b>Pipeline de build.</b> Um processador de build do editor percorre as cenas incluídas, coleta as imagens dos componentes de alvo e grava os recortes em luminância e um <code>targets.json</code> no formato da ferramenta do motor. Como o Unity pula o processamento de cenas inalteradas em builds incrementais, as listas de imagens são mantidas em um cache por cena, e o diretório de alvos é recriado a cada build, o que evita alvos obsoletos.</p>
+<p><b>Seleção de lente e ciclo de vida.</b> Em celulares com várias câmeras traseiras, pedir a câmera por <code>facingMode</code> pode abrir a ultra-angular, ou, em alguns iPhones, uma câmera virtual que alterna de lente ao se aproximar do alvo, mudando os intrínsecos no meio da sessão. Escolhemos a lente principal pelos rótulos de <code>enumerateDevices</code>: no Android, o sensor “camera2 0, facing back”; no iOS, sem depender do idioma, a palavra que identifica as traseiras (a mais frequente que não está em todos os rótulos) e, entre elas, o rótulo com menos qualificadores. O <code>deviceId</code> escolhido é então fixado em todas as chamadas a <code>getUserMedia</code>. Ao sair da cena de RA, o motor é pausado em vez de encerrado, porque reiniciá-lo pediria de novo, fora de um gesto do usuário, permissões de sensores que o iOS recusa.</p>
+
+<h3>3.7. Aplicação</h3>
+<p>No PUCmon, cada cartaz traz uma criatura que emerge de um “buraco” na parede. O efeito usa a técnica de objetos fantasmas [Breen et al. 1996]: uma superfície invisível que só escreve profundidade oculta as partes da criatura atrás da parede, exceto na abertura, de modo que ela parece sair do cartaz. O jogo inclui contas de usuário, coleção e um minijogo de captura; a pose precisa e estável é o que sustenta a ilusão de que a criatura está presa à parede.</p>
+
+<h2>4. Avaliação experimental</h2>
+
+<h3>4.1. Banco de testes no navegador</h3>
+<p>Medir o erro de registro em RA exige saber onde o alvo realmente está em cada quadro exibido. Construímos uma câmera sintética que substitui <code>getUserMedia</code> por um fluxo de canvas (<code>captureStream</code>, 30 quadros/s). A cada quadro, uma cena WebGL2 desenha o cartaz, com textura em mipmap, sobre uma mesa texturizada, com projeção perspectiva de 720 × 1280 pixels e campo de visão vertical de 65°. São somados ruído uniforme de ±0,06 por pixel (σ ≈ 8,8 níveis de cinza) e um tremor de mão aleatório (±0,002 rad e ±0,012 unidade por quadro). O identificador do quadro é gravado em 12 quadrados binários no canto da imagem; um módulo no pipeline do motor o decodifica da cópia em CPU do quadro processado. Com isso, a verdade de campo usada em cada medida é a pose do quadro <em>efetivamente exibido</em>, o que elimina a latência como fator de confusão e mede o registro como o usuário o vê.</p>
+<p><b>Medidas.</b> Projetamos na tela — em pixels CSS de uma janela móvel de 375 × 812 com densidade 2 — os quatro cantos do cartaz e um ponto 3D meia altura à frente do seu centro, que representa o conteúdo virtual, tanto pela pose verdadeira quanto pela pose publicada para o Unity (com a mesma projeção que o Unity usa). As métricas por execução são: erro RMS dos cantos (em pixels e em % da altura do cartaz na tela) e seu percentil 90; erro do ponto 3D; viés (RMS, entre cantos, do vetor de erro médio de cada canto) e ruído (RMS em torno dessa média); tremor (RMS da variação do vetor de erro dos cantos entre quadros exibidos consecutivos, isto é, o quanto o conteúdo treme); fração de amostras rastreadas; tempo de aquisição, do alvo entrar em vista ao início de uma trava contínua de pelo menos 1,5 s (resolução de 100 ms); e o tempo do passo denso por quadro, incluindo a construção da pirâmide.</p>
+<p><b>Condições.</b> <i>Motor</i>: o alinhador é desligado (devolve escore nulo) e a pose publicada é a do motor. <i>Denso</i>: sistema completo. <b>Regimes.</b> <i>Parada</i>: inclinação de 34°, guinada de 9°, rolagem de 6°, distância de 4,5 unidades (cartaz de 2 unidades de altura), por 6 s. <i>Movimento</i>: trajetória determinística com frequências incomensuráveis (inclinações de até 40°, rolagem de até 26°, deslocamento lateral, distância entre 3,3 e 5,7 unidades); o alvo é adquirido parado na pose inicial e então 12 s idênticos da trajetória são medidos em todas as execuções. <b>Alvos</b> (Figura 2): T1–T6, os cartazes do jogo (mosaicos geométricos de alto contraste); e B, um alvo de baixa textura (uma forma escura sobre fundo cinza liso). <b>Plataforma:</b> AMD Ryzen 5 5500, Radeon RX 7600 e 16 GB de RAM, Windows 11, navegador baseado no Chromium 152 em emulação de dispositivo móvel; build WebGL do Unity 2022.3.</p>
+
+<figure>
+  <div class="targets">
+    <div><img src="figuras/alvo-t1.png">T1</div>
+    <div><img src="figuras/alvo-t4.png">T4</div>
+    <div><img src="figuras/alvo-b.png">B</div>
+  </div>
+  <figcaption><b>Figura 2. Exemplos de alvos</b>, como recortes em luminância usados pelo rastreador. T1–T6 são mosaicos de alto contraste com textura abundante; B tem uma única forma escura e texto sobre fundo liso.</figcaption>
+</figure>
+
+<h3>4.2. Ablação offline</h3>
+<p>Para isolar os componentes do alinhador, seguimos o protocolo de Baker e Matthews [2004] em Node.js 24, com a pirâmide, a seleção de pontos e o laço de níveis do rastreador implantado; a iteração foi reimplementada com chaves que ligam e desligam cada componente, e a variante completa reproduz a implantada. Para cada tentativa, sorteamos uma homografia (inclinações de até ±40°, rolagem de até ±26°, cartaz com 110 a 260 pixels de altura num quadro de 270 × 480, a resolução de análise de uma câmera de 720 × 1280, campo de visão vertical de 65°) e renderizamos o alvo com superamostragem 2 × 2, fundo texturizado e ruído gaussiano de σ = 3 níveis de cinza. Há três cenários: <i>só ruído</i>; <i>brilho</i>, com ganho em U(0,5; 1,4) e deslocamento em U(−40; 40); e <i>oclusão</i>, com o mesmo brilho e uma faixa uniforme de intensidade 200 cobrindo 20% da área do cartaz. Os quatro cantos verdadeiros são perturbados por ruído gaussiano de desvio σ ∈ {1, 2, 4, 6, 8, 10, 12, 16, 20} pixels, e a homografia inicial é obtida por DLT. Uma tentativa converge se o erro RMS final dos cantos é menor que 1 pixel. Também registramos a aceitação pelo portão (ZNCC &gt; 0,7) e as falsas aceitações (aceito com erro maior que 3 pixels). São 70 tentativas por célula (10 por alvo), com sementes fixas. Além das variantes que removem componentes, avaliamos três alternativas robustas não implantadas: escala de Huber pela mediana dos resíduos (MAD) [Rousseeuw e Croux 1993]; ajuste fotométrico ponderado pelos pesos robustos da iteração anterior; e o estimador biquadrado de Tukey [Beaton e Tukey 1974], com <i>w</i> = (1 − (<i>e</i>/<i>c</i>)<sup>2</sup>)<sup>2</sup> para |<i>e</i>| &lt; <i>c</i>, <i>w</i> = 0 caso contrário, e <i>c</i> = 4,685 · 1,4826 · med|<i>e</i>|.</p>
+
+<h2>5. Resultados</h2>
+
+<h3>5.1. Precisão e estabilidade do registro</h3>
+<p>A Tabela 1 agrega os seis cartazes do jogo, e a Figura 3 mostra cada alvo. Com a câmera parada, o refinamento denso reduziu o erro RMS dos cantos de 2,59% para 0,50% da altura do cartaz (5,2 vezes) e, em movimento, de 2,61% para 0,58% (4,5 vezes). O ponto 3D, que representa o conteúdo virtual fora do plano, teve redução de 2,7 vezes (parada) e 3,4 vezes (movimento). A diferença mais visível para o usuário está no tremor: 2,73 px contra 0,09 px com a câmera parada e 3,16 px contra 0,10 px em movimento, cerca de 30 vezes menos. O refinamento foi melhor em todos os 7 alvos nos dois regimes (teste exato de postos sinalizados de Wilcoxon, <i>n</i> = 7, <i>p</i> = 0,016 em cada regime).</p>
+
+<div class="tblock">
+<p class="tcap"><b>Tabela 1. Erro de registro nos cartazes T1–T6</b> (média ± desvio-padrão entre os 6 alvos). Pixels CSS; altura mediana do cartaz na tela: ≈ 238 px (parada) e ≈ 301 px (movimento). Tempo: média do passo denso por quadro (maior p95 entre os alvos).</p>
+<table>
+  <thead>
+    <tr><th rowspan="2">Regime</th><th rowspan="2">Condição</th><th colspan="3">Cantos</th><th rowspan="2">Ponto 3D (px)</th><th rowspan="2">Tremor (px)</th><th rowspan="2">Viés (px)</th><th rowspan="2">Ruído (px)</th><th rowspan="2">Tempo (ms)</th></tr>
+    <tr><th>RMS (px)</th><th>RMS (%)</th><th>p90 (px)</th></tr>
+  </thead>
+  <tbody>{{TAB_AGG}}</tbody>
+</table>
+</div>
+
+<figure>
+  <img src="figuras/fig-erro-por-imagem.svg" style="width:100%">
+  <figcaption><b>Figura 3. Erro RMS dos cantos por alvo</b>, em % da altura do cartaz na tela (escala logarítmica). *: fração de amostras rastreadas, quando menor que 100%.</figcaption>
+</figure>
+
+<p>A decomposição em viés e ruído explica a diferença. No motor, o erro é dominado por um viés sistemático (5,9 px parado): os quatro cantos erram para fora, e a sobreposição fica cerca de 2,6% maior que o cartaz em todos os alvos. Somam-se a isso um ruído de 1,7 px (parado) a 3,9 px (movimento) e o tremor correspondente. No denso, o ruído com a câmera parada é de 0,07 px — praticamente o limite imposto pelo tremor simulado da mão — e o viés restante, de cerca de 1,2 px, tem outra origem, examinada na Seção 5.2. A Figura 4 mostra a evolução temporal em movimento: o erro do motor oscila entre 6 e 12 px de um quadro para o outro, enquanto o denso varia suavemente com a pose.</p>
+
+<figure>
+  <img src="figuras/fig-serie-temporal.svg" style="width:100%">
+  <figcaption><b>Figura 4. Erro dos cantos ao longo de 12 s de movimento</b> (alvo T1, mesmo trecho de trajetória nas duas condições). O erro do refinamento denso varia lenta e suavemente com a pose, sem o tremor de alta frequência do motor.</figcaption>
+</figure>
+
+<h3>5.2. Controle de intrínsecos: separando registro e modelo de lente</h3>
+<p>O modelo de lente do sistema — a projeção que o motor fornece ou, na falta dela, a lente típica padrão da página — assumiu um campo de visão vertical de 63°, enquanto a câmera sintética tinha 65°, um descasamento de cerca de 3% na distância focal, comparável à variação entre aparelhos reais. Para testar se o viés residual do denso vinha desse descasamento, repetimos execuções com a câmera sintética a 63° (Tabela 2). Com a lente casada, o erro do denso caiu de 1,12 para 0,25 px no alvo T1 parado (0,10% da altura) e para 0,27 px em movimento (0,08%), enquanto o do motor permaneceu em 2,6% — ou seja, o viés do motor não decorre da lente. Isso confirma que o alinhamento em si é sub-pixel e que, nesse nível de precisão, o erro dominante passa a ser a calibração.</p>
+
+<div class="tblock">
+<p class="tcap"><b>Tabela 2. Controle de intrínsecos.</b> Erro RMS dos cantos em px (e em % da altura do cartaz) e erro do ponto 3D em px, com a câmera sintética a 65° (descasada) e a 63° (casada com o modelo de lente do sistema).</p>
+<table>
+  <thead>
+    <tr><th rowspan="2">Alvo</th><th rowspan="2">Regime</th><th rowspan="2">Condição</th><th colspan="2">Câmera a 65°</th><th colspan="2">Câmera a 63°</th></tr>
+    <tr><th>Cantos</th><th>Ponto 3D</th><th>Cantos</th><th>Ponto 3D</th></tr>
+  </thead>
+  <tbody>{{TAB_FOV}}</tbody>
+</table>
+</div>
+
+<h3>5.3. Alvo de baixa textura</h3>
+<p>No alvo B parado, o motor rastreou todos os quadros, com 2,19% de erro, contra 0,28% do denso. Em movimento, o motor rastreou apenas 71,9% das amostras e, mesmo quando rastreava, produziu poses grosseiramente erradas (erro dos cantos de 64 px, p90 de 77 px, e 277 px no ponto 3D). Com o refinamento, B foi rastreado em 100% das amostras, com 1,49 px (0,49%). O mecanismo é a política da Seção 3.5: depois da aquisição, o alinhador segue o alvo a partir do seu próprio alinhamento anterior, sem depender da detecção quadro a quadro do motor, e usa todos os pixels com gradiente — as bordas da forma e do texto —, enquanto o motor dispõe de poucos pontos-chave distintivos nessa arte. Observamos também que, no movimento, a aquisição inicial de B pelo motor depende fortemente da pose: em algumas posições da trajetória, ela levou mais de 15 s.</p>
+
+<h3>5.4. Custo e aquisição</h3>
+<p>O passo denso custou em média 3,7–3,9 ms por quadro (p95 ≤ 5,6 ms) em JavaScript na thread principal, cerca de 11–12% do orçamento de um quadro a 30 quadros/s na máquina de teste. O tempo de aquisição, determinado pela detecção do motor, teve mediana de 402 ms (203–747 ms) nas 28 execuções. A média foi de 423 ms com o refinamento e de 343 ms sem ele; a diferença, de 2 a 3 quadros, está dentro da variação entre execuções (desvio-padrão de 50 a 140 ms por condição e regime).</p>
+
+<h3>5.5. Ablação</h3>
+<p>A Figura 5 e a Tabela 3 resumem a ablação. A <b>pirâmide</b> é o componente mais importante para a bacia de convergência: sem ela, a convergência a σ = 8 px cai de 99% para 63%, e a 12 px, de 81% para 39%. A <b>compensação fotométrica</b> é indispensável sob mudanças de brilho: sem ela, a convergência fica entre 61% e 66% mesmo com perturbações de 1–8 px, e as falsas aceitações chegam a 8,6% sob oclusão. Os <b>pesos de Huber</b>, por outro lado, tiveram efeito desprezível em todos os cenários (por exemplo, 60% contra 59% de convergência a σ = 1 px sob oclusão). Calcular a escala pela mediana não mudou o resultado; ponderar o ajuste fotométrico ajudou pouco (60% para 67%). Já o <b>estimador de Tukey</b> com escala MAD e fotometria ponderada elevou a convergência sob oclusão de 60% para 80% (σ = 1 px) e a média sobre todos os σ de 45,9% para 60,3%, sem perda nos outros cenários, ao custo de ordenar os resíduos (tempo mediano de 4,9 ms contra 2,8 ms por alinhamento no Node.js). A interpretação é que o Huber limita, mas não anula, a influência de cada pixel discrepante: com 20% de pixels ocluídos, a soma dessas influências ainda desloca a solução, enquanto um estimador que as zera (redescendente) as descarta.</p>
+<p>Os dados mostram também que o portão de confiança é conservador sob oclusão: a σ = 1 px, apenas 36% das tentativas foram aceitas, embora 60% tenham convergido, porque o ZNCC é calculado sobre todos os pontos, inclusive os ocluídos. No sistema, essas rejeições são absorvidas pela manutenção da homografia por 500 ms e pela pose do motor. A bacia medida também é compatível com o papel atribuído ao motor: o erro típico da sua pose (≈ 2,6% da altura do cartaz, ou 3–7 px no quadro de análise) fica dentro da faixa em que o alinhador converge em 97–100% das tentativas.</p>
+
+<figure>
+  <img src="figuras/fig-ablacao.svg" style="width:100%">
+  <figcaption><b>Figura 5. Ablação: taxa de convergência</b> (erro final dos cantos &lt; 1 px) em função do desvio-padrão da perturbação inicial dos cantos, no quadro de análise de 270 × 480 pixels. 70 tentativas por ponto.</figcaption>
+</figure>
+
+<div class="tblock">
+<p class="tcap"><b>Tabela 3. Ablação</b>: convergência (%) a σ = 4 e 12 px e média sobre todos os σ, por cenário; aceitação pelo portão sob oclusão a σ = 1 px; tempo mediano por alinhamento no Node.js (ms).</p>
+<table>
+  <thead>
+    <tr><th class="l" rowspan="2">Variante</th><th colspan="3">Só ruído</th><th colspan="3">Brilho</th><th colspan="3">Oclusão 20%</th><th rowspan="2">Aceito (%)</th><th rowspan="2">ms</th></tr>
+    <tr><th>4</th><th>12</th><th>média</th><th>4</th><th>12</th><th>média</th><th>4</th><th>12</th><th>média</th></tr>
+  </thead>
+  <tbody>{{TAB_ABL}}</tbody>
+</table>
+</div>
+
+<h2>6. Discussão</h2>
+<p><b>Por que o refinamento funciona.</b> O alinhamento denso usa milhares de pixels com interpolação sub-pixel, e o ruído de cada um se dilui na média; os métodos esparsos dependem de poucas centenas de posições de pontos-chave quantizadas e de um conjunto de correspondências que muda a cada quadro. Além disso, o alinhamento é feito diretamente contra a imagem do alvo, o que remove o viés sistemático do caminho do motor sem que precisemos identificar a sua causa. O ganho de estabilidade é o mais relevante para a experiência: um tremor de 3 px em um cartaz de 300 px é perceptível, e um de 0,1 px dificilmente o é.</p>
+<p><b>Calibração como novo gargalo.</b> Uma vez que o registro no plano é sub-pixel, o erro residual passa a ser dominado pelo modelo de lente (Tabela 2). Isso indica que ganhos adicionais virão de intrínsecos por aparelho (tabelas por modelo) ou de autocalibração a partir das próprias homografias rastreadas [Zhang 2000]. Para conteúdo estritamente planar, a homografia pode ser usada diretamente na renderização, o que dispensa a ortonormalização e a torna imune a esse erro.</p>
+<p><b>Robustez.</b> O resultado com Tukey indica uma melhoria simples e de baixo risco para o sistema implantado, a ser acompanhada de um escore de confiança robusto (por exemplo, ZNCC só sobre os pontos com peso não nulo), para que o portão não descarte alinhamentos corretos sob oclusão parcial.</p>
+<p><b>Limitações e ameaças à validade.</b> (i) A câmera é sintética: não modela desfoque de movimento, <i>rolling shutter</i>, foco e exposição automáticos, distorção radial nem compressão de vídeo; a validação em aparelhos reais, com verdade de campo física, é o próximo passo. (ii) Os tempos foram medidos em um processador de desktop; CPUs de celulares são várias vezes mais lentas, e o orçamento deve ser revalidado, possivelmente movendo o alinhador para WebAssembly com SIMD ou para um <i>Web Worker</i>. (iii) O viés do caminho do motor inclui tanto a estimação do motor quanto a conversão de coordenadas do alvo feita pela página, e não isolamos as duas contribuições; o tremor, insensível a vieses constantes, não é afetado por essa ressalva. (iv) Usamos uma única trajetória de movimento e um conjunto pequeno de alvos, dos quais seis com estilo visual semelhante. (v) Não há estudo com usuários sobre a estabilidade percebida.</p>
+
+<h2>7. Conclusão</h2>
+<p>Mostramos que um refinamento denso inverso-composicional, executado em JavaScript sobre o mesmo quadro exibido, transforma a pose de um motor de WebAR aberto em um registro sub-pixel e estável, com custo de poucos milissegundos por quadro. Ele reduziu o erro de registro de 4,5 a 5,2 vezes, o tremor em cerca de 30 vezes e manteve o rastreamento de um alvo de baixa textura em que o motor sozinho falhava. Com o modelo de lente correto, o erro caiu a cerca de 0,1% da altura do alvo. A integração com o Unity WebGL por composição transparente permite usar esse rastreamento em jogos completos distribuídos por um link, como o jogo de campus que motivou o trabalho. Como próximos passos, propomos a validação em aparelhos reais, o estimador de Tukey com portão robusto e a estimação dos intrínsecos por aparelho.</p>
+
+<h2>Disponibilidade e declaração de uso de IA</h2>
+<p class="note">O código do sistema, os scripts do banco de testes e os dados brutos das execuções estão disponíveis em [URL do repositório]. O desenvolvimento do sistema, a execução dos experimentos e a redação deste manuscrito contaram com o auxílio de um assistente de IA generativa (Claude, da Anthropic), sob a supervisão do autor, que revisou o conteúdo e assume a responsabilidade por ele.</p>
+
+<h2>Referências</h2>
+<div class="refs">
+<p>AR.js. AR.js — Augmented Reality on the Web. Software de código aberto. Disponível em: https://github.com/AR-js-org/AR.js. Acesso em: out. 2026.</p>
+<p>Azuma, R. T. (1997). A survey of augmented reality. <i>Presence: Teleoperators and Virtual Environments</i>, 6(4):355–385.</p>
+<p>Baker, S. e Matthews, I. (2004). Lucas-Kanade 20 years on: A unifying framework. <i>International Journal of Computer Vision</i>, 56(3):221–255.</p>
+<p>Beaton, A. E. e Tukey, J. W. (1974). The fitting of power series, meaning polynomials, illustrated on band-spectroscopic data. <i>Technometrics</i>, 16(2):147–185.</p>
+<p>Benhimane, S. e Malis, E. (2004). Real-time image-based tracking of planes using efficient second-order minimization. In <i>IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS)</i>, p. 943–948.</p>
+<p>Black, M. J. e Anandan, P. (1996). The robust estimation of multiple motions: Parametric and piecewise-smooth flow fields. <i>Computer Vision and Image Understanding</i>, 63(1):75–104.</p>
+<p>Breen, D. E., Whitaker, R. T., Rose, E. e Tuceryan, M. (1996). Interactive occlusion and automatic object placement for augmented reality. <i>Computer Graphics Forum</i>, 15(3):11–22.</p>
+<p>Burt, P. J. e Adelson, E. H. (1983). The Laplacian pyramid as a compact image code. <i>IEEE Transactions on Communications</i>, 31(4):532–540.</p>
+<p>Collins, T. e Bartoli, A. (2014). Infinitesimal plane-based pose estimation. <i>International Journal of Computer Vision</i>, 109(3):252–286.</p>
+<p>Engel, J., Schöps, T. e Cremers, D. (2014). LSD-SLAM: Large-scale direct monocular SLAM. In <i>European Conference on Computer Vision (ECCV)</i>, p. 834–849.</p>
+<p>Haas, A., Rossberg, A., Schuff, D. L., Titzer, B. L., Holman, M., Gohman, D., Wagner, L., Zakai, A. e Bastien, J. F. (2017). Bringing the web up to speed with WebAssembly. In <i>ACM SIGPLAN Conference on Programming Language Design and Implementation (PLDI)</i>, p. 185–200.</p>
+<p>Hager, G. D. e Belhumeur, P. N. (1998). Efficient region tracking with parametric models of geometry and illumination. <i>IEEE Transactions on Pattern Analysis and Machine Intelligence</i>, 20(10):1025–1039.</p>
+<p>Hartley, R. e Zisserman, A. (2004). <i>Multiple View Geometry in Computer Vision</i>. 2. ed. Cambridge University Press.</p>
+<p>Higham, N. J. (1986). Computing the polar decomposition — with applications. <i>SIAM Journal on Scientific and Statistical Computing</i>, 7(4):1160–1174.</p>
+<p>Holloway, R. L. (1997). Registration error analysis for augmented reality. <i>Presence: Teleoperators and Virtual Environments</i>, 6(4):413–432.</p>
+<p>Huber, P. J. (1964). Robust estimation of a location parameter. <i>The Annals of Mathematical Statistics</i>, 35(1):73–101.</p>
+<p>Kato, H. e Billinghurst, M. (1999). Marker tracking and HMD calibration for a video-based augmented reality conferencing system. In <i>IEEE/ACM International Workshop on Augmented Reality (IWAR)</i>, p. 85–94.</p>
+<p>Klein, G. e Murray, D. (2007). Parallel tracking and mapping for small AR workspaces. In <i>IEEE/ACM International Symposium on Mixed and Augmented Reality (ISMAR)</i>, p. 225–234.</p>
+<p>Lepetit, V. e Fua, P. (2005). Monocular model-based 3D tracking of rigid objects: A survey. <i>Foundations and Trends in Computer Graphics and Vision</i>, 1(1):1–89.</p>
+<p>Lewis, J. P. (1995). Fast normalized cross-correlation. In <i>Vision Interface</i>, p. 120–123.</p>
+<p>Lowe, D. G. (2004). Distinctive image features from scale-invariant keypoints. <i>International Journal of Computer Vision</i>, 60(2):91–110.</p>
+<p>Lucas, B. D. e Kanade, T. (1981). An iterative image registration technique with an application to stereo vision. In <i>International Joint Conference on Artificial Intelligence (IJCAI)</i>, p. 674–679.</p>
+<p>Malis, E. e Vargas, M. (2007). Deeper understanding of the homography decomposition for vision-based control. Relatório de pesquisa RR-6303, INRIA.</p>
+<p>MindAR. MindAR — Web Augmented Reality. Software de código aberto. Disponível em: https://github.com/hiukim/mind-ar-js. Acesso em: out. 2026.</p>
+<p>Newcombe, R. A., Lovegrove, S. J. e Davison, A. J. (2011). DTAM: Dense tracking and mapping in real-time. In <i>IEEE International Conference on Computer Vision (ICCV)</i>, p. 2320–2327.</p>
+<p>Niantic Spatial (2026). 8th Wall Engine. Software de código aberto, licença MIT.</p>
+<p>Paavilainen, J., Korhonen, H., Alha, K., Stenros, J., Koskinen, E. e Mäyrä, F. (2017). The Pokémon GO experience: A location-based augmented reality mobile game goes mainstream. In <i>ACM CHI Conference on Human Factors in Computing Systems</i>, p. 2493–2498.</p>
+<p>Qiao, X., Ren, P., Dustdar, S., Liu, L., Ma, H. e Chen, J. (2019). Web AR: A promising future for mobile augmented reality — state of the art, challenges, and insights. <i>Proceedings of the IEEE</i>, 107(4):651–666.</p>
+<p>Rosten, E. e Drummond, T. (2006). Machine learning for high-speed corner detection. In <i>European Conference on Computer Vision (ECCV)</i>, p. 430–443.</p>
+<p>Rousseeuw, P. J. e Croux, C. (1993). Alternatives to the median absolute deviation. <i>Journal of the American Statistical Association</i>, 88(424):1273–1283.</p>
+<p>Rublee, E., Rabaud, V., Konolige, K. e Bradski, G. (2011). ORB: An efficient alternative to SIFT or SURF. In <i>IEEE International Conference on Computer Vision (ICCV)</i>, p. 2564–2571.</p>
+<p>W3C (2022). WebXR Device API. W3C Candidate Recommendation. Disponível em: https://www.w3.org/TR/webxr/.</p>
+<p>Wagner, D., Reitmayr, G., Mulloni, A., Drummond, T. e Schmalstieg, D. (2010). Real-time detection and tracking for augmented reality on mobile phones. <i>IEEE Transactions on Visualization and Computer Graphics</i>, 16(3):355–368.</p>
+<p>Zakai, A. (2011). Emscripten: An LLVM-to-JavaScript compiler. In <i>ACM International Conference Companion on Object Oriented Programming Systems Languages and Applications (SPLASH Companion)</i>, p. 301–312.</p>
+<p>Zhang, Z. (2000). A flexible new technique for camera calibration. <i>IEEE Transactions on Pattern Analysis and Machine Intelligence</i>, 22(11):1330–1334.</p>
+</div>
+
+<h2>Apêndice A. Resultados por alvo</h2>
+<div class="tblock">
+<p class="tcap"><b>Tabela 4. Resultados por alvo e regime.</b> Rastreado: % das amostras; cantos: erro RMS em px e em % da altura do cartaz; tremor em px; aquisição em ms.</p>
+<table>
+  <thead>
+    <tr><th rowspan="2">Regime</th><th rowspan="2">Alvo</th><th colspan="5">Denso (proposto)</th><th colspan="5">Motor</th></tr>
+    <tr><th>Rastr. (%)</th><th>Cantos (px)</th><th>(%)</th><th>Tremor</th><th>Aquis.</th><th>Rastr. (%)</th><th>Cantos (px)</th><th>(%)</th><th>Tremor</th><th>Aquis.</th></tr>
+  </thead>
+  <tbody>{{TAB_ALVOS}}</tbody>
+</table>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 300" width="700" height="300" font-family="Times New Roman, Times, serif" font-size="11" fill="#222">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#222"/>
+    </marker>
+  </defs>
+  <rect width="700" height="300" fill="white"/>
+
+  <!-- browser page -->
+  <rect x="6" y="6" width="688" height="288" rx="6" fill="none" stroke="#999" stroke-dasharray="4,3"/>
+  <text x="14" y="21" font-size="10.5" fill="#666">Página web (JavaScript, thread principal)</text>
+
+  <!-- row 1: engine -->
+  <rect x="20" y="40" width="108" height="52" rx="4" fill="#f4f1ea" stroke="#222"/>
+  <text x="74" y="60" text-anchor="middle" font-weight="bold">Câmera</text>
+  <text x="74" y="74" text-anchor="middle">getUserMedia com a</text>
+  <text x="74" y="86" text-anchor="middle">lente principal fixada</text>
+
+  <rect x="150" y="32" width="352" height="96" rx="4" fill="#eef2f8" stroke="#1d4f91"/>
+  <text x="326" y="47" text-anchor="middle" font-weight="bold" fill="#1d4f91">Motor 8th Wall (XR8, código aberto): pipeline de câmera</text>
+  <rect x="160" y="56" width="104" height="62" rx="3" fill="white" stroke="#222"/>
+  <text x="212" y="73" text-anchor="middle">GlTextureRenderer</text>
+  <text x="212" y="87" text-anchor="middle">desenha o quadro</text>
+  <text x="212" y="99" text-anchor="middle">no canvas da</text>
+  <text x="212" y="111" text-anchor="middle">câmera</text>
+  <rect x="274" y="56" width="104" height="62" rx="3" fill="white" stroke="#222"/>
+  <text x="326" y="73" text-anchor="middle">XrController</text>
+  <text x="326" y="87" text-anchor="middle">detecção por</text>
+  <text x="326" y="99" text-anchor="middle">características +</text>
+  <text x="326" y="111" text-anchor="middle">pose inicial</text>
+  <rect x="388" y="56" width="104" height="62" rx="3" fill="white" stroke="#222"/>
+  <text x="440" y="73" text-anchor="middle">CameraPixelArray</text>
+  <text x="440" y="87" text-anchor="middle">luminância do</text>
+  <text x="440" y="99" text-anchor="middle">mesmo quadro</text>
+  <text x="440" y="111" text-anchor="middle">(maior lado 480 px)</text>
+  <line x1="128" y1="66" x2="150" y2="66" stroke="#222" marker-end="url(#a)"/>
+
+  <!-- dense tracker block -->
+  <rect x="524" y="32" width="160" height="96" rx="4" fill="#e9f5ef" stroke="#16a085"/>
+  <text x="604" y="48" text-anchor="middle" font-weight="bold" fill="#0e6b59">Rastreador denso</text>
+  <text x="604" y="64" text-anchor="middle">pirâmide 3 níveis</text>
+  <text x="604" y="78" text-anchor="middle">IC-LK sobre homografia</text>
+  <text x="604" y="92" text-anchor="middle">brilho afim + Huber</text>
+  <text x="604" y="106" text-anchor="middle">portão: ZNCC &gt; 0,7</text>
+  <text x="604" y="120" text-anchor="middle">e visível &gt; 25%</text>
+  <line x1="492" y1="87" x2="524" y2="87" stroke="#222" marker-end="url(#a)"/>
+  <path d="M326,118 L326,142 L560,142 L560,128" fill="none" stroke="#222" stroke-dasharray="3,2" marker-end="url(#a)"/>
+  <text x="445" y="155" text-anchor="middle" font-size="10">pose do motor → homografia inicial (só na (re)aquisição)</text>
+
+  <!-- row 2 -->
+  <rect x="524" y="172" width="160" height="50" rx="4" fill="white" stroke="#222"/>
+  <text x="604" y="190" text-anchor="middle">homografia → pose</text>
+  <text x="604" y="204" text-anchor="middle">K da projeção GL (corte</text>
+  <text x="604" y="216" text-anchor="middle">"cover"), decomposição polar</text>
+  <line x1="604" y1="128" x2="604" y2="172" stroke="#222" marker-end="url(#a)"/>
+  <text x="612" y="152" font-size="10" text-anchor="start">aceita</text>
+
+  <rect x="330" y="172" width="168" height="50" rx="4" fill="white" stroke="#222"/>
+  <text x="414" y="190" text-anchor="middle">vetor de pose (27 floats)</text>
+  <text x="414" y="204" text-anchor="middle">rastreado, posição, frente,</text>
+  <text x="414" y="216" text-anchor="middle">cima, projeção 4×4, alvo</text>
+  <line x1="524" y1="197" x2="498" y2="197" stroke="#222" marker-end="url(#a)"/>
+  <text x="511" y="235" font-size="10" text-anchor="middle">rejeitado:</text>
+  <text x="511" y="246" font-size="10" text-anchor="middle">pose do motor</text>
+
+  <rect x="150" y="172" width="156" height="50" rx="4" fill="#f4f1ea" stroke="#222"/>
+  <text x="228" y="190" text-anchor="middle" font-weight="bold">Unity WebGL (C#)</text>
+  <text x="228" y="204" text-anchor="middle">jslib copia o vetor no</text>
+  <text x="228" y="216" text-anchor="middle">LateUpdate: câmera e alvo</text>
+  <line x1="330" y1="197" x2="306" y2="197" stroke="#222" marker-end="url(#a)"/>
+
+  <!-- composition -->
+  <rect x="20" y="236" width="286" height="46" rx="4" fill="white" stroke="#222"/>
+  <text x="163" y="253" text-anchor="middle">composição pelo navegador: canvas Unity transparente</text>
+  <text x="163" y="267" text-anchor="middle">(z = 1, glClear de alfa interceptado) sobre o canvas</text>
+  <text x="163" y="279" text-anchor="middle">da câmera (z = 0) com o mesmo quadro rastreado</text>
+  <line x1="228" y1="222" x2="228" y2="236" stroke="#222" marker-end="url(#a)"/>
+  <path d="M212,118 L212,128 L140,128 L140,236" fill="none" stroke="#222" stroke-dasharray="3,2" marker-end="url(#a)"/>
+</svg>

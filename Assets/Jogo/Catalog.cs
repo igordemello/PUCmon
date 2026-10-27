@@ -13,6 +13,10 @@ public class Catalog : ScriptableObject
         [Tooltip("Name of the poster image that brings it (Assets/ImagesToTracker), e.g. \"1\". Also its id in Supabase.")]
         public string poster;
         public string displayName;
+        [Tooltip("The PUC-Rio course it stands for, e.g. \"Psicologia\".")]
+        public string course;
+        [Tooltip("Who it is, its story: the text of its page in the collection.")]
+        [TextArea(3, 8)] public string description;
         [Tooltip("2D picture for the collection and the capture screen.")]
         public Sprite portrait;
         [HideInInspector, Tooltip("Model and pose the picture was made from (PortraitMaker redoes it when they change).")]
