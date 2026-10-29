@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 
 /// <summary>
 /// The player's account: sign up / sign in with Supabase Auth, a session that survives reloads, and the collection
-/// (table "capturas"). Methods that can fail return a message for the player, or null when all went well. If the
+/// (table "capturas", with each PUCmon's friendship: see <see cref="Bond"/>). Methods that can fail return a message for the player, or null when all went well. If the
 /// session is lost for good it signs out and opens the "Login" scene, which shows <see cref="Notice"/>.
 /// Players only have a user name: Supabase Auth wants an e-mail, so the name becomes "name@pucmon.invalid" (a domain
 /// that can never receive mail; fine while "Confirm email" stays off, since no e-mail is ever sent).
@@ -21,8 +21,9 @@ public static class Account
     [Serializable] class SignInRequest { public string email, password; }
     [Serializable] class RefreshRequest { public string refresh_token; }
     [Serializable] class Error { public string error_code; }
-    [Serializable] class Row { public string criatura; }
-    [Serializable] class Rows { public Row[] items; }
+    [Serializable] class NewRow { public string criatura; }
+    [Serializable] class Rows { public Bond[] items; }
+    [Serializable] class CareRequest { public string p_criatura, p_tipo; public float p_desempenho; }
 
     const string SavedSession = "pucmon.refresh_token", EmailDomain = "@pucmon.invalid";
     static Session session;
@@ -34,6 +35,8 @@ public static class Account
     public static string Notice;
     /// <summary>Names of the captured posters (their image asset names).</summary>
     public static readonly HashSet<string> Collection = new HashSet<string>();
+    /// <summary>Friendship with each captured PUCmon, by poster name.</summary>
+    public static readonly Dictionary<string, Bond> Bonds = new Dictionary<string, Bond>();
 
     /// <summary>User names are case-insensitive: "Igor" and "igor" are the same player.</summary>
     public static string Normalize(string username) => username.Trim().ToLowerInvariant();
@@ -78,6 +81,7 @@ public static class Account
             _ = Supabase.Send("POST", "/auth/v1/logout?scope=local", token: session.access_token);
         session = null;
         Collection.Clear();
+        Bonds.Clear();
         PlayerPrefs.DeleteKey(SavedSession);
         PlayerPrefs.Save();
     }
@@ -87,23 +91,43 @@ public static class Account
     {
         if (Collection.Contains(creature))
             return null;
-        var response = await Authorized("POST", "/rest/v1/capturas", JsonUtility.ToJson(new Row { criatura = creature }),
+        var response = await Authorized("POST", "/rest/v1/capturas", JsonUtility.ToJson(new NewRow { criatura = creature }),
             "resolution=ignore-duplicates,return=minimal");
         if (!response.Ok)
-            return response.status == 0 ? Message(response) : "Não deu para salvar a captura. Tente de novo.";
+            return response.status == 0 ? Message(response) : "Não deu para salvar o registro. Tente de novo.";
         Collection.Add(creature);
+        Bonds[creature] = new Bond { criatura = creature, atualizado_em = DateTimeOffset.UtcNow.ToString("o") };  // as Supabase starts it
         return null;
+    }
+
+    /// <summary>
+    /// Takes care of a captured PUCmon: "alimentar", "brincar" (performance 0..1) or "carinho". Supabase decides the
+    /// affinity it earns (only when it really needed it) and returns the new <see cref="Bond"/>, or null and a message.
+    /// </summary>
+    public static async Task<(Bond bond, string error)> Care(string creature, string kind, float performance = 1f)
+    {
+        var json = JsonUtility.ToJson(new CareRequest { p_criatura = creature, p_tipo = kind, p_desempenho = performance });
+        var response = await Authorized("POST", "/rest/v1/rpc/cuidar", json);
+        if (!response.Ok)
+            return (null, response.status == 0 ? Message(response) : "Não deu para salvar. Tente de novo.");
+        var bond = JsonUtility.FromJson<Bond>(response.text);
+        Bonds[creature] = bond;
+        return (bond, null);
     }
 
     /// <summary>Reloads the collection from Supabase (it may have changed on another device).</summary>
     public static async Task<string> LoadCollection()
     {
-        var response = await Authorized("GET", "/rest/v1/capturas?select=criatura");
+        var response = await Authorized("GET", "/rest/v1/capturas?select=criatura,afinidade,fome,humor,atualizado_em,carinho_em");
         if (!response.Ok)
             return Message(response);
         Collection.Clear();
-        foreach (var row in JsonUtility.FromJson<Rows>("{\"items\":" + response.text + "}").items)
-            Collection.Add(row.criatura);
+        Bonds.Clear();
+        foreach (var bond in JsonUtility.FromJson<Rows>("{\"items\":" + response.text + "}").items)
+        {
+            Collection.Add(bond.criatura);
+            Bonds[bond.criatura] = bond;
+        }
         return null;
     }
 

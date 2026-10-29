@@ -21,7 +21,12 @@ public class CaptureScreen : MonoBehaviour
     public GameObject caughtLabel;
     public TMP_Text caughtText;
 
-    [Header("Tela de captura")]
+    [Header("Primeiro registro")]
+    [Tooltip("Prof. Beltran's talk the first time the player meets a PUCmon to capture.")]
+    public Dialogue dialogue;
+    public Dialogue.Line[] firstCaptureLines;
+
+    [Header("Tela de registro")]
     public CanvasGroup capturePanel;
     public Image flash, portrait;
     public RectTransform glow;
@@ -64,10 +69,17 @@ public class CaptureScreen : MonoBehaviour
             inViewSince = Time.unscaledTime;
         }
         bool panel = capturePanel.gameObject.activeSelf, caught = inView != null && Account.Collection.Contains(inView.poster);
-        minigame.Play(inView != null && !caught && !panel ? target : null, inView);
-        Toggle(caughtLabel, inView != null && caught && !panel);
+        if (inView != null && !caught && !panel && !dialogue.Playing && FirstCapture)
+            dialogue.Play(firstCaptureLines, () =>
+            {
+                PlayerPrefs.SetInt(IntroSeen, 1);
+                PlayerPrefs.Save();
+            });
+        bool talking = dialogue.Playing;
+        minigame.Play(inView != null && !caught && !panel && !talking ? target : null, inView);
+        Toggle(caughtLabel, inView != null && caught && !panel && !talking);
         if (caught)
-            caughtText.text = $"Você já capturou {inView.displayName}!";
+            caughtText.text = $"Você já registrou {inView.displayName}!";
 
         // Pop in when a poster shows up.
         caughtLabel.transform.localScale = Vector3.one * Overshoot(Mathf.Clamp01((Time.unscaledTime - inViewSince) / 0.35f));
@@ -77,6 +89,10 @@ public class CaptureScreen : MonoBehaviour
         if (panel != hintHidden)
             WebARImageTracker.ShowScanHint = !(hintHidden = panel);  // no "point the camera" hint over the capture screen
     }
+
+    // The professor explains the rocks once, to players who have not caught anything yet.
+    string IntroSeen => "pucmon.beltran.captura." + Account.Username;
+    bool FirstCapture => Account.Collection.Count == 0 && PlayerPrefs.GetInt(IntroSeen) == 0;
 
     void Capture(Catalog.Creature creature)
     {
@@ -89,8 +105,8 @@ public class CaptureScreen : MonoBehaviour
 
     async void Save()
     {
-        title.text = $"Capturando {capturing.displayName}...";
-        status.text = "Guardando na sua coleção...";
+        title.text = $"Registrando {capturing.displayName}...";
+        status.text = "Levando para o laboratório...";
         retryButton.gameObject.SetActive(false);
         continueButton.interactable = collectionButton.interactable = false;
 
@@ -100,8 +116,8 @@ public class CaptureScreen : MonoBehaviour
         continueButton.interactable = collectionButton.interactable = true;
         if (error == null)
         {
-            title.text = $"Você capturou {capturing.displayName}!";
-            status.text = "Ele já está na sua coleção.";
+            title.text = $"Você registrou {capturing.displayName}!";
+            status.text = "Ele já está no laboratório.";
         }
         else
         {

@@ -5,7 +5,10 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-/// <summary>Home screen after signing in: go capture, see the collection, or sign out.</summary>
+/// <summary>
+/// Home screen after signing in: go register PUCmons, open the laboratory (the collection: search it, care for a
+/// PUCmon), or sign out.
+/// </summary>
 public class HomeScreen : MonoBehaviour
 {
     /// <summary>Set before loading this scene to open straight on the collection.</summary>
@@ -19,12 +22,16 @@ public class HomeScreen : MonoBehaviour
     public TMP_Text greeting, progress;
     public Button captureButton, collectionButton, signOutButton;
 
-    [Header("Coleção")]
+    [Header("Laboratório")]
     public GameObject collectionPanel;
     public TMP_Text collectionProgress;
     public Button backButton;
     [Tooltip("Inactive card copied once per PUCmon of the catalog.")]
     public CreatureCard cardTemplate;
+    [Tooltip("A registered PUCmon's pen, opened by tapping its card.")]
+    public CareScreen care;
+    [Tooltip("Filters the cards by name or by what the PUCmon represents.")]
+    public TMP_InputField search;
 
     readonly List<CreatureCard> cards = new List<CreatureCard>();
 
@@ -36,8 +43,9 @@ public class HomeScreen : MonoBehaviour
             return;
         }
         captureButton.onClick.AddListener(() => SceneManager.LoadScene(captureScene));
-        collectionButton.onClick.AddListener(() => Show(true));
-        backButton.onClick.AddListener(() => Show(false));
+        collectionButton.onClick.AddListener(ShowCollection);
+        backButton.onClick.AddListener(() => Show(homePanel));
+        search.onValueChanged.AddListener(_ => Refresh());
         signOutButton.onClick.AddListener(() =>
         {
             Account.SignOut();
@@ -47,10 +55,15 @@ public class HomeScreen : MonoBehaviour
         {
             var card = Instantiate(cardTemplate, cardTemplate.transform.parent);
             card.gameObject.SetActive(true);
+            card.GetComponent<Button>().onClick.AddListener(() =>
+            {
+                if (Account.Collection.Contains(creature.poster))
+                    care.Open(creature);
+            });
             cards.Add(card);
         }
         greeting.text = $"Olá, {Account.Username}!";
-        Show(openCollection);
+        Show(openCollection ? collectionPanel : homePanel);
         openCollection = false;
         Refresh();
         Page.Ready();
@@ -63,17 +76,48 @@ public class HomeScreen : MonoBehaviour
     void Refresh()
     {
         int caught = catalog.Caught, total = catalog.creatures.Count;
-        progress.text = caught == total ? $"Você capturou todos os {total} PUCmons!" : $"{caught} de {total} PUCmons capturados";
-        collectionProgress.text = $"{caught} de {total}";
+        progress.text = caught == total ? $"Você registrou todos os {total} PUCmons!" : $"{caught} de {total} PUCmons registrados";
+        // While searching, only registered PUCmons whose name or theme matches (the others' names are a secret).
+        string query = Plain(search.text);
+        int found = 0;
         for (int i = 0; i < cards.Count; i++)
-            cards[i].Show(catalog.creatures[i], Account.Collection.Contains(catalog.creatures[i].poster));
+        {
+            var creature = catalog.creatures[i];
+            bool has = Account.Collection.Contains(creature.poster);
+            bool shown = query == "" || has && (Plain(creature.displayName).Contains(query) || Plain(creature.represents).Contains(query));
+            cards[i].gameObject.SetActive(shown);
+            found += shown ? 1 : 0;
+            cards[i].Show(creature, has, has && Account.Bonds.TryGetValue(creature.poster, out var bond) && bond.NeedsCare);
+        }
+        collectionProgress.text = query == "" ? $"{caught} de {total}" : found == 0 ? "Nenhum PUCmon encontrado" : found == 1 ? "1 encontrado" : $"{found} encontrados";
     }
 
-    void Show(bool collection)
+    // Lower case without accents, so "santideo" finds "Santídeo".
+    static string Plain(string text)
     {
-        homePanel.SetActive(!collection);
-        collectionPanel.SetActive(collection);
-        StartCoroutine(Pop((collection ? collectionPanel : homePanel).transform));
+        const string accented = "áàâãäéèêëíìîïóòôõöúùûüç", plain = "aaaaaeeeeiiiiooooouuuuc";
+        var chars = (text ?? "").Trim().ToLowerInvariant().ToCharArray();
+        for (int i = 0; i < chars.Length; i++)
+        {
+            int k = accented.IndexOf(chars[i]);
+            if (k >= 0)
+                chars[i] = plain[k];
+        }
+        return new string(chars);
+    }
+
+    public void ShowCollection()
+    {
+        Refresh();
+        Show(collectionPanel);
+    }
+
+    /// <summary>Shows one of the panels (home, collection, a PUCmon's pen or sheet) and hides the others.</summary>
+    public void Show(GameObject panel)
+    {
+        foreach (var other in new[] { homePanel, collectionPanel, care.gameObject, care.sheet })
+            other.SetActive(other == panel);
+        StartCoroutine(Pop(panel.transform));
     }
 
     static IEnumerator Pop(Transform panel)

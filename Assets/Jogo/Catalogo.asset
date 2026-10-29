@@ -13,45 +13,672 @@ MonoBehaviour:
   m_Name: Catalogo
   m_EditorClassIdentifier: 
   creatures:
-  - poster: 1
-    displayName: Corvo
+  - poster: Habeas Corvus
+    displayName: Habeas Corvus
+    represents: Direito
+    description: "Habeas Corvus \xE9 um advogado nato, sempre pronto para amea\xE7ar
+      algu\xE9m com um processo, mesmo antes de aprender a ler. Dono de uma confian\xE7a
+      inabal\xE1vel, adora citar leis que nem conhece e transformar qualquer discuss\xE3o
+      em um caso de tribunal!"
     portrait: {fileID: 21300000, guid: 6ff213a687d892d45806233e3b16f00e, type: 3}
     portraitOf: c89fd2b9837aaba40b8ad4461b9c9bf8/Corvo_LowPoly@-0.37,0.00,0.00,0.00,0.00,0.36,-0.09,0.00,0.00,-0.09,-0.36,0.00,0.00,-0.52,0.01,1.00
-    catchRate: 0.55
+    actions:
+    - name: Bicada Processual
+      description: "Uma bicada seguida de uma amea\xE7a de processo. Dano de L\xF3gica."
+    - name: "Cita\xE7\xE3o Inventada"
+      description: "Cita uma lei que nem existe com tanta confian\xE7a que chega
+        a doer. Dano de Criatividade."
+    - name: Liminar
+      description: "Consegue uma liminar que protege um aliado do pr\xF3ximo golpe
+        da G-HYDRA."
+    - name: "Sustenta\xE7\xE3o Oral"
+      description: "Discursa at\xE9 a G-HYDRA implorar por um recesso. Dano alto;
+        precisa de 3 rodadas para recarregar."
+    - name: Habeas Corvus
+      description: Liberta todo o time de qualquer efeito de status e o deixa imune
+        a eles por uma rodada.
+    passive:
+      name: Cabe Recurso
+      description: "Uma vez por raid, recorre da decis\xE3o e anula todo o dano de
+        um golpe da G-HYDRA."
+    knock: 0.55
     agility: 1
     shyness: 1
-  - poster: 2
-    displayName: Mascote
+  - poster: Compatudo
+    displayName: Compatudo
+    represents: Arquitetura
+    description: "Compatudo \xE9 um perfeccionista nato, capaz de passar horas ajustando
+      os m\xEDnimos detalhes de um projeto que provavelmente nunca vai terminar.
+      Movido a caf\xE9 e noites mal dormidas, acredita que qualquer problema do mundo
+      pode ser resolvido com uma boa maquete!"
     portrait: {fileID: 21300000, guid: f13be9748af541f4b9c217e5c8767d59, type: 3}
     portraitOf: 77d73ed9339ba434abd81b79135e7217/Mascote_LowPoly@-0.37,0.00,0.00,0.00,0.00,0.36,-0.09,0.00,0.00,-0.09,-0.36,0.00,-0.01,-0.52,0.01,1.00
-    catchRate: 0.5
+    actions:
+    - name: "R\xE9gua T"
+      description: "Uma pancada certeira com a r\xE9gua T. Dano de L\xF3gica."
+    - name: "Croqui Rel\xE2mpago"
+      description: "Rabisca um croqui t\xE3o r\xE1pido que a G-HYDRA nem v\xEA de
+        onde veio. Dano de Criatividade."
+    - name: Maquete de Isopor
+      description: "Ergue uma maquete na frente de um aliado, que recebe menos dano
+        na pr\xF3xima rodada."
+    - name: Virada de Entrega
+      description: Passa a noite em claro e entrega tudo de uma vez. Dano alto; precisa
+        de 3 rodadas para recarregar.
+    - name: "Revis\xE3o Infinita"
+      description: "Ajusta os m\xEDnimos detalhes do time: a pr\xF3xima a\xE7\xE3o
+        de cada aliado causa mais dano."
+    passive:
+      name: "Movido a Caf\xE9"
+      description: "Quanto mais longa a raid, mais el\xE9trico fica: ganha Iniciativa
+        a cada rodada."
+    knock: 0.5
     agility: 1.2
     shyness: 0.8
-  - poster: 3
+  - poster: Psoneco
     displayName: Psoneco
+    represents: Psicologia
+    description: "Psoneco \xE9 bastante envergonhado, mas possui uma personalidade
+      exc\xEAntrica que o torna \xFAnico. Apesar de seu jeito t\xEDmido, suas peculiaridades
+      chamam a aten\xE7\xE3o, e uma coisa \xE9 certa: ele n\xE3o consegue passar
+      um dia sem uma boa dose de caf\xE9!"
     portrait: {fileID: 21300000, guid: fc4f0bf7e88ba7a48a139a42d6ba1d16, type: 3}
     portraitOf: d080fb61d84ea0a48a37c5d94f40ce83/Espiral_LowPoly@-0.37,0.00,0.00,0.00,0.00,0.36,-0.09,0.00,0.00,-0.09,-0.36,0.00,-0.02,-0.52,0.01,1.00
-    catchRate: 0.6
+    actions:
+    - name: Pergunta Aberta
+      description: "E como isso faz voc\xEA se sentir? Dano de Criatividade."
+    - name: "Associa\xE7\xE3o Livre"
+      description: "Diz a primeira coisa que vem \xE0 cabe\xE7a e acerta em cheio.
+        Dano de L\xF3gica."
+    - name: Escuta Ativa
+      description: "Ouve um aliado com aten\xE7\xE3o: recupera um pouco da vida dele
+        e remove um efeito de status."
+    - name: Cafezinho Duplo
+      description: "Toma dois caf\xE9s seguidos e despeja toda a energia de uma vez.
+        Dano alto; precisa de 3 rodadas para recarregar."
+    - name: Crise Existencial
+      description: "Faz a G-HYDRA questionar a pr\xF3pria exist\xEAncia: ela fica
+        confusa e pode errar o pr\xF3ximo golpe."
+    passive:
+      name: "Timidez Estrat\xE9gica"
+      description: "Envergonhado, se esconde atr\xE1s dos colegas: a G-HYDRA o escolhe
+        como alvo com menos frequ\xEAncia."
+    knock: 0.6
     agility: 0.8
     shyness: 1.2
-  - poster: 4
-    displayName: Guaxinim
+  - poster: Guaxineasta
+    displayName: Guaxineasta
+    represents: Cinema
+    description: "Guaxineasta \xE9 um cr\xEDtico de cinema nato, com um repert\xF3rio
+      cult invej\xE1vel e uma habilidade ainda maior para reclamar de tudo. Apesar
+      de estar desempregado, nunca perde a oportunidade de criticar uma produ\xE7\xE3o,
+      afinal, para ele, nenhum filme \xE9 bom o suficiente!"
     portrait: {fileID: 21300000, guid: 88fd44b94460f1b46adf90ce39460eaf, type: 3}
     portraitOf: b5c627828d6ead542892ab92cc5ea2c0/Guaxinim_LowPoly@-0.37,0.00,0.00,0.00,0.00,0.36,-0.09,0.00,0.00,-0.09,-0.36,0.00,-0.01,-0.52,0.01,1.00
-    catchRate: 0.4
+    actions:
+    - name: "Cr\xEDtica \xC1cida"
+      description: Uma resenha impiedosa direto na cara. Dano de Criatividade.
+    - name: Spoiler
+      description: "Revela o final da hist\xF3ria na pior hora poss\xEDvel. Dano
+        de L\xF3gica."
+    - name: "Plano-Sequ\xEAncia"
+      description: "Filma o time sem cortes: os aliados agem mais r\xE1pido na pr\xF3xima
+        rodada."
+    - name: Nota Zero
+      description: "D\xE1 nota zero para a G-HYDRA, com direito a text\xE3o. Dano
+        alto; precisa de 3 rodadas para recarregar."
+    - name: Corta!
+      description: Grita Corta! e interrompe a cena, cancelando o golpe que a G-HYDRA
+        estava preparando.
+    passive:
+      name: Olhar Cult
+      description: "Nenhuma falha passa despercebida: suas a\xE7\xF5es t\xEAm mais
+        chance de causar dano cr\xEDtico."
+    knock: 0.4
     agility: 1.5
     shyness: 1
-  - poster: 5
+  - poster: Ventintoso
     displayName: Ventintoso
+    represents: Design
+    description: "Ventintoso \xE9 um artista nato, sempre calmo e observador. Dono
+      de um olhar cr\xEDtico e apurado, est\xE1 constantemente analisando tudo ao
+      seu redor, sem deixar escapar nenhum detalhe!"
     portrait: {fileID: 21300000, guid: fb3ccf8cf11c667429da5e56f4cb4706, type: 3}
     portraitOf: 0644d33940ac33d4ca70673f81b43e48/Polvo_LowPoly@-0.37,0.00,0.00,0.00,0.00,0.36,-0.09,0.00,0.00,-0.09,-0.36,0.00,-0.01,-0.52,0.01,1.00
-    catchRate: 0.5
+    actions:
+    - name: Pincelada
+      description: "Uma pincelada certeira com um dos oito bra\xE7os. Dano de Criatividade."
+    - name: Grid Perfeito
+      description: "Alinha tudo na grade e acerta no ponto exato. Dano de L\xF3gica."
+    - name: "Paleta Harm\xF4nica"
+      description: "Combina as cores do time: um aliado causa mais dano na pr\xF3xima
+        a\xE7\xE3o."
+    - name: "Oito Pinc\xE9is"
+      description: "Pinta com todos os bra\xE7os ao mesmo tempo. Dano alto; precisa
+        de 3 rodadas para recarregar."
+    - name: Rascunho
+      description: "Observa com calma e copia a \xFAltima a\xE7\xE3o usada por um
+        aliado."
+    passive:
+      name: Olhar Apurado
+      description: "N\xE3o deixa escapar nenhum detalhe: a cada rodada, o time causa
+        um pouco mais de dano \xE0 G-HYDRA."
+    knock: 0.5
     agility: 0.7
     shyness: 1.6
-  - poster: 6
+  - poster: "Sant\xEDdeo"
     displayName: "Sant\xEDdeo"
+    represents: Teologia
+    description: "Sant\xEDdeo \xE9 extremamente devoto e um orador nato, sempre pronto
+      para compartilhar suas cren\xE7as com muita convic\xE7\xE3o. Apesar de sua
+      postura religiosa, possui um curioso receio das f\xEAmeas, que s\xE3o capazes
+      de abalar at\xE9 mesmo sua f\xE9 inabal\xE1vel!"
     portrait: {fileID: 21300000, guid: 6b7e699b3e295004a872476077a2aeb1, type: 3}
     portraitOf: 5b196e702cf40e44aa846116aa44b1e1/Cardinal_LowPoly@-0.37,0.00,0.00,0.00,0.00,0.36,-0.09,0.00,0.00,-0.09,-0.36,0.00,-0.01,-0.52,0.01,1.00
-    catchRate: 0.5
+    actions:
+    - name: "Golpe de B\xE1culo"
+      description: "Uma batida firme com o b\xE1culo. Dano de L\xF3gica."
+    - name: "Serm\xE3o"
+      description: "Prega com tanta convic\xE7\xE3o que a G-HYDRA fica atordoada.
+        Dano de Criatividade."
+    - name: "B\xEAn\xE7\xE3o"
+      description: "Aben\xE7oa um aliado e recupera parte da vida dele."
+    - name: Louva-a-Deus
+      description: "Ergue as patas e louva com toda a for\xE7a. Dano alto; precisa
+        de 3 rodadas para recarregar."
+    - name: Milagre
+      description: "Traz de volta \xE0 luta um aliado nocauteado, com parte da vida."
+    passive:
+      name: "F\xE9 Inabal\xE1vel"
+      description: "Uma vez por raid, resiste a um golpe que o nocautearia e fica
+        com 1 de vida. S\xF3 n\xE3o resiste \xE0 presen\xE7a de uma f\xEAmea."
+    knock: 0.5
+    agility: 1
+    shyness: 1
+  - poster: FariLontra
+    displayName: FariLontra
+    represents: "Empresa J\xFAnior"
+    description: "FariLontra \xE9 um herdeiro de ber\xE7o, mas com a mentalidade
+      de um verdadeiro self-made man. Apaixonado pelo LinkedIn, trabalha de gra\xE7a
+      em nome do networking e do crescimento profissional, confundindo explora\xE7\xE3o
+      com oportunidade e acreditando que tudo \xE9 quest\xE3o de esfor\xE7o e meritocracia!"
+    portrait: {fileID: 21300000, guid: 8d866f095069b4941b8a65920e4543c4, type: 3}
+    portraitOf: c67faa5919c61a94d8c0b9238985d60e/EJ_Trio_Malha_Unica@-0.44,0.00,0.00,0.00,0.00,0.43,-0.10,0.00,0.00,-0.10,-0.43,0.00,-0.04,-0.54,-0.03,1.00
+    actions:
+    - name: Pitch de Elevador
+      description: "Apresenta uma ideia de neg\xF3cio em 30 segundos, sem respirar.
+        Dano de Criatividade."
+    - name: Planilha de KPIs
+      description: "Mede o desempenho da G-HYDRA e acerta onde d\xF3i. Dano de L\xF3gica."
+    - name: Networking
+      description: "Adiciona um aliado no LinkedIn: ele age primeiro na pr\xF3xima
+        rodada."
+    - name: Hora Extra
+      description: "Trabalha de gra\xE7a at\xE9 tarde e entrega tudo num golpe s\xF3.
+        Dano alto; precisa de 3 rodadas para recarregar."
+    - name: Mesada do Pai
+      description: 'Diz que conquistou tudo sozinho e liga para o pai: todo o time
+        recupera parte da vida.'
+    passive:
+      name: Meritocracia
+      description: "Cada golpe que acerta deixa o pr\xF3ximo um pouco mais forte,
+        at\xE9 ele levar dano."
+    knock: 0.5
+    agility: 1.3
+    shyness: 0.6
+  - poster: PucCop
+    displayName: PucCop
+    represents: "Seguran\xE7as da PUC"
+    description: "PucCop \xE9 um seguran\xE7a que adora bater papo e est\xE1 sempre
+      disposto a uma boa conversa. Apesar de sua apar\xEAncia intimidadora, prefere
+      resolver qualquer problema da maneira mais simples poss\xEDvel: chamando a
+      pol\xEDcia!"
+    portrait: {fileID: 21300000, guid: 046b754c1c656ad49b55fd236687b34c, type: 3}
+    portraitOf: 460fdde48bbf69b4fafaf7359531aec9/PUCCOP_LowPoly@-0.39,0.00,0.00,0.00,0.00,0.38,-0.09,0.00,0.00,-0.09,-0.38,0.00,-0.06,-0.55,0.02,1.00
+    actions:
+    - name: Cassetete
+      description: "Uma batida firme com o cassetete. Dano de L\xF3gica."
+    - name: Papo Furado
+      description: "Puxa conversa at\xE9 a G-HYDRA esquecer o que ia fazer. Dano
+        de Criatividade."
+    - name: Ronda
+      description: "Fica na frente de um aliado: o pr\xF3ximo golpe nele acerta o
+        PucCop."
+    - name: Apito
+      description: "Apita t\xE3o alto que a G-HYDRA treme inteira. Dano alto; precisa
+        de 3 rodadas para recarregar."
+    - name: "Chamar a Pol\xEDcia"
+      description: "Resolve do jeito mais simples: chama refor\xE7o e todo o time
+        recebe menos dano por 2 rodadas."
+    passive:
+      name: "Cad\xEA a Carteirinha?"
+      description: "Ningu\xE9m passa sem se identificar: o primeiro golpe da G-HYDRA
+        na raid n\xE3o causa dano."
+    knock: 0.35
+    agility: 0.8
+    shyness: 0.5
+  - poster: Diploposa
+    displayName: Diploposa
+    represents: "Rela\xE7\xF5es Internacionais"
+    description: "Diploposa \xE9 uma diplomata nata que sonha em trabalhar na ONU,
+      mas provavelmente vai passar os dias preenchendo planilhas no Excel. Sempre
+      pronta para mediar conflitos internacionais, fala cinco idiomas, mas curiosamente
+      n\xE3o consegue resolver os pr\xF3prios problemas!"
+    portrait: {fileID: 21300000, guid: d772004ec4a87064688213d2b025161a, type: 3}
+    portraitOf: 7206fbc6e3397254f9e62ed1206b006a/Raposa_Diplomata_LowPoly@-0.34,0.00,0.00,0.00,0.00,0.33,-0.08,0.00,0.00,-0.08,-0.33,0.00,-0.01,-0.54,-0.08,1.00
+    actions:
+    - name: "Nota Diplom\xE1tica"
+      description: "Uma nota de rep\xFAdio educada, por\xE9m firme. Dano de L\xF3gica."
+    - name: Cinco Idiomas
+      description: Xinga a G-HYDRA em cinco idiomas ao mesmo tempo. Dano de Criatividade.
+    - name: "Media\xE7\xE3o"
+      description: "Media o conflito: o pr\xF3ximo golpe da G-HYDRA causa menos dano."
+    - name: "Resolu\xE7\xE3o da ONU"
+      description: "Aprova uma resolu\xE7\xE3o contra a G-HYDRA por unanimidade.
+        Dano alto; precisa de 3 rodadas para recarregar."
+    - name: "Imunidade Diplom\xE1tica"
+      description: "Concede imunidade a um aliado: ele n\xE3o recebe dano na pr\xF3xima
+        rodada."
+    passive:
+      name: Fluente em Tudo
+      description: "Fala a l\xEDngua de todo mundo: os efeitos de suporte que ela
+        usa duram uma rodada a mais."
+    knock: 0.5
+    agility: 1.2
+    shyness: 1.1
+  - poster: Wheylho
+    displayName: Wheylho
+    represents: "Nutri\xE7\xE3o"
+    description: "Wheylho acredita que qualquer problema pode ser resolvido com uma
+      boa dose de whey e creatina. Defensor das dietas saud\xE1veis, vive falando
+      sobre cortar o a\xE7\xFAcar, mas n\xE3o resiste a um docinho e est\xE1 sempre
+      acompanhado de uma barriguinha!"
+    portrait: {fileID: 21300000, guid: 1466f9a7225a5ea4991a07601243523a, type: 3}
+    portraitOf: fbb557aa5e16d4a48a4b600126f7b0fb/Coelho_Nutricao_LowPoly@-0.37,0.00,0.00,0.00,0.00,0.36,-0.09,0.00,0.00,-0.09,-0.36,0.00,0.02,-0.54,0.00,1.00
+    actions:
+    - name: Chute de Leg Day
+      description: "Um chute de quem nunca pula o treino de perna. Dano de L\xF3gica."
+    - name: "Corta o A\xE7\xFAcar"
+      description: "D\xE1 um serm\xE3o sobre a\xE7\xFAcar que tira a vontade de viver.
+        Dano de Criatividade."
+    - name: Shake de Whey
+      description: 'Prepara um shake para um aliado: ele recupera parte da vida.'
+    - name: Creatina Dobrada
+      description: Toma o dobro da dose e parte para cima. Dano alto; precisa de
+        3 rodadas para recarregar.
+    - name: Dia do Lixo
+      description: "Libera o doce para o time: todos recuperam um pouco de vida e
+        causam mais dano na pr\xF3xima a\xE7\xE3o."
+    passive:
+      name: Barriguinha
+      description: 'A barriguinha amortece tudo: recebe menos dano de todos os golpes.'
+    knock: 0.4
+    agility: 1.3
+    shyness: 0.8
+  - poster: Kenny
+    displayName: Kenny
+    represents: "Comunica\xE7\xE3o"
+    description: "Kenny \xE9 um verdadeiro mestre da resenha, sempre fazendo amizade
+      e puxando assunto com qualquer um. Comunicativo e descontra\xEDdo, sonha em
+      se formar para assumir seu grande destino profissional: administrar o Instagram
+      da empresa do pai!"
+    portrait: {fileID: 21300000, guid: b8218bc6b58915c49a4061a418f49f36, type: 3}
+    portraitOf: c00dbe7e19d2ec74eb7992422f73ac9a/Macaco_LowPoly@-0.36,0.00,0.00,0.00,0.00,0.35,-0.08,0.00,0.00,-0.08,-0.35,0.00,-0.07,-0.56,-0.06,1.00
+    actions:
+    - name: Resenha
+      description: "Puxa uma resenha t\xE3o boa que a G-HYDRA perde o foco. Dano
+        de Criatividade."
+    - name: Furo de Reportagem
+      description: "Exp\xF5e um podre da G-HYDRA, com fatos e fontes. Dano de L\xF3gica."
+    - name: Engajamento
+      description: "Posta um aliado nos stories: ele causa mais dano na pr\xF3xima
+        a\xE7\xE3o."
+    - name: Viralizou
+      description: Transforma a G-HYDRA num meme que todo mundo compartilha. Dano
+        alto; precisa de 3 rodadas para recarregar.
+    - name: Instagram do Pai
+      description: "Chama a galera pela conta da empresa do pai: todo o time age
+        primeiro na pr\xF3xima rodada."
+    passive:
+      name: Mestre da Resenha
+      description: "Ningu\xE9m fica pra baixo perto dele: os aliados recuperam um
+        pouco de vida a cada rodada."
+    knock: 0.55
+    agility: 1.4
+    shyness: 0.5
+  - poster: Bandexo
+    displayName: Bandexo
+    represents: "Bandej\xE3o"
+    description: "Bandexo \xE9 o terror do hor\xE1rio de almo\xE7o. Ningu\xE9m sabe
+      exatamente o que ele serve, mas todo mundo volta no dia seguinte. Seu maior
+      poder \xE9 transformar fome em arrependimento e fazer o aluno questionar por
+      que n\xE3o trouxe marmita!"
+    portrait: {fileID: 21300000, guid: a313b911aa1144a40b9afbc1b61ab0ba, type: 3}
+    portraitOf: ed2f53d981563cd418e98bd19f2d8916/Bandejomon_LowPoly@-0.37,0.00,0.00,0.00,0.00,0.36,-0.09,0.00,0.00,-0.09,-0.36,0.00,0.04,-0.56,0.01,1.00
+    actions:
+    - name: Bandejada
+      description: "Uma bandejada de inox bem no meio da cara. Dano de L\xF3gica."
+    - name: Prato do Dia
+      description: "Serve um prato que ningu\xE9m sabe o que \xE9. Dano de Criatividade."
+    - name: Prato Feito
+      description: 'Serve um PF para o time: todos recuperam um pouco de vida.'
+    - name: Feijoada de Sexta
+      description: "Serve a feijoada de sexta, e as consequ\xEAncias v\xEAm depois.
+        Dano alto; precisa de 3 rodadas para recarregar."
+    - name: Arrependimento
+      description: 'Transforma a fome da G-HYDRA em arrependimento: ela causa menos
+        dano por 2 rodadas.'
+    passive:
+      name: Todo Mundo Volta
+      description: "Na primeira vez que \xE9 nocauteado na raid, volta na rodada
+        seguinte com um ter\xE7o da vida."
+    knock: 0.45
+    agility: 0.6
+    shyness: 0.7
+  - poster: Computeiro
+    displayName: Computeiro
+    represents: "Ci\xEAncia da Computa\xE7\xE3o"
+    description: "Computeiro \xE9 extremamente convencido, acredita ser um verdadeiro
+      g\xEAnio da matem\xE1tica, embora a realidade diga o contr\xE1rio. Est\xE1
+      sempre de fone no pesco\xE7o, pronto para exibir seu estilo e sua intelig\xEAncia,
+      mesmo quando ningu\xE9m pediu!"
+    portrait: {fileID: 21300000, guid: 137007eac78a1a7499513b11c1d0e613, type: 3}
+    portraitOf: 86f792f17093d7c49ab9ea34df143462/Gato_CC_LowPoly@-0.36,0.00,0.00,0.00,0.00,0.35,-0.08,0.00,0.00,-0.08,-0.35,0.00,0.00,-0.53,0.03,1.00
+    actions:
+    - name: Patada no Teclado
+      description: "Digita com tanta for\xE7a que a G-HYDRA sente. Dano de L\xF3gica."
+    - name: Gambiarra
+      description: "Resolve o problema de um jeito que ningu\xE9m entende, nem ele.
+        Dano de Criatividade."
+    - name: Debug
+      description: 'Encontra o bug: remove os efeitos de status do time.'
+    - name: Loop Infinito
+      description: "Prende a G-HYDRA num la\xE7o sem condi\xE7\xE3o de parada. Dano
+        alto; precisa de 3 rodadas para recarregar."
+    - name: Ctrl+Z
+      description: "Desfaz o \xFAltimo golpe da G-HYDRA: o aliado atingido recupera
+        o dano que levou."
+    passive:
+      name: "Fone no Pesco\xE7o"
+      description: "Nem escuta o que a G-HYDRA diz: \xE9 imune a efeitos de status."
+    knock: 0.55
+    agility: 1.2
+    shyness: 1.3
+  - poster: Hipopotenusa
+    displayName: Hipopotenusa
+    represents: "Matem\xE1tica"
+    description: "Hipopotenusa \xE9 um g\xEAnio incompreendido, principalmente por
+      ele mesmo. Passa os dias resolvendo equa\xE7\xF5es que ningu\xE9m pediu e tentando
+      encontrar uma f\xF3rmula matem\xE1tica para conseguir um encontro. At\xE9 agora,
+      todos os resultados foram negativos!"
+    portrait: {fileID: 21300000, guid: 72998120ab0b99c40bd5f52cfaba6f73, type: 3}
+    portraitOf: e69e68cd824db5e4a910266c155a494b/Hipotenusa_LowPoly@-0.37,0.00,0.00,0.00,0.00,0.36,-0.09,0.00,0.00,-0.09,-0.36,0.00,0.01,-0.56,0.02,1.00
+    actions:
+    - name: "Teorema de Pit\xE1goras"
+      description: "Aplica o teorema bem na hipotenusa da G-HYDRA. Dano de L\xF3gica."
+    - name: "Demonstra\xE7\xE3o por Absurdo"
+      description: "Prova que a G-HYDRA est\xE1 errada partindo de algo absurdo.
+        Dano de Criatividade."
+    - name: "\xC2ngulo Certo"
+      description: "Calcula o \xE2ngulo exato: o pr\xF3ximo golpe de um aliado causa
+        mais dano."
+    - name: Peso ao Quadrado
+      description: Senta na G-HYDRA com todo o peso, elevado ao quadrado. Dano alto;
+        precisa de 3 rodadas para recarregar.
+    - name: Resultado Negativo
+      description: "Multiplica o pr\xF3ximo golpe da G-HYDRA por menos um: em vez
+        de perder vida, o alvo recupera."
+    passive:
+      name: "G\xEAnio Incompreendido"
+      description: "Ningu\xE9m entende o que ele faz, nem a G-HYDRA: ela erra mais
+        os golpes contra ele."
+    knock: 0.4
+    agility: 0.6
+    shyness: 1.4
+  - poster: Waltopeira
+    displayName: Waltopeira
+    represents: "Qu\xEDmica"
+    description: "Waltopeira \xE9 um qu\xEDmico nato que considera Breaking Bad seu
+      maior guia profissional. Entre f\xF3rmulas e experimentos, sua maior dificuldade
+      continua sendo desenvolver uma vida social. Conhece praticamente todas as rea\xE7\xF5es
+      qu\xEDmicas, mas ainda n\xE3o descobriu a f\xF3rmula da felicidade!"
+    portrait: {fileID: 21300000, guid: e15f97d6726d2c94dafbe05c425ccb85, type: 3}
+    portraitOf: d40f48504f5db8b448e88e90b0e88da1/Quimica_LowPoly@-0.38,0.00,0.00,0.00,0.00,0.37,-0.09,0.00,0.00,-0.09,-0.37,0.00,0.00,-0.55,-0.02,1.00
+    actions:
+    - name: Tubo de Ensaio
+      description: "Arremessa um tubo de ensaio borbulhando. Dano de L\xF3gica."
+    - name: "Rea\xE7\xE3o Exot\xE9rmica"
+      description: "Mistura duas coisas que n\xE3o deviam ser misturadas. Dano de
+        Criatividade."
+    - name: Catalisador
+      description: "Acelera um aliado: ele age primeiro na pr\xF3xima rodada."
+    - name: Diga Meu Nome
+      description: "A G-HYDRA finalmente descobre quem ele \xE9. Dano alto; precisa
+        de 3 rodadas para recarregar."
+    - name: "\xC1cido Corrosivo"
+      description: "Corr\xF3i a armadura da G-HYDRA: ela recebe mais dano por 2 rodadas."
+    passive:
+      name: Heisenberg
+      description: "Com menos da metade da vida, mostra seu outro lado: suas a\xE7\xF5es
+        causam muito mais dano."
+    knock: 0.5
+    agility: 0.9
+    shyness: 1.6
+  - poster: Gringull
+    displayName: Gringull
+    represents: Gringos
+    description: "Gringull veio de longe para estudar, mas acaba passando mais tempo
+      na praia do que na sala de aula. Sempre de chinelo e procurando um isqueiro,
+      seu vocabul\xE1rio em portugu\xEAs se resume a tr\xEAs palavras: \"mano\",
+      \"caraca\" e \"tranquilo\"!"
+    portrait: {fileID: 21300000, guid: f4fe86dbeafd1d54fb28ed28c0027f19, type: 3}
+    portraitOf: c5178318b2a16434a82d1410a83c41ec/Gringull_LowPoly@-0.38,0.00,0.00,0.00,0.00,0.37,-0.09,0.00,0.00,-0.09,-0.37,0.00,0.00,-0.51,0.06,1.00
+    actions:
+    - name: Chinelada
+      description: "Uma chinelada bem estalada. Dano de L\xF3gica."
+    - name: Caraca!
+      description: "Grita uma das tr\xEAs palavras que sabe e assusta a G-HYDRA.
+        Dano de Criatividade."
+    - name: Tranquilo, Mano
+      description: "Acalma um aliado: ele recebe menos dano na pr\xF3xima rodada."
+    - name: Mergulho de Gaivota
+      description: "Mergulha do c\xE9u como quem rouba o biscoito da praia. Dano
+        alto; precisa de 3 rodadas para recarregar."
+    - name: Tem Isqueiro?
+      description: 'Pede um isqueiro para a G-HYDRA, que se distrai procurando: o
+        time causa mais dano nela nesta rodada.'
+    passive:
+      name: Voa Baixo
+      description: "Voa por cima da confus\xE3o: \xE9 sempre o primeiro a agir na
+        rodada."
+    knock: 0.6
+    agility: 1.3
+    shyness: 0.7
+  - poster: "Maria Fuma\xE7a"
+    displayName: "Maria Fuma\xE7a"
+    represents: Maconheiros
+    description: "Maria Fuma\xE7a est\xE1 sempre nas nuvens, literalmente! Dona de
+      reflex\xF5es filos\xF3ficas profundas, costuma esquecer suas pr\xF3prias conclus\xF5es
+      antes mesmo de terminar o racioc\xEDnio. Nunca sabe ao certo que horas s\xE3o,
+      mas curiosamente sempre sabe onde vai acontecer a pr\xF3xima resenha!"
+    portrait: {fileID: 21300000, guid: 1f153dd1ab5ee02429e7cc35ce1c35d5, type: 3}
+    portraitOf: 02a1c9e80f1a1e4438f8d52f32bcb6d8/Maria_Fumaca_LowPoly@-0.42,0.00,0.00,0.00,0.00,0.40,-0.10,0.00,0.00,-0.10,-0.40,0.00,0.01,-0.55,-0.03,1.00
+    actions:
+    - name: Baforada
+      description: "Solta uma nuvem de fuma\xE7a na cara da G-HYDRA. Dano de Criatividade."
+    - name: "Reflex\xE3o Profunda"
+      description: "Faz uma pergunta filos\xF3fica que a G-HYDRA n\xE3o consegue
+        responder. Dano de L\xF3gica."
+    - name: "Cortina de Fuma\xE7a"
+      description: "Esconde um aliado na fuma\xE7a: o pr\xF3ximo golpe nele erra."
+    - name: Larica
+      description: Bate a fome e ela ataca com tudo. Dano alto; precisa de 3 rodadas
+        para recarregar.
+    - name: Deu Branco
+      description: 'Esquece o que ia dizer e a G-HYDRA esquece junto: ela perde o
+        golpe que estava preparando.'
+    passive:
+      name: Nas Nuvens
+      description: "Est\xE1 t\xE3o longe que nada a atinge direito: recebe menos
+        dano, mas age por \xFAltimo."
+    knock: 0.65
+    agility: 0.7
+    shyness: 1.2
+  - poster: Alexandre, o Lento
+    displayName: Alexandre, o Lento
+    represents: "Hist\xF3ria"
+    description: "Alexandre, o Lento conhece todos os erros da humanidade e faz quest\xE3o
+      de repetir alguns. Vive discutindo acontecimentos de 200 anos atr\xE1s como
+      se tivessem ocorrido ontem. J\xE1 est\xE1 no d\xE9cimo per\xEDodo, mas insiste
+      que sua gradua\xE7\xE3o \xE9 um processo hist\xF3rico."
+    portrait: {fileID: 21300000, guid: e48b873dc3ca2b649931cf4e3f09f17f, type: 3}
+    portraitOf: 08d45aa03e9d3b247bc669bc282d4b5a/Alexandre_LowPoly@-0.41,0.00,0.00,0.00,0.00,0.40,-0.10,0.00,0.00,-0.10,-0.40,0.00,-0.01,-0.55,-0.04,1.00
+    actions:
+    - name: 
+      description: 
+    - name: 
+      description: 
+    - name: 
+      description: 
+    - name: 
+      description: 
+    - name: 
+      description: 
+    passive:
+      name: 
+      description: 
+    knock: 0.5
+    agility: 1
+    shyness: 1
+  - poster: Patrimiau
+    displayName: Patrimiau
+    represents: Patricinhas de longchamp
+    description: "Patrimiau \xE9 uma verdadeira refer\xEAncia de estilo, mesmo que
+      seu look b\xE1sico custe mais que uma mensalidade. Nunca sai de casa sem sua
+      Longchamp e est\xE1 sempre julgando silenciosamente as roupas de todo mundo,
+      afinal, bom gosto n\xE3o \xE9 para qualquer um!"
+    portrait: {fileID: 21300000, guid: de87c9aeb470e6848b6b66d00f39e8c7, type: 3}
+    portraitOf: 3f6b701d657ff0949af5046aef5cb290/Patrimiau_LowPoly@-0.40,0.00,0.00,0.00,0.00,0.39,-0.09,0.00,0.00,-0.09,-0.39,0.00,0.03,-0.56,-0.01,1.00
+    actions:
+    - name: 
+      description: 
+    - name: 
+      description: 
+    - name: 
+      description: 
+    - name: 
+      description: 
+    - name: 
+      description: 
+    passive:
+      name: 
+      description: 
+    knock: 0.5
+    agility: 1
+    shyness: 1
+  - poster: Tatlas
+    displayName: Tatlas
+    represents: Geografia
+    description: "Tatlas conhece cada canto do planeta, menos a localiza\xE7\xE3o
+      da pr\xF3pria sala. Seu passatempo favorito \xE9 explicar desigualdade socioespacial
+      para quem s\xF3 perguntou onde fica o banheiro. Promete salvar o meio ambiente,
+      mas imprime 80 p\xE1ginas para cada trabalho"
+    portrait: {fileID: 21300000, guid: 036d609d6df36444aacfb673c9546cf8, type: 3}
+    portraitOf: 32bc6c01a6e545d4bb7cf6ee3d814a54/Tatlas_LowPoly@-0.37,0.00,0.00,0.00,0.00,0.36,-0.09,0.00,0.00,-0.09,-0.36,0.00,-0.01,-0.53,-0.02,1.00
+    actions:
+    - name: 
+      description: 
+    - name: 
+      description: 
+    - name: 
+      description: 
+    - name: 
+      description: 
+    - name: 
+      description: 
+    passive:
+      name: 
+      description: 
+    knock: 0.5
+    agility: 1
+    shyness: 1
+  - poster: "Cerebr\xF4"
+    displayName: "Cerebr\xF4"
+    represents: 
+    description: "Cerebr\xF4 \xE9 um verdadeiro g\xEAnio da neuroci\xEAncia, capaz
+      de explicar qualquer comportamento humano, menos os pr\xF3prios. Seu c\xE9rebro
+      funciona a mil por hora e ele faz amizade com a mesma facilidade que faz sinapses.
+      Apesar de ser um CDF de carteirinha, nunca perde a oportunidade de uma boa
+      resenha!"
+    portrait: {fileID: 21300000, guid: eebfa0a451705574d86e60470c020ba5, type: 3}
+    portraitOf: f94f019dd4fb3944b970755751af194a/Cerebro_LowPoly@-0.39,0.00,0.00,0.00,0.00,0.38,-0.09,0.00,0.00,-0.09,-0.38,0.00,0.00,-0.55,-0.02,1.00
+    actions:
+    - name: 
+      description: 
+    - name: 
+      description: 
+    - name: 
+      description: 
+    - name: 
+      description: 
+    - name: 
+      description: 
+    passive:
+      name: 
+      description: 
+    knock: 0.5
+    agility: 1
+    shyness: 1
+  - poster: "Dramac\xE3o"
+    displayName: "Dramac\xE3o"
+    represents: "Artes C\xEAnicas"
+    description: "Dramac\xE3o \xE9 incapaz de viver uma situa\xE7\xE3o sem transform\xE1-la
+      em espet\xE1culo. Chora em apresenta\xE7\xF5es, improvisa discuss\xF5es e acredita
+      que cada corredor da PUC \xE9 um palco. Seu maior sonho \xE9 chegar \xE0 Globo;
+      por enquanto, faz figura\xE7\xE3o em curta de amigo."
+    portrait: {fileID: 21300000, guid: ef1f2cfcc2a0ca64aa356a67dec6a099, type: 3}
+    portraitOf: f568be5982036d246bade79a33425d18/Dramacao_LowPoly@-0.38,0.00,0.00,0.00,0.00,0.37,-0.09,0.00,0.00,-0.09,-0.37,0.00,0.07,-0.55,0.00,1.00
+    actions:
+    - name: 
+      description: 
+    - name: 
+      description: 
+    - name: 
+      description: 
+    - name: 
+      description: 
+    - name: 
+      description: 
+    passive:
+      name: 
+      description: 
+    knock: 0.5
+    agility: 1
+    shyness: 1
+  - poster: Pedaguru
+    displayName: Pedaguru
+    represents: Pedagogia
+    description: "Pedaguru \xE9 um educador nato, sempre pronto para transformar
+      qualquer situa\xE7\xE3o em uma atividade l\xFAdica. Dono de uma paci\xEAncia
+      quase infinita, acredita que tudo pode ser ensinado com criatividade, carinho
+      e um fantoche. Apesar de adorar ensinar, ainda est\xE1 tentando aprender a
+      cuidar da pr\xF3pria vida!"
+    portrait: {fileID: 21300000, guid: adbac334bfd5782428bb96c44ca8d0d3, type: 3}
+    portraitOf: 041c85c71a612864ca163a1aa186a612/Pedaguru_LowPoly@-0.36,0.00,0.00,0.00,0.00,0.35,-0.08,0.00,0.00,-0.08,-0.35,0.00,-0.01,-0.56,-0.09,1.00
+    actions:
+    - name: 
+      description: 
+    - name: 
+      description: 
+    - name: 
+      description: 
+    - name: 
+      description: 
+    - name: 
+      description: 
+    passive:
+      name: 
+      description: 
+    knock: 0.5
     agility: 1
     shyness: 1

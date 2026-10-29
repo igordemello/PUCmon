@@ -2875,7 +2875,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Entre para continuar sua cole\xE7\xE3o"
+  m_text: "Entre para voltar ao laborat\xF3rio"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a63368c6a862c5546b94e0acbede69e9, type: 2}
   m_sharedMaterial: {fileID: 340663133675476385, guid: a63368c6a862c5546b94e0acbede69e9, type: 2}
