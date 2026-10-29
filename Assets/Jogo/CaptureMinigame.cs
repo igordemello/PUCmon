@@ -66,6 +66,10 @@ public class CaptureMinigame : MonoBehaviour, IPointerDownHandler, IDragHandler,
     [Tooltip("Sway speed for agility 1.")]
     public float swaySpeed = 1.3f;
 
+    [Header("Aura amaldiçoada")]
+    [Tooltip("The G-HYDRA's miasma rising off the PUCmon in play: one particle system, moved onto it and sized for a PUCmon 1 unit tall. It dies down at the knock-out.")]
+    public ParticleSystem aura;
+
     [Header("Referências")]
     public Camera arCamera;
     [FormerlySerializedAs("cardSprite")] public Sprite rockSprite;
@@ -89,7 +93,7 @@ public class CaptureMinigame : MonoBehaviour, IPointerDownHandler, IDragHandler,
     readonly List<Transform> body = new List<Transform>();  // the poster's children that make up the PUCmon (not its hole)
     readonly List<(Vector3 position, Quaternion rotation, Vector3 scale)> home = new List<(Vector3, Quaternion, Vector3)>();
     Vector2 center;  // PUCmon's middle on the poster
-    float radius, bottom, top;  // and its size there
+    float radius, bottom, top, width, front;  // and its size there; front: its middle's distance off the poster (-Z)
     readonly Dictionary<string, int> rocksLeft = new Dictionary<string, int>();
     readonly Dictionary<string, float> awake = new Dictionary<string, float>();  // consciousness left: 1 wide awake .. 0 out
     readonly Dictionary<string, float> awayUntil = new Dictionary<string, float>();
@@ -138,6 +142,15 @@ public class CaptureMinigame : MonoBehaviour, IPointerDownHandler, IDragHandler,
                 home.Add((child.localPosition, child.localRotation, child.localScale));
             }
         Measure();
+        if (aura)
+        {
+            float height = top - bottom;
+            aura.transform.SetParent(target.transform, false);
+            aura.transform.localScale = Vector3.one * height;
+            var shape = aura.shape;  // the body's box, where the miasma comes from
+            shape.scale = new Vector3(width / height, 0.85f, 0.35f);
+            aura.Play();
+        }
         if (!rocksLeft.ContainsKey(creature.poster))
             rocksLeft[creature.poster] = throws;
         if (!awake.ContainsKey(creature.poster))
@@ -164,6 +177,8 @@ public class CaptureMinigame : MonoBehaviour, IPointerDownHandler, IDragHandler,
             if (star)
                 Destroy(star.gameObject);
         stars.Clear();
+        if (aura)
+            aura.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
         target = null;
         creature = null;
         busy = pressing = knockedOut = false;
@@ -209,6 +224,11 @@ public class CaptureMinigame : MonoBehaviour, IPointerDownHandler, IDragHandler,
             body[i].localPosition = feet + lean * (home[i].position + offset - feet);
             body[i].localRotation = lean * home[i].rotation;
             body[i].localScale = Vector3.Scale(home[i].scale, stretch);
+        }
+        if (aura)
+        {
+            aura.transform.localPosition = feet + lean * (new Vector3(center.x, center.y, front) + offset - feet);
+            aura.transform.localRotation = lean;
         }
 
         // The white circle and the shrinking ring over the PUCmon, sized as it shows on screen.
@@ -347,6 +367,8 @@ public class CaptureMinigame : MonoBehaviour, IPointerDownHandler, IDragHandler,
         knockedOut = true;
         hiddenUntil = 0f;
         Say("Nocaute!", dizzySeconds + 1f);
+        if (aura)
+            aura.Stop();  // out cold, the miasma lets go
         for (int i = 0; i < 3; i++)
         {
             var star = new GameObject("Estrela").AddComponent<SpriteRenderer>();
@@ -407,7 +429,7 @@ public class CaptureMinigame : MonoBehaviour, IPointerDownHandler, IDragHandler,
     // grows in when found).
     void Measure()
     {
-        var min = new Vector2(float.MaxValue, float.MaxValue);
+        var min = Vector3.one * float.MaxValue;
         var max = -min;
         foreach (var part in body)
             foreach (var r in part.GetComponentsInChildren<Renderer>(true))
@@ -422,14 +444,16 @@ public class CaptureMinigame : MonoBehaviour, IPointerDownHandler, IDragHandler,
                 for (int i = 0; i < 8; i++)
                 {
                     var corner = m.MultiplyPoint3x4(b.center + Vector3.Scale(b.extents, new Vector3((i & 1) * 2 - 1, (i & 2) - 1, (i & 4) / 2 - 1)));
-                    min = Vector2.Min(min, corner);
-                    max = Vector2.Max(max, corner);
+                    min = Vector3.Min(min, corner);
+                    max = Vector3.Max(max, corner);
                 }
             }
         center = (min + max) / 2f;
         radius = Mathf.Max(max.x - min.x, max.y - min.y) / 2f;
         bottom = min.y;
         top = max.y;
+        width = max.x - min.x;
+        front = (min.z + max.z) / 2f;
     }
 
     // A 5x5 pixel-art star, made once.

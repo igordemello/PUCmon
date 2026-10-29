@@ -33,6 +33,9 @@ A gameplay tem **3 modos**: **Registro** (AR), **Laboratório** (tamagochi) e **
 - Cada PUCmon **representa algo da PUC-Rio**: um curso ou outra coisa da universidade.
 - A **G-HYDRA**, cobra de três cabeças (G1, G2 e G3), amaldiçoa os PUCmons, que fogem para o nosso mundo pela fenda
   (o buraco na parede).
+- A presença dela libera uma **miasma** que se prende nos PUCmons e os deixa violentos: tira o sono e aumenta o
+  estresse. No AR, ela aparece como uma aura roxa saindo deles, que se dissipa no nocaute.
+- Na primeira visita ao recinto de cada PUCmon, o Prof. Beltran conta a história dele (`Lab Intro`, no `Catalogo`).
 - O projeto de pesquisa do **Prof. Dr. Beltran O.** não tem verba para tranquilizante: o jeito é tacar pedras até
   nocautear o PUCmon e capturá-lo.
 - Capturado, ele acorda desconfiado de quem o apedrejou. Conquistar a confiança dele é o tamagochi.

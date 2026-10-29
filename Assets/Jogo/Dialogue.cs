@@ -55,10 +55,13 @@ public class Dialogue : MonoBehaviour, IPointerClickHandler
             return;
         }
         speaker.text = lines[index].speaker;
-        text.text = lines[index].text;
+        text.text = KeepWhole(lines[index].text);
         text.maxVisibleCharacters = 0;
         shownSince = Time.unscaledTime;
     }
+
+    /// <summary>The text with "G-HYDRA" never split over two lines at its hyphen.</summary>
+    public static string KeepWhole(string text) => text.Replace("G-HYDRA", "<nobr>G-HYDRA</nobr>");
 
     public void OnPointerClick(PointerEventData _)
     {

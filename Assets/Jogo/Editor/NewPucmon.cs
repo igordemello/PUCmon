@@ -25,7 +25,8 @@ class NewPucmon : EditorWindow
     void OnGUI()
     {
         EditorGUILayout.HelpBox("Preencha e clique em Criar. O alvo de AR, o buraco na parede, a entrada no Catálogo e a " +
-            "imagem 2D são feitos sozinhos. As ações e a passiva você preenche depois, no Catálogo.", MessageType.Info);
+            "imagem 2D são feitos sozinhos. As ações, a passiva e o diálogo da primeira visita ao recinto (Lab Intro) você " +
+            "preenche depois, no Catálogo.", MessageType.Info);
         displayName = EditorGUILayout.TextField("Nome", displayName);
         represents = EditorGUILayout.TextField(new GUIContent("Representa", "Um curso (\"Psicologia\") ou outra coisa da PUC (\"Bandejão\")."), represents);
         EditorGUILayout.LabelField("Descrição");

@@ -29,6 +29,10 @@ public class Catalog : ScriptableObject
         [Tooltip("Passive ability, unlocked at friendship 5.")]
         public Skill passive;
 
+        [Header("Primeira visita ao recinto")]
+        [Tooltip("Conversation the first time the player opens its pen in the laboratory.")]
+        public Dialogue.Line[] labIntro;
+
         [Header("Minigame")]
         [Tooltip("Share of its consciousness a rock takes, before the ring bonus (see CaptureMinigame): 0.5 = two hits.")]
         [FormerlySerializedAs("catchRate")] [Range(0.05f, 1f)] public float knock = 0.5f;

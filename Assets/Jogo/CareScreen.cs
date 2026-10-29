@@ -56,6 +56,10 @@ public class CareScreen : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
     public Image sheetPortrait;
     public TMP_Text sheetTitle, sheetBody;
 
+    [Header("Primeira visita")]
+    [Tooltip("Plays the PUCmon's own conversation (catalog: Lab Intro) the first time its pen is opened.")]
+    public Dialogue dialogue;
+
     static readonly Color Faded = new Color(1f, 1f, 1f, 0.22f);
 
     Catalog.Creature creature;
@@ -96,6 +100,13 @@ public class CareScreen : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
         home.Show(gameObject);
         if (shownLevel == 0)
             Say("Ele ainda desconfia de você...");
+        string seen = $"pucmon.beltran.recinto.{Account.Username}.{creature.poster}";
+        if (creature.labIntro != null && creature.labIntro.Length > 0 && PlayerPrefs.GetInt(seen) == 0)
+            dialogue.Play(creature.labIntro, () =>
+            {
+                PlayerPrefs.SetInt(seen, 1);
+                PlayerPrefs.Save();
+            });
     }
 
     void Update()
@@ -309,7 +320,7 @@ public class CareScreen : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
             text.AppendLine(Entry(Skill(i), i, level >= i));
         text.AppendLine().AppendLine("<b>HABILIDADE PASSIVA</b>");
         text.AppendLine(Entry(creature.passive, Bond.MaxLevel, level >= Bond.MaxLevel));
-        sheetBody.text = text.ToString();
+        sheetBody.text = Dialogue.KeepWhole(text.ToString());
         home.Show(sheet);
     }
 
