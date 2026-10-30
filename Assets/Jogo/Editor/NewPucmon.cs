@@ -6,13 +6,14 @@ using UnityEngine;
 
 /// <summary>
 /// "PUCmon > Novo PUCmon...": a new PUCmon from its 3D model, poster, name and description. Files get the PUCmon's name
-/// (Assets/ImagesToTracker, Assets/Modelos; the poster's name is its id in the catalog, Supabase and the tracking
+/// (Assets/ImagesToTracker, Assets/Modelos/Resources, so builds can load each model when its poster is seen:
+/// LazyModelBuild; the poster's name is its id in the catalog, Supabase and the tracking
 /// data); the catalog gets its entry; the AR scene gets its image target, laid out like the existing ones (wall hole,
 /// model standing in front of the poster at the same size); saving the scene makes its 2D picture (PortraitMaker).
 /// </summary>
 class NewPucmon : EditorWindow
 {
-    const string ArScene = "Assets/Scenes/SampleScene.unity", Posters = "Assets/ImagesToTracker", Models = "Assets/Modelos";
+    const string ArScene = "Assets/Scenes/SampleScene.unity", Posters = "Assets/ImagesToTracker", Models = "Assets/Modelos/Resources";
     static readonly string[] ModelFiles = { ".glb", ".gltf", ".fbx", ".obj", ".blend", ".dae" };
 
     string displayName = "", represents = "", description = "";

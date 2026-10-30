@@ -62,6 +62,8 @@ public class CaptureScreen : MonoBehaviour
     void Update()
     {
         var target = tracker.Current;
+        if (target && !LazyModel.IsReady(target))
+            target = null;  // its PUCmon is still loading: it shows up, and the game starts, once it is there
         var creature = target && target.image ? catalog.Find(target.image.name) : null;
         if (creature != inView)
         {

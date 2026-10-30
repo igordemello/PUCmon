@@ -35,9 +35,51 @@ O jogo deve seguir o documento do PUCmon nestes pontos:
     - nível 4 em 2h52;
     - nível 5 em 3h50.
   - PUCmons já registrados mantêm a afinidade e, com os níveis mais baixos, sobem de nível na hora.
+  - **Confira** se o `Supabase/4-economia.sql` já foi rodado no Supabase de verdade. Sem ele, o servidor segue com a
+    economia antiga e o jogo mostra números que o servidor não dá.
 
-> **Status:** plano alinhado à especificação de gameplay. Só o essencial para ela funcionar está nas seções 1 a 6;
-> o resto ficou no **Plano futuro** (seção 8). Números são pontos de partida para balancear.
+## Desempenho da tela de captura (em andamento)
+
+Otimizações feitas sem mudar nada na qualidade. Os números foram medidos no PC, com a câmera simulada:
+
+| O quê | Antes | Agora |
+|---|---|---|
+| Do toque em **Registrar** até a câmera aparecer | 953 ms | ~200 ms |
+| Abrir a cena do AR | 388 ms | 185 ms |
+| Rastreador seguindo um cartaz | 5,1 ms por quadro | 3,1 ms (mesmo resultado) |
+| Rastreador procurando um cartaz | 1,9 ms por quadro | 0,03 ms |
+
+- **A câmera abre no toque** em Registrar, enquanto a cena carrega (`WebARImageTracker.OpenCamera`). A tela de
+  carregamento fica até a cena estar pronta.
+- **Cartazes sob demanda:** os dados de rastreamento de cada cartaz são preparados só quando a câmera o encontra.
+- **Modelos sob demanda:**
+  - Cada modelo 3D carrega só quando o cartaz dele aparece pela primeira vez (`LazyModel`).
+  - No build, o `LazyModelBuild` troca os modelos da cena por esse carregador. A cena no Unity continua com os
+    modelos, para editar normalmente.
+  - Por isso os `.glb` ficam em `Assets/Modelos/Resources`. O **Novo PUCmon** já põe os novos lá.
+  - A primeira aparição de cada PUCmon custa um quadro de ~50 ms.
+
+**Em aberto: 5 a 10 FPS no celular** na tela da câmera, com ou sem PUCmon na tela.
+
+- No PC, a Unity gasta ~2 ms por quadro, então o gargalo é a câmera, o motor de AR ou a placa de vídeo do aparelho.
+- Para achar o culpado, o link aceita estas chaves de teste:
+
+  | Chave | O que faz |
+  |---|---|
+  | `?debug` | Mostra o FPS da câmera, do motor de AR e da Unity, e os ms por quadro de cada parte |
+  | `?nopix` | Desliga a cópia do quadro para o rastreador denso (o PUCmon fica menos preso ao cartaz) |
+  | `?dpr=1` | Desenha a câmera e o jogo em resolução menor |
+
+- **Próximo passo:** medir no celular as 4 combinações (`?debug`, `?debug&nopix`, `?debug&dpr=1` e
+  `?debug&nopix&dpr=1`) e corrigir o que os números apontarem. O passo a passo está no `Docs/onde-paramos.md`.
+- **Possível depois, mas muda a qualidade:** comprimir as texturas dos modelos. Hoje o glTFast as deixa sem
+  compressão, ~190 MB na memória de vídeo com os 28 carregados. Precisa de aprovação.
+
+> **Status:**
+> - O plano está alinhado à especificação de gameplay.
+> - Só o essencial para ela funcionar está nas seções 1 a 6; o resto ficou no **Plano futuro** (seção 8).
+> - Os números são pontos de partida para balancear.
+> - Antes da fase 3, falta resolver o FPS da câmera no celular (acima).
 
 ## 0. Especificação e decisões
 
@@ -255,6 +297,7 @@ Ideias que não estão na especificação, guardadas para depois:
 | Online caro e talvez pouco divertido | Raid solo offline primeiro (fase 3) |
 | Nomes ofensivos no placar | Filtro no cadastro e botão de denúncia |
 | Projeto do Supabase pausa após uma semana sem uso | Reativar antes da volta às aulas |
-| Netlify gratuito (por créditos): ~15 GB/mês, e cada publicação gasta o equivalente a 0,75 GB; o build pesa ~28 MB no primeiro acesso; acabou, o site sai do ar até o mês seguinte | Hospedar o build no Cloudflare Pages (sem cota de banda) ou no GitHub Pages; publicar menos vezes |
+| Netlify gratuito (por créditos): ~15 GB/mês, e cada publicação gasta o equivalente a 0,75 GB; o build pesa ~28 MB no primeiro acesso; acabou, o site sai do ar até o mês seguinte | Os testes já vão para o GitHub Pages (repo `pucmon.dev`), e o Netlify fica só para a versão oficial. Se ainda faltar, hospedar o oficial no Cloudflare Pages (sem cota de banda) |
+| FPS baixo na câmera em celulares fracos | Medir com `?debug` no aparelho antes de mexer (seção “Desempenho”) |
 | Limite de cadastro do Supabase: 30 por 5 min **por IP**, e o Wi-Fi da PUC junta muita gente num IP só | Subir os limites em Authentication > Rate Limits antes de qualquer evento |
 | Supabase gratuito não faz backup | Exportar o banco de vez em quando, ou o plano Pro (US$ 25/mês) |

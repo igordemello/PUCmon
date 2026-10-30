@@ -57,6 +57,32 @@
 
     const q = new URLSearchParams(location.search);
     const $ = id => document.getElementById(id);
+    // ?debug also measures, each second, what holds the frame rate on a phone: camera frames, frames the engine
+    // handed over, Unity frames, and the time per frame of Unity, of the rest (the engine, with our tracker) and of the
+    // tracker. Test switches to compare: ?nopix (no copy of the frame, so no dense tracking) and ?dpr=1 (camera and
+    // game drawn at 1x).
+    const maxDpr = q.has('dpr') ? Number(q.get('dpr')) || 1 : 2;
+    const stats = { camera: 0, screen: 0, unity: 0, unityMs: 0, otherMs: 0, trackerMs: 0, line: '' };
+    if (q.has('debug')) {
+      const raf = window.requestAnimationFrame.bind(window);
+      window.requestAnimationFrame = cb => raf(t => {
+        const start = performance.now();
+        cb(t);
+        const ms = performance.now() - start;
+        if (cb.name === 'Browser_mainLoop_runner') { stats.unity++; stats.unityMs += ms; } else stats.otherMs += ms;
+      });
+      let videoFrames = 0;
+      setInterval(() => {
+        const per = (ms, n) => (n ? ms / n : 0).toFixed(1), video = document.querySelector('video');
+        const frames = video?.getVideoPlaybackQuality?.().totalVideoFrames || 0, asked = video?.srcObject?.getVideoTracks()[0]?.getSettings().frameRate;
+        stats.camera = Math.max(0, frames - videoFrames);
+        videoFrames = frames;
+        stats.line = `câmera ${stats.camera} fps (pedidos ${asked ? Math.round(asked) : '?'}) · motor ${stats.screen} fps · Unity ${stats.unity} fps\n` +
+          `por quadro: Unity ${per(stats.unityMs, stats.unity)} ms · motor ${per(stats.otherMs, stats.screen)} ms · ` +
+          `rastreador ${per(stats.trackerMs, stats.screen)} ms`;
+        Object.assign(stats, { camera: 0, screen: 0, unity: 0, unityMs: 0, otherMs: 0, trackerMs: 0 });
+      }, 1000);
+    }
     const canvas = $('unity-canvas'), debug = $('debug');
     // [tracked, position xyz, forward xyz, up xyz, projection (16, column-major GL), target index] in Unity camera
     // space. FreeWebAR.jslib copies it into WebARImageTracker every frame.
@@ -118,7 +144,7 @@
     }
 
     const pool = {};  // pyramid buffers reused every frame
-    let lastGood = 0, lastUpdate = 0, fps = 0;
+    let lastGood = 0;
     function track(r, images, cam) {
       const K = frameIntrinsics(r.intrinsics, feed.width, feed.height, cam.cols, cam.rows);
       let frame = null;  // built only for a frame with a poster to align
@@ -176,9 +202,9 @@
         else if (t0 - lastSeen > 250) pose[0] = 0;  // hold the last pose for a blink instead of flickering
         showHint();
         if (q.has('debug')) {
-          fps += (1000 / Math.max(1, t0 - lastUpdate) - fps) * 0.05;
-          lastUpdate = t0;
-          debug.textContent = `${cameraList}\naberta: ${cameraLabel}\n${fps.toFixed(0)} fps\n` +
+          stats.screen++;
+          stats.trackerMs += performance.now() - t0;
+          debug.textContent = `${cameraList}\naberta: ${cameraLabel}\n${stats.line}\n` +
             `${densePose ? 'denso' : card ? '8th Wall' : 'procurando'}  ${card ? targets[active].name : ''}  ` +
             `ZNCC ${score.toFixed(2)}  ${(performance.now() - t0).toFixed(1)} ms`;
         }
@@ -190,7 +216,7 @@
     // which looks soft on phones, and moves the canvas above Unity's.
     const feed = document.getElementById('camerafeed');
     const sizeFeed = () => {
-      const dpr = Math.min(window.devicePixelRatio, 2);
+      const dpr = Math.min(window.devicePixelRatio, maxDpr);
       feed.width = Math.round(innerWidth * dpr);
       feed.height = Math.round(innerHeight * dpr);
     };
@@ -232,7 +258,7 @@
         XR8.XrController.pipelineModule(),
         // CPU copy of the frame for the dense tracker; the engine then shows that same frame, so pose and video match.
         // After XrController: it leaves its framebuffer bound on the compute context.
-        XR8.CameraPixelArray.pipelineModule({ luminance: true, maxDimension: 480 }),
+        ...(q.has('nopix') ? [] : [XR8.CameraPixelArray.pipelineModule({ luminance: true, maxDimension: 480 })]),
         unityBridge,
       ]);
     }
@@ -289,7 +315,7 @@
       companyName: {{{ JSON.stringify(COMPANY_NAME) }}},
       productName: {{{ JSON.stringify(PRODUCT_NAME) }}},
       productVersion: {{{ JSON.stringify(PRODUCT_VERSION) }}},
-      devicePixelRatio: Math.min(window.devicePixelRatio, 2),
+      devicePixelRatio: Math.min(window.devicePixelRatio, maxDpr),
       webglContextAttributes: { premultipliedAlpha: true, preserveDrawingBuffer: false, powerPreference: 2 },  // 2 = high-performance
     }, progress => { document.querySelector('.bar i').style.width = `${Math.round(progress * 100)}%`; })
       .then(() => { unityReady = true; showHint(); })

@@ -30,10 +30,11 @@ Cada cartaz é um objeto da cena com o componente `ImageTarget`:
 
 1. Coloque a imagem em `Assets/ImagesToTracker` (mínimo 480×640 px).
 2. Crie um GameObject vazio, adicione `ImageTarget` e arraste a imagem para o campo **Image**.
-3. Ponha o conteúdo (modelos, textos, etc.) como filho dele. Os cartazes `image1`/`image2` da `SampleScene` têm um
-   filho *Content (Y = out of the card)* girado -90° em X: dentro dele o cartaz é o "chão" (Y para fora da imagem, Z
-   para o topo), o jeito mais fácil de pôr um modelo em pé sobre ele.
-4. Use `onFound` / `onLost` do componente para reagir (ex.: o cartaz antigo chama `ImageTrackingFunctions`).
+3. Ponha o conteúdo (modelos, textos, etc.) como filho dele. Os cartazes da `SampleScene` têm um filho
+   *Content (Y = out of the card)* girado -90° em X: dentro dele o cartaz é o "chão" (Y para fora da imagem, Z para o
+   topo), o jeito mais fácil de pôr um modelo em pé sobre ele. Para um PUCmon novo, use *PUCmon > Novo PUCmon...*,
+   que monta tudo isso sozinho.
+4. Use `onFound` / `onLost` do componente para reagir.
 
 No build WebGL, `Editor/ImageTargetBuild.cs` gera sozinho os dados de rastreamento (`image-targets/` no build) de
 todas as imagens usadas na cena; não há mais CLI nem lista para editar. Aparece um cartaz por vez: o que está sendo
@@ -68,7 +69,17 @@ A câmera só abre em HTTPS ou em `localhost`. Sirva o build no computador
 Em celular com várias lentes, a página escolhe a lente principal pelo nome das câmeras, em qualquer idioma: nunca a
 0.5x, nem a câmera "Dupla/Tripla" do iPhone Pro, que troca para a 0.5x de perto.
 
-Com `?debug` no fim do link aparecem a lista de câmeras (◀ = a escolhida), a câmera aberta, a resolução, o FPS e o estado
-(`denso`, `8th Wall` ou `procurando`) com a correlação e o tempo do rastreador. `?cam=N` força a câmera N da lista.
+Com `?debug` no fim do link aparecem:
+
+- a lista de câmeras (◀ = a escolhida), a câmera aberta e a resolução;
+- o estado do rastreador (`denso`, `8th Wall` ou `procurando`), com a correlação;
+- a cada segundo, o FPS da câmera (e o que ela prometeu), do motor e da Unity;
+- os ms por quadro da Unity, do motor (fora da Unity) e do rastreador.
+
+Chaves só para teste, que se juntam ao `?debug` com `&`:
+
+- `?cam=N` força a câmera N da lista;
+- `?nopix` desliga a cópia do quadro para o rastreador denso, que passa a usar só a pose da 8th Wall;
+- `?dpr=N` limita a densidade de pixels da câmera e da Unity (o padrão é até 2).
 
 Testes: `node "Assets/FreeWebAR/Tests~/freewebar.test.mjs"` e `node "Assets/FreeWebAR/Tests~/tracker.test.mjs"`.
