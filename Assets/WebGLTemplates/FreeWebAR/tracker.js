@@ -59,18 +59,12 @@ export function resize({ data, width, height }, w, h) {
 function blur({ data, width: w, height: h }, pool, key) {
   const tmp = buffer(pool, key + 't', w * h), out = buffer(pool, key + 'o', w * h);
   const at = (x, n) => (x < 0 ? 0 : x >= n ? n - 1 : x);
+  const lo = Math.min(2, w), hi = Math.max(lo, w - 2);
   for (let y = 0; y < h; y++) {  // rows: clamped ends, fast interior
     const r = y * w;
-    for (let x = 0; x < w; x++) {
-      if (x === 2 && w > 4) {
-        for (; x < w - 2; x++) {
-          const i = r + x;
-          tmp[i] = (data[i - 2] + data[i + 2] + 4 * (data[i - 1] + data[i + 1]) + 6 * data[i]) * 0.0625;
-        }
-        if (x >= w) break;
-      }
-      tmp[r + x] = (data[r + at(x - 2, w)] + data[r + at(x + 2, w)] + 4 * (data[r + at(x - 1, w)] + data[r + at(x + 1, w)]) + 6 * data[r + x]) * 0.0625;
-    }
+    for (let x = 0; x < lo; x++) tmp[r + x] = (data[r + at(x - 2, w)] + data[r + at(x + 2, w)] + 4 * (data[r + at(x - 1, w)] + data[r + at(x + 1, w)]) + 6 * data[r + x]) * 0.0625;
+    for (let i = r + lo, end = r + hi; i < end; i++) tmp[i] = (data[i - 2] + data[i + 2] + 4 * (data[i - 1] + data[i + 1]) + 6 * data[i]) * 0.0625;
+    for (let x = hi; x < w; x++) tmp[r + x] = (data[r + at(x - 2, w)] + data[r + at(x + 2, w)] + 4 * (data[r + at(x - 1, w)] + data[r + at(x + 1, w)]) + 6 * data[r + x]) * 0.0625;
   }
   for (let y = 0; y < h; y++) {  // columns
     const up2 = at(y - 2, h) * w, up1 = at(y - 1, h) * w, r = y * w, dn1 = at(y + 1, h) * w, dn2 = at(y + 2, h) * w;
@@ -81,9 +75,12 @@ function blur({ data, width: w, height: h }, pool, key) {
   return { data: out, width: w, height: h };
 }
 
-// Blurred pyramid, finest first. Frames and the template go through the same filters.
+// Blurred pyramid, finest first. Frames and the template go through the same filters. The image is copied to floats
+// first, so the filters only ever see one array type (faster code from the JIT for the camera's bytes).
 export function pyramid(image, levels = LEVELS, pool) {
-  const out = [blur(image, pool, 'b0')];
+  const floats = buffer(pool, 'f', image.data.length);
+  floats.set(image.data);
+  const out = [blur({ data: floats, width: image.width, height: image.height }, pool, 'b0')];
   while (out.length < levels) out.push(blur(half(out[out.length - 1], pool, 'h' + out.length), pool, 'b' + out.length));
   return out;
 }
@@ -112,9 +109,20 @@ function templatePoints({ data, width, height }, maxPoints, sx, sy, W, H) {
   return out;
 }
 
-// Solve the symmetric 8x8 system A x = b (Gaussian elimination with partial pivoting). Returns null if singular.
+// Gauss-Newton Hessian of every template point at weight 1: sum of sd sd^T over the steepest-descent terms, flat 8x8
+// row-major (upper triangle filled).
+function hessian(pts) {
+  const H = new Float64Array(64);
+  for (let o = 0; o < pts.length; o += 11) {
+    for (let r = 0; r < 8; r++) for (let c = r; c < 8; c++) H[8 * r + c] += pts[o + 3 + r] * pts[o + 3 + c];
+  }
+  return H;
+}
+
+// Solve the symmetric 8x8 system A x = b, A flat row-major (Gaussian elimination with partial pivoting). Returns
+// null if singular.
 function solve8(A, b) {
-  const n = 8, M = A.map((row, i) => [...row, b[i]]);
+  const n = 8, M = Array.from({ length: n }, (_, i) => [...A.subarray(8 * i, 8 * i + 8), b[i]]);
   for (let c = 0; c < n; c++) {
     let p = c;
     for (let r = c + 1; r < n; r++) if (Math.abs(M[r][c]) > Math.abs(M[p][c])) p = r;
@@ -155,12 +163,15 @@ export class PlanarTracker {
     this.aspect = W / H;
     this.levels = pyramid(base).map((img, l) => {
       const sx = (W / base.width) * (1 << l), sy = (H / base.height) * (1 << l);  // original px per level px
-      return { halfHeight: H / 2 / sy, pts: templatePoints(img, points[l], sx, sy, W, H) };
+      const pts = templatePoints(img, points[l], sx, sy, W, H);
+      return { halfHeight: H / 2 / sy, pts, hessian: hessian(pts) };
     });
     this.pointCount = this.levels.map(l => l.pts.length / 11);
     const most = Math.max(...this.pointCount);
     this.samples = new Float32Array(most);  // per-point scratch reused every frame
     this.inFrame = new Uint8Array(most);
+    this.residuals = new Float64Array(most);
+    this.H = new Float64Array(64);
   }
 
   // Refine G (normalized template -> frame px) against a frame pyramid (from pyramid()). Returns
@@ -175,19 +186,19 @@ export class PlanarTracker {
       const [x0, y0] = apply3(G, 0, -1), [x1, y1] = apply3(G, 0, 1);
       const framePxPerTemplatePx = Math.hypot(x1 - x0, y1 - y0) / 2 / halfHeight;
       const L = Math.max(0, Math.min(frame.length - 1, Math.round(Math.log2(Math.max(framePxPerTemplatePx, 1e-6)))));
-      const res = this.iterate(frame[L], 1 / (1 << L), pts, G, iterations);
+      const res = this.iterate(frame[L], 1 / (1 << L), this.levels[l], G, iterations);
       if (!res) return { G, score: 0, visible: 0 };
       G = res.G; score = res.score; visible = res.visible;
     }
     return { G, score, visible };
   }
 
-  iterate(img, scale, pts, G, iterations) {
-    const { data, width, height } = img, n = pts.length / 11, I = this.samples, ok = this.inFrame;
+  iterate(img, scale, { pts, hessian }, G, iterations) {
+    const { data, width, height } = img, n = pts.length / 11, I = this.samples, ok = this.inFrame, E = this.residuals, H = this.H;
     let score = 0, visible = 0;
     for (let it = 0; it < iterations; it++) {
       // Sample the frame at the warped template points.
-      let cnt = 0, sT = 0, sI = 0, sTT = 0, sTI = 0;
+      let cnt = 0, sT = 0, sI = 0, sTT = 0, sTI = 0, sII = 0;
       for (let k = 0; k < n; k++) {
         const o = 11 * k, u = pts[o], v = pts[o + 1];
         const z = G[6] * u + G[7] * v + G[8];
@@ -197,31 +208,37 @@ export class PlanarTracker {
         const fx = x - xi, fy = y - yi, i = yi * width + xi;
         I[k] = (data[i] * (1 - fx) + data[i + 1] * fx) * (1 - fy) + (data[i + width] * (1 - fx) + data[i + width + 1] * fx) * fy;
         ok[k] = 1; cnt++;
-        const t = pts[o + 2]; sT += t; sI += I[k]; sTT += t * t; sTI += t * I[k];
+        const t = pts[o + 2], s = I[k]; sT += t; sI += s; sTT += t * t; sTI += t * s; sII += s * s;
       }
       if (cnt < 20) return null;
       // Brightness/contrast of the camera: fit I ~ a T + b, then compare I' = (I - b) / a with T.
       const mT = sT / cnt, mI = sI / cnt, vT = sTT / cnt - mT * mT, cTI = sTI / cnt - mT * mI;
       if (vT <= 1e-6) return null;
       const a = Math.abs(cTI) > 1e-6 ? cTI / vT : 1, b = mI - a * mT;
-      let absSum = 0, sII = 0;
-      for (let k = 0; k < n; k++) if (ok[k]) { const e = (I[k] - b) / a - pts[11 * k + 2]; absSum += Math.abs(e); sII += (I[k] - mI) ** 2; }
+      let absSum = 0;
+      for (let k = 0; k < n; k++) if (ok[k]) { const e = (I[k] - b) / a - pts[11 * k + 2]; E[k] = e; absSum += Math.abs(e); }
       visible = cnt / n;
-      score = cTI / Math.sqrt(vT * (sII / cnt) + 1e-9);  // ZNCC
-      // Huber weights (scale from the mean absolute residual), then the weighted Gauss-Newton step.
-      const huber = 1.5 * 1.253 * absSum / cnt + 1e-3;
-      const H = Array.from({ length: 8 }, () => new Array(8).fill(0)), g = new Array(8).fill(0);
+      score = cTI / Math.sqrt(vT * Math.max(0, sII / cnt - mI * mI) + 1e-9);  // ZNCC
+      // Huber weights (scale from the mean absolute residual), then the weighted Gauss-Newton step. The Hessian of
+      // all points with weight 1 is precomputed (the template's steepest-descent terms never change): each frame only
+      // takes off what points out of view (all of it) and down-weighted ones (1 - w) leave out.
+      const huber = 1.5 * 1.253 * absSum / cnt + 1e-3, g = [0, 0, 0, 0, 0, 0, 0, 0];
+      H.set(hessian);
       for (let k = 0; k < n; k++) {
-        if (!ok[k]) continue;
-        const o = 11 * k, e = (I[k] - b) / a - pts[o + 2], ae = Math.abs(e);
-        const wk = ae <= huber ? 1 : huber / ae;
+        const o = 11 * k;
+        let off = 1;  // share of this point's Hessian term to take off
+        if (ok[k]) {
+          const e = E[k], ae = Math.abs(e), wk = ae <= huber ? 1 : huber / ae;
+          for (let r = 0; r < 8; r++) g[r] += pts[o + 3 + r] * wk * e;
+          off = 1 - wk;
+          if (off === 0) continue;
+        }
         for (let r = 0; r < 8; r++) {
-          const sr = pts[o + 3 + r] * wk;
-          g[r] += sr * e;
-          for (let c = r; c < 8; c++) H[r][c] += sr * pts[o + 3 + c];
+          const sr = pts[o + 3 + r] * off;
+          for (let c = r; c < 8; c++) H[8 * r + c] -= sr * pts[o + 3 + c];
         }
       }
-      for (let r = 0; r < 8; r++) for (let c = 0; c < r; c++) H[r][c] = H[c][r];
+      for (let r = 0; r < 8; r++) for (let c = 0; c < r; c++) H[8 * r + c] = H[8 * c + r];
       const dp = solve8(H, g);
       if (!dp) return null;
       // G <- G * W(dp)^-1 (inverse compositional update).

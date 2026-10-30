@@ -96,7 +96,11 @@ public static class Account
         if (!response.Ok)
             return response.status == 0 ? Message(response) : "Não deu para salvar o registro. Tente de novo.";
         Collection.Add(creature);
-        Bonds[creature] = new Bond { criatura = creature, atualizado_em = DateTimeOffset.UtcNow.ToString("o") };  // as Supabase starts it
+        Bonds[creature] = new Bond  // as Supabase starts it
+        {
+            criatura = creature, fome = Economy.Current.newHunger, humor = Economy.Current.newMood,
+            atualizado_em = DateTimeOffset.UtcNow.ToString("o"),
+        };
         return null;
     }
 

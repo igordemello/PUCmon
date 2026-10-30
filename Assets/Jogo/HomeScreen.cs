@@ -42,7 +42,7 @@ public class HomeScreen : MonoBehaviour
             SceneManager.LoadScene(loginScene);  // it signs back in with the saved session, if there is one
             return;
         }
-        captureButton.onClick.AddListener(() => SceneManager.LoadScene(captureScene));
+        captureButton.onClick.AddListener(() => StartCoroutine(OpenCapture()));
         collectionButton.onClick.AddListener(ShowCollection);
         backButton.onClick.AddListener(() => Show(homePanel));
         search.onValueChanged.AddListener(_ => Refresh());
@@ -118,6 +118,16 @@ public class HomeScreen : MonoBehaviour
         foreach (var other in new[] { homePanel, collectionPanel, care.gameObject, care.sheet })
             other.SetActive(other == panel);
         StartCoroutine(Pop(panel.transform));
+    }
+
+    // The page's loading screen and the camera come first, so the tap answers at once and the camera opens while the
+    // AR scene (all the PUCmons' models) loads; one frame lets the page show it before the load holds everything up.
+    IEnumerator OpenCapture()
+    {
+        captureButton.interactable = false;
+        WebARImageTracker.OpenCamera();
+        yield return null;
+        SceneManager.LoadScene(captureScene);
     }
 
     static IEnumerator Pop(Transform panel)

@@ -14,6 +14,17 @@ public class WebARImageTracker : MonoBehaviour
     /// <summary>The target in view, or null.</summary>
     public ImageTarget Current { get; private set; }
 
+    /// <summary>
+    /// Opens the camera ahead of the AR scene, right before loading it: the page shows its loading screen at once and
+    /// the camera starts while the scene loads, instead of after. The loading screen stays until this tracker starts.
+    /// </summary>
+    public static void OpenCamera()
+    {
+#if UNITY_WEBGL && !UNITY_EDITOR
+        FreeWebAR_Open();
+#endif
+    }
+
     /// <summary>Whether the page shows its "point the camera at the image" hint while no image is in view.</summary>
     public static bool ShowScanHint
     {
@@ -29,6 +40,7 @@ public class WebARImageTracker : MonoBehaviour
     [DllImport("__Internal")] static extern int FreeWebAR_ReadPose(float[] pose);
     [DllImport("__Internal")] static extern string FreeWebAR_TargetName(int index);
     [DllImport("__Internal")] static extern void FreeWebAR_Start();
+    [DllImport("__Internal")] static extern void FreeWebAR_Open();
     [DllImport("__Internal")] static extern void FreeWebAR_Stop();
     [DllImport("__Internal")] static extern void FreeWebAR_SetHint(int show);
 

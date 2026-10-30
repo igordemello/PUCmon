@@ -6,14 +6,14 @@ using UnityEngine.UI;
 
 /// <summary>
 /// A conversation shown over the game: one line at a time in a box, typed out letter by letter; a tap shows the
-/// whole line, the next tap goes on. Prof. Beltran's picture shows while he is the one talking.
+/// whole line, the next tap goes on. Dr. Beltran O.'s picture shows while he is the one talking.
 /// </summary>
 public class Dialogue : MonoBehaviour, IPointerClickHandler
 {
     [Serializable]
     public class Line
     {
-        [Tooltip("Shown over the text, e.g. \"PROF. BELTRAN\" or \"VOCÊ\".")]
+        [Tooltip("Shown over the text, e.g. \"DR. BELTRAN O.\" or \"VOCÊ\".")]
         public string speaker;
         [TextArea(2, 5)] public string text;
         [Tooltip("Show the professor while this line is said.")]

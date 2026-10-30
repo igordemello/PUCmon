@@ -297,8 +297,8 @@ public class CareScreen : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
     void ShowLevelUp(int level)
     {
         var learned = level < Bond.MaxLevel
-            ? "Aprendeu uma ação nova: " + SkillName(Skill(level), level)
-            : "Destravou a habilidade passiva: " + SkillName(creature.passive, -1);
+            ? "Aprendeu uma ação nova: " + SkillName(Skill(level - 1), level)
+            : "Destravou a habilidade passiva: " + SkillName(creature.passive, level);
         levelUpText.text = $"{creature.displayName} agora é seu {Bond.LevelNames[level]}!\n\n{learned}";
         levelUp.SetActive(true);
     }
@@ -316,8 +316,8 @@ public class CareScreen : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
         if (!string.IsNullOrEmpty(creature.description))
             text.AppendLine().AppendLine(creature.description);
         text.AppendLine().AppendLine("<b>AÇÕES</b>");
-        for (int i = 0; i < 5; i++)
-            text.AppendLine(Entry(Skill(i), i, level >= i));
+        for (int i = 0; i < 4; i++)  // action n is learned at friendship n
+            text.AppendLine(Entry(Skill(i), i + 1, level > i));
         text.AppendLine().AppendLine("<b>HABILIDADE PASSIVA</b>");
         text.AppendLine(Entry(creature.passive, Bond.MaxLevel, level >= Bond.MaxLevel));
         sheetBody.text = Dialogue.KeepWhole(text.ToString());
@@ -330,8 +330,8 @@ public class CareScreen : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
 
     Catalog.Skill Skill(int i) => creature.actions != null && i < creature.actions.Length ? creature.actions[i] : null;
 
-    static string SkillName(Catalog.Skill skill, int index) =>
-        !string.IsNullOrEmpty(skill?.name) ? skill.name : index < 0 ? "a passiva" : $"Ação {index + 1}";
+    static string SkillName(Catalog.Skill skill, int unlockLevel) =>
+        !string.IsNullOrEmpty(skill?.name) ? skill.name : unlockLevel >= Bond.MaxLevel ? "a passiva" : $"Ação {unlockLevel}";
 
     // ---------- helpers ----------
     void Say(string text, float seconds = 1.8f)

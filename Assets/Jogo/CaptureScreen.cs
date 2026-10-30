@@ -22,7 +22,7 @@ public class CaptureScreen : MonoBehaviour
     public TMP_Text caughtText;
 
     [Header("Primeiro registro")]
-    [Tooltip("Prof. Beltran's talk the first time the player meets a PUCmon to capture.")]
+    [Tooltip("Dr. Beltran O.'s talk the first time the player meets a PUCmon to capture.")]
     public Dialogue dialogue;
     public Dialogue.Line[] firstCaptureLines;
 

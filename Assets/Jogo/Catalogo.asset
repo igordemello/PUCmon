@@ -23,8 +23,6 @@ MonoBehaviour:
     portrait: {fileID: 21300000, guid: 6ff213a687d892d45806233e3b16f00e, type: 3}
     portraitOf: c89fd2b9837aaba40b8ad4461b9c9bf8/Corvo_LowPoly@-0.37,0.00,0.00,0.00,0.00,0.36,-0.09,0.00,0.00,-0.09,-0.36,0.00,0.00,-0.52,0.01,1.00
     actions:
-    - name: Bicada Processual
-      description: "Uma bicada seguida de uma amea\xE7a de processo. Dano de L\xF3gica."
     - name: "Cita\xE7\xE3o Inventada"
       description: "Cita uma lei que nem existe com tanta confian\xE7a que chega
         a doer. Dano de Criatividade."
@@ -42,7 +40,7 @@ MonoBehaviour:
       description: "Uma vez por raid, recorre da decis\xE3o e anula todo o dano de
         um golpe da G-HYDRA."
     labIntro:
-    - speaker: PROF. BELTRAN
+    - speaker: DR. BELTRAN O.
       text: "Este \xE9 o Habeas Corvus. A miasma da G-HYDRA pegou ele em plena semana
         de G2: tr\xEAs noites sem dormir decorando o C\xF3digo Civil."
       professor: 1
@@ -53,7 +51,7 @@ MonoBehaviour:
     - speaker: "VOC\xCA"
       text: Ele vai processar a gente?
       professor: 0
-    - speaker: PROF. BELTRAN
+    - speaker: DR. BELTRAN O.
       text: "Relaxa, ele ainda n\xE3o passou na OAB. D\xE1 comida e carinho que ele
         retira a queixa."
       professor: 1
@@ -70,8 +68,6 @@ MonoBehaviour:
     portrait: {fileID: 21300000, guid: f13be9748af541f4b9c217e5c8767d59, type: 3}
     portraitOf: 77d73ed9339ba434abd81b79135e7217/Mascote_LowPoly@-0.37,0.00,0.00,0.00,0.00,0.36,-0.09,0.00,0.00,-0.09,-0.36,0.00,-0.01,-0.52,0.01,1.00
     actions:
-    - name: "R\xE9gua T"
-      description: "Uma pancada certeira com a r\xE9gua T. Dano de L\xF3gica."
     - name: "Croqui Rel\xE2mpago"
       description: "Rabisca um croqui t\xE3o r\xE1pido que a G-HYDRA nem v\xEA de
         onde veio. Dano de Criatividade."
@@ -89,7 +85,7 @@ MonoBehaviour:
       description: "Quanto mais longa a raid, mais el\xE9trico fica: ganha Iniciativa
         a cada rodada."
     labIntro:
-    - speaker: PROF. BELTRAN
+    - speaker: DR. BELTRAN O.
       text: "Compatudo chegou pela fenda carregando uma maquete pela metade. A miasma
         deixou ele 72 horas acordado na v\xE9spera da entrega."
       professor: 1
@@ -100,7 +96,7 @@ MonoBehaviour:
     - speaker: "VOC\xCA"
       text: "Professor, ele t\xE1 tremendo."
       professor: 0
-    - speaker: PROF. BELTRAN
+    - speaker: DR. BELTRAN O.
       text: "\xC9 caf\xE9. Ele \xE9 movido a caf\xE9. Brinca um pouco com ele que
         ele esquece o prazo."
       professor: 1
@@ -117,8 +113,6 @@ MonoBehaviour:
     portrait: {fileID: 21300000, guid: fc4f0bf7e88ba7a48a139a42d6ba1d16, type: 3}
     portraitOf: d080fb61d84ea0a48a37c5d94f40ce83/Espiral_LowPoly@-0.37,0.00,0.00,0.00,0.00,0.36,-0.09,0.00,0.00,-0.09,-0.36,0.00,-0.02,-0.52,0.01,1.00
     actions:
-    - name: Pergunta Aberta
-      description: "E como isso faz voc\xEA se sentir? Dano de Criatividade."
     - name: "Associa\xE7\xE3o Livre"
       description: "Diz a primeira coisa que vem \xE0 cabe\xE7a e acerta em cheio.
         Dano de L\xF3gica."
@@ -136,7 +130,7 @@ MonoBehaviour:
       description: "Envergonhado, se esconde atr\xE1s dos colegas: a G-HYDRA o escolhe
         como alvo com menos frequ\xEAncia."
     labIntro:
-    - speaker: PROF. BELTRAN
+    - speaker: DR. BELTRAN O.
       text: "Psoneco \xE9 t\xEDmido, mas a miasma da G-HYDRA o deixou t\xE3o estressado
         que ele come\xE7ou a analisar a si mesmo. Em voz alta. Sem parar."
       professor: 1
@@ -147,7 +141,7 @@ MonoBehaviour:
     - speaker: "VOC\xCA"
       text: "N\xE3o era eu que devia fazer essa pergunta?"
       professor: 0
-    - speaker: PROF. BELTRAN
+    - speaker: DR. BELTRAN O.
       text: "Deixa ele. A sess\xE3o \xE9 de gra\xE7a, o que j\xE1 \xE9 mais do que
         o laborat\xF3rio consegue pagar."
       professor: 1
@@ -164,8 +158,6 @@ MonoBehaviour:
     portrait: {fileID: 21300000, guid: 88fd44b94460f1b46adf90ce39460eaf, type: 3}
     portraitOf: b5c627828d6ead542892ab92cc5ea2c0/Guaxinim_LowPoly@-0.37,0.00,0.00,0.00,0.00,0.36,-0.09,0.00,0.00,-0.09,-0.36,0.00,-0.01,-0.52,0.01,1.00
     actions:
-    - name: "Cr\xEDtica \xC1cida"
-      description: Uma resenha impiedosa direto na cara. Dano de Criatividade.
     - name: Spoiler
       description: "Revela o final da hist\xF3ria na pior hora poss\xEDvel. Dano
         de L\xF3gica."
@@ -183,7 +175,7 @@ MonoBehaviour:
       description: "Nenhuma falha passa despercebida: suas a\xE7\xF5es t\xEAm mais
         chance de causar dano cr\xEDtico."
     labIntro:
-    - speaker: PROF. BELTRAN
+    - speaker: DR. BELTRAN O.
       text: "Guaxineasta saiu no Z1 dando duas estrelas para a pr\xF3pria fuga. A
         miasma deixou ele ainda mais exigente."
       professor: 1
@@ -194,7 +186,7 @@ MonoBehaviour:
     - speaker: "VOC\xCA"
       text: "Ele t\xE1 avaliando a captura?"
       professor: 0
-    - speaker: PROF. BELTRAN
+    - speaker: DR. BELTRAN O.
       text: "Ele avalia tudo. Capricha no lanche e quem sabe o laborat\xF3rio sobe
         para tr\xEAs estrelas."
       professor: 1
@@ -210,8 +202,6 @@ MonoBehaviour:
     portrait: {fileID: 21300000, guid: fb3ccf8cf11c667429da5e56f4cb4706, type: 3}
     portraitOf: 0644d33940ac33d4ca70673f81b43e48/Polvo_LowPoly@-0.37,0.00,0.00,0.00,0.00,0.36,-0.09,0.00,0.00,-0.09,-0.36,0.00,-0.01,-0.52,0.01,1.00
     actions:
-    - name: Pincelada
-      description: "Uma pincelada certeira com um dos oito bra\xE7os. Dano de Criatividade."
     - name: Grid Perfeito
       description: "Alinha tudo na grade e acerta no ponto exato. Dano de L\xF3gica."
     - name: "Paleta Harm\xF4nica"
@@ -228,7 +218,7 @@ MonoBehaviour:
       description: "N\xE3o deixa escapar nenhum detalhe: a cada rodada, o time causa
         um pouco mais de dano \xE0 G-HYDRA."
     labIntro:
-    - speaker: PROF. BELTRAN
+    - speaker: DR. BELTRAN O.
       text: "Ventintoso quase n\xE3o fala, s\xF3 observa. A miasma fez ele passar
         a noite inteira alinhando as rachaduras da fenda."
       professor: 1
@@ -238,7 +228,7 @@ MonoBehaviour:
     - speaker: "VOC\xCA"
       text: "Ele t\xE1 me olhando torto."
       professor: 0
-    - speaker: PROF. BELTRAN
+    - speaker: DR. BELTRAN O.
       text: "N\xE3o \xE9 voc\xEA, \xE9 a fonte do seu crach\xE1. Ganhe a confian\xE7a
         dele com calma, que ele repara em tudo."
       professor: 1
@@ -255,8 +245,6 @@ MonoBehaviour:
     portrait: {fileID: 21300000, guid: 6b7e699b3e295004a872476077a2aeb1, type: 3}
     portraitOf: 5b196e702cf40e44aa846116aa44b1e1/Cardinal_LowPoly@-0.37,0.00,0.00,0.00,0.00,0.36,-0.09,0.00,0.00,-0.09,-0.36,0.00,-0.01,-0.52,0.01,1.00
     actions:
-    - name: "Golpe de B\xE1culo"
-      description: "Uma batida firme com o b\xE1culo. Dano de L\xF3gica."
     - name: "Serm\xE3o"
       description: "Prega com tanta convic\xE7\xE3o que a G-HYDRA fica atordoada.
         Dano de Criatividade."
@@ -272,7 +260,7 @@ MonoBehaviour:
       description: "Uma vez por raid, resiste a um golpe que o nocautearia e fica
         com 1 de vida. S\xF3 n\xE3o resiste \xE0 presen\xE7a de uma f\xEAmea."
     labIntro:
-    - speaker: PROF. BELTRAN
+    - speaker: DR. BELTRAN O.
       text: "Sant\xEDdeo pregava na fila do bandej\xE3o quando a miasma o atingiu.
         Desde ent\xE3o n\xE3o dorme: s\xF3 faz vig\xEDlia."
       professor: 1
@@ -283,7 +271,7 @@ MonoBehaviour:
     - speaker: "VOC\xCA"
       text: Que bom que ele perdoa.
       professor: 0
-    - speaker: PROF. BELTRAN
+    - speaker: DR. BELTRAN O.
       text: "A f\xE9 dele \xE9 inabal\xE1vel. S\xF3 n\xE3o deixa nenhuma f\xEAmea
         chegar perto do recinto, que a\xED ela abala."
       professor: 1
@@ -300,9 +288,6 @@ MonoBehaviour:
     portrait: {fileID: 21300000, guid: 8d866f095069b4941b8a65920e4543c4, type: 3}
     portraitOf: c67faa5919c61a94d8c0b9238985d60e/EJ_Trio_Malha_Unica@-0.44,0.00,0.00,0.00,0.00,0.43,-0.10,0.00,0.00,-0.10,-0.43,0.00,-0.04,-0.54,-0.03,1.00
     actions:
-    - name: Pitch de Elevador
-      description: "Apresenta uma ideia de neg\xF3cio em 30 segundos, sem respirar.
-        Dano de Criatividade."
     - name: Planilha de KPIs
       description: "Mede o desempenho da G-HYDRA e acerta onde d\xF3i. Dano de L\xF3gica."
     - name: Networking
@@ -319,7 +304,7 @@ MonoBehaviour:
       description: "Cada golpe que acerta deixa o pr\xF3ximo um pouco mais forte,
         at\xE9 ele levar dano."
     labIntro:
-    - speaker: PROF. BELTRAN
+    - speaker: DR. BELTRAN O.
       text: "FariLontra saiu da fenda distribuindo cart\xE3o de visita. A miasma
         o fez trabalhar 90 horas por semana na Empresa J\xFAnior. De gra\xE7a."
       professor: 1
@@ -330,7 +315,7 @@ MonoBehaviour:
     - speaker: "VOC\xCA"
       text: "Ele t\xE1 me oferecendo um est\xE1gio?"
       professor: 0
-    - speaker: PROF. BELTRAN
+    - speaker: DR. BELTRAN O.
       text: "N\xE3o remunerado, ele chama de oportunidade. Aceita n\xE3o. Cuida dele
         que ele te d\xE1 uma recomenda\xE7\xE3o."
       professor: 1
@@ -347,8 +332,6 @@ MonoBehaviour:
     portrait: {fileID: 21300000, guid: 046b754c1c656ad49b55fd236687b34c, type: 3}
     portraitOf: 460fdde48bbf69b4fafaf7359531aec9/PUCCOP_LowPoly@-0.39,0.00,0.00,0.00,0.00,0.38,-0.09,0.00,0.00,-0.09,-0.38,0.00,-0.06,-0.55,0.02,1.00
     actions:
-    - name: Cassetete
-      description: "Uma batida firme com o cassetete. Dano de L\xF3gica."
     - name: Papo Furado
       description: "Puxa conversa at\xE9 a G-HYDRA esquecer o que ia fazer. Dano
         de Criatividade."
@@ -366,7 +349,7 @@ MonoBehaviour:
       description: "Ningu\xE9m passa sem se identificar: o primeiro golpe da G-HYDRA
         na raid n\xE3o causa dano."
     labIntro:
-    - speaker: PROF. BELTRAN
+    - speaker: DR. BELTRAN O.
       text: "PucCop vigiava a fenda quando a miasma o pegou. Agora ele pede a carteirinha
         at\xE9 da G-HYDRA."
       professor: 1
@@ -377,7 +360,7 @@ MonoBehaviour:
     - speaker: "VOC\xCA"
       text: "Ele vai falar at\xE9 quando?"
       professor: 0
-    - speaker: PROF. BELTRAN
+    - speaker: DR. BELTRAN O.
       text: "At\xE9 o fim do turno. E se ele ficar bravo, n\xE3o discute: ele chama
         a pol\xEDcia."
       professor: 1
@@ -394,8 +377,6 @@ MonoBehaviour:
     portrait: {fileID: 21300000, guid: d772004ec4a87064688213d2b025161a, type: 3}
     portraitOf: 7206fbc6e3397254f9e62ed1206b006a/Raposa_Diplomata_LowPoly@-0.34,0.00,0.00,0.00,0.00,0.33,-0.08,0.00,0.00,-0.08,-0.33,0.00,-0.01,-0.54,-0.08,1.00
     actions:
-    - name: "Nota Diplom\xE1tica"
-      description: "Uma nota de rep\xFAdio educada, por\xE9m firme. Dano de L\xF3gica."
     - name: Cinco Idiomas
       description: Xinga a G-HYDRA em cinco idiomas ao mesmo tempo. Dano de Criatividade.
     - name: "Media\xE7\xE3o"
@@ -411,7 +392,7 @@ MonoBehaviour:
       description: "Fala a l\xEDngua de todo mundo: os efeitos de suporte que ela
         usa duram uma rodada a mais."
     labIntro:
-    - speaker: PROF. BELTRAN
+    - speaker: DR. BELTRAN O.
       text: "Diploposa tentou negociar um cessar-fogo com a G-HYDRA em cinco idiomas.
         A G-HYDRA n\xE3o fala nenhum deles."
       professor: 1
@@ -422,7 +403,7 @@ MonoBehaviour:
     - speaker: "VOC\xCA"
       text: "Ela t\xE1 preenchendo planilha?"
       professor: 0
-    - speaker: PROF. BELTRAN
+    - speaker: DR. BELTRAN O.
       text: "\xC9 a \xFAnica coisa que a miasma n\xE3o conseguiu tirar dela. Respeite
         o Excel e ela vai confiar em voc\xEA."
       professor: 1
@@ -439,8 +420,6 @@ MonoBehaviour:
     portrait: {fileID: 21300000, guid: 1466f9a7225a5ea4991a07601243523a, type: 3}
     portraitOf: fbb557aa5e16d4a48a4b600126f7b0fb/Coelho_Nutricao_LowPoly@-0.37,0.00,0.00,0.00,0.00,0.36,-0.09,0.00,0.00,-0.09,-0.36,0.00,0.02,-0.54,0.00,1.00
     actions:
-    - name: Chute de Leg Day
-      description: "Um chute de quem nunca pula o treino de perna. Dano de L\xF3gica."
     - name: "Corta o A\xE7\xFAcar"
       description: "D\xE1 um serm\xE3o sobre a\xE7\xFAcar que tira a vontade de viver.
         Dano de Criatividade."
@@ -456,7 +435,7 @@ MonoBehaviour:
       name: Barriguinha
       description: 'A barriguinha amortece tudo: recebe menos dano de todos os golpes.'
     labIntro:
-    - speaker: PROF. BELTRAN
+    - speaker: DR. BELTRAN O.
       text: "Wheylho apareceu no Z1 assaltando uma loja de suplementos. Culpa da
         miasma: ele n\xE3o dorme, s\xF3 treina."
       professor: 1
@@ -467,7 +446,7 @@ MonoBehaviour:
     - speaker: "VOC\xCA"
       text: "Ele n\xE3o era contra a\xE7\xFAcar?"
       professor: 0
-    - speaker: PROF. BELTRAN
+    - speaker: DR. BELTRAN O.
       text: "Na teoria. Na pr\xE1tica, esconde o p\xE3o de queijo, que ele come o
         pacote inteiro."
       professor: 1
@@ -484,9 +463,6 @@ MonoBehaviour:
     portrait: {fileID: 21300000, guid: b8218bc6b58915c49a4061a418f49f36, type: 3}
     portraitOf: c00dbe7e19d2ec74eb7992422f73ac9a/Macaco_LowPoly@-0.36,0.00,0.00,0.00,0.00,0.35,-0.08,0.00,0.00,-0.08,-0.35,0.00,-0.07,-0.56,-0.06,1.00
     actions:
-    - name: Resenha
-      description: "Puxa uma resenha t\xE3o boa que a G-HYDRA perde o foco. Dano
-        de Criatividade."
     - name: Furo de Reportagem
       description: "Exp\xF5e um podre da G-HYDRA, com fatos e fontes. Dano de L\xF3gica."
     - name: Engajamento
@@ -503,7 +479,7 @@ MonoBehaviour:
       description: "Ningu\xE9m fica pra baixo perto dele: os aliados recuperam um
         pouco de vida a cada rodada."
     labIntro:
-    - speaker: PROF. BELTRAN
+    - speaker: DR. BELTRAN O.
       text: "Kenny fez uma live da pr\xF3pria captura. A miasma deixou ele 48 horas
         sem dormir respondendo coment\xE1rio."
       professor: 1
@@ -514,7 +490,7 @@ MonoBehaviour:
     - speaker: "VOC\xCA"
       text: "Professor, o senhor t\xE1 sendo marcado em v\xE1rios posts."
       professor: 0
-    - speaker: PROF. BELTRAN
+    - speaker: DR. BELTRAN O.
       text: "\xD3timo, vai que o CNPCNI v\xEA e libera a verba. Cuida dele, que ele
         adora aten\xE7\xE3o."
       professor: 1
@@ -531,8 +507,6 @@ MonoBehaviour:
     portrait: {fileID: 21300000, guid: a313b911aa1144a40b9afbc1b61ab0ba, type: 3}
     portraitOf: ed2f53d981563cd418e98bd19f2d8916/Bandejomon_LowPoly@-0.37,0.00,0.00,0.00,0.00,0.36,-0.09,0.00,0.00,-0.09,-0.36,0.00,0.04,-0.56,0.01,1.00
     actions:
-    - name: Bandejada
-      description: "Uma bandejada de inox bem no meio da cara. Dano de L\xF3gica."
     - name: Prato do Dia
       description: "Serve um prato que ningu\xE9m sabe o que \xE9. Dano de Criatividade."
     - name: Prato Feito
@@ -548,7 +522,7 @@ MonoBehaviour:
       description: "Na primeira vez que \xE9 nocauteado na raid, volta na rodada
         seguinte com um ter\xE7o da vida."
     labIntro:
-    - speaker: PROF. BELTRAN
+    - speaker: DR. BELTRAN O.
       text: "Bandexo \xE9 o PUCmon mais perigoso do laborat\xF3rio. Ningu\xE9m sabe
         o que ele serve, nem ele. A miasma s\xF3 piorou o tempero."
       professor: 1
@@ -559,7 +533,7 @@ MonoBehaviour:
     - speaker: "VOC\xCA"
       text: Acho que hoje eu passo.
       professor: 0
-    - speaker: PROF. BELTRAN
+    - speaker: DR. BELTRAN O.
       text: "Voc\xEA diz isso hoje. Amanh\xE3 voc\xEA volta. Todo mundo volta."
       professor: 1
     knock: 0.45
@@ -575,8 +549,6 @@ MonoBehaviour:
     portrait: {fileID: 21300000, guid: 137007eac78a1a7499513b11c1d0e613, type: 3}
     portraitOf: 86f792f17093d7c49ab9ea34df143462/Gato_CC_LowPoly@-0.36,0.00,0.00,0.00,0.00,0.35,-0.08,0.00,0.00,-0.08,-0.35,0.00,0.00,-0.53,0.03,1.00
     actions:
-    - name: Patada no Teclado
-      description: "Digita com tanta for\xE7a que a G-HYDRA sente. Dano de L\xF3gica."
     - name: Gambiarra
       description: "Resolve o problema de um jeito que ningu\xE9m entende, nem ele.
         Dano de Criatividade."
@@ -592,7 +564,7 @@ MonoBehaviour:
       name: "Fone no Pesco\xE7o"
       description: "Nem escuta o que a G-HYDRA diz: \xE9 imune a efeitos de status."
     labIntro:
-    - speaker: PROF. BELTRAN
+    - speaker: DR. BELTRAN O.
       text: "Computeiro saiu da fenda dizendo que hackeou a G-HYDRA. Ele s\xF3 mudou
         o papel de parede dela."
       professor: 1
@@ -603,7 +575,7 @@ MonoBehaviour:
     - speaker: "VOC\xCA"
       text: "Ele t\xE1 de fone no pesco\xE7o, mas n\xE3o tem nada tocando."
       professor: 0
-    - speaker: PROF. BELTRAN
+    - speaker: DR. BELTRAN O.
       text: "Faz parte do estilo. Brinca com ele, s\xF3 n\xE3o comenta que ele reprovou
         em C\xE1lculo."
       professor: 1
@@ -620,8 +592,6 @@ MonoBehaviour:
     portrait: {fileID: 21300000, guid: 72998120ab0b99c40bd5f52cfaba6f73, type: 3}
     portraitOf: e69e68cd824db5e4a910266c155a494b/Hipotenusa_LowPoly@-0.37,0.00,0.00,0.00,0.00,0.36,-0.09,0.00,0.00,-0.09,-0.36,0.00,0.01,-0.56,0.02,1.00
     actions:
-    - name: "Teorema de Pit\xE1goras"
-      description: "Aplica o teorema bem na hipotenusa da G-HYDRA. Dano de L\xF3gica."
     - name: "Demonstra\xE7\xE3o por Absurdo"
       description: "Prova que a G-HYDRA est\xE1 errada partindo de algo absurdo.
         Dano de Criatividade."
@@ -639,7 +609,7 @@ MonoBehaviour:
       description: "Ningu\xE9m entende o que ele faz, nem a G-HYDRA: ela erra mais
         os golpes contra ele."
     labIntro:
-    - speaker: PROF. BELTRAN
+    - speaker: DR. BELTRAN O.
       text: "Hipopotenusa passou tr\xEAs noites calculando a \xE1rea da G-HYDRA.
         A miasma n\xE3o deixou ele dormir, e ele nem reparou."
       professor: 1
@@ -650,7 +620,7 @@ MonoBehaviour:
     - speaker: "VOC\xCA"
       text: Errou a conta.
       professor: 0
-    - speaker: PROF. BELTRAN
+    - speaker: DR. BELTRAN O.
       text: "Mais um resultado negativo. Seja gentil com ele, ele j\xE1 est\xE1 acostumado."
       professor: 1
     knock: 0.4
@@ -666,8 +636,6 @@ MonoBehaviour:
     portrait: {fileID: 21300000, guid: e15f97d6726d2c94dafbe05c425ccb85, type: 3}
     portraitOf: d40f48504f5db8b448e88e90b0e88da1/Quimica_LowPoly@-0.38,0.00,0.00,0.00,0.00,0.37,-0.09,0.00,0.00,-0.09,-0.37,0.00,0.00,-0.55,-0.02,1.00
     actions:
-    - name: Tubo de Ensaio
-      description: "Arremessa um tubo de ensaio borbulhando. Dano de L\xF3gica."
     - name: "Rea\xE7\xE3o Exot\xE9rmica"
       description: "Mistura duas coisas que n\xE3o deviam ser misturadas. Dano de
         Criatividade."
@@ -683,7 +651,7 @@ MonoBehaviour:
       description: "Com menos da metade da vida, mostra seu outro lado: suas a\xE7\xF5es
         causam muito mais dano."
     labIntro:
-    - speaker: PROF. BELTRAN
+    - speaker: DR. BELTRAN O.
       text: "Waltopeira montou um laborat\xF3rio clandestino dentro da fenda. A miasma
         deixou ele noites sem dormir, sintetizando sabe-se l\xE1 o qu\xEA."
       professor: 1
@@ -694,7 +662,7 @@ MonoBehaviour:
     - speaker: "VOC\xCA"
       text: "Ele acabou de amea\xE7ar o senhor?"
       professor: 0
-    - speaker: PROF. BELTRAN
+    - speaker: DR. BELTRAN O.
       text: "Ele s\xF3 precisa de amigos. Mas, por via das d\xFAvidas, n\xE3o deixa
         ele chegar perto do bico de Bunsen."
       professor: 1
@@ -711,8 +679,6 @@ MonoBehaviour:
     portrait: {fileID: 21300000, guid: f4fe86dbeafd1d54fb28ed28c0027f19, type: 3}
     portraitOf: c5178318b2a16434a82d1410a83c41ec/Gringull_LowPoly@-0.38,0.00,0.00,0.00,0.00,0.37,-0.09,0.00,0.00,-0.09,-0.37,0.00,0.00,-0.51,0.06,1.00
     actions:
-    - name: Chinelada
-      description: "Uma chinelada bem estalada. Dano de L\xF3gica."
     - name: Caraca!
       description: "Grita uma das tr\xEAs palavras que sabe e assusta a G-HYDRA.
         Dano de Criatividade."
@@ -729,7 +695,7 @@ MonoBehaviour:
       description: "Voa por cima da confus\xE3o: \xE9 sempre o primeiro a agir na
         rodada."
     labIntro:
-    - speaker: PROF. BELTRAN
+    - speaker: DR. BELTRAN O.
       text: "Gringull veio de interc\xE2mbio e confundiu a fenda da G-HYDRA com o
         caminho da praia. A miasma tirou o sono dele, mas n\xE3o o bronzeado."
       professor: 1
@@ -739,7 +705,7 @@ MonoBehaviour:
     - speaker: "VOC\xCA"
       text: "Ele s\xF3 fala isso?"
       professor: 0
-    - speaker: PROF. BELTRAN
+    - speaker: DR. BELTRAN O.
       text: "Tr\xEAs palavras e uma pergunta. Fala devagar e aponta para o p\xE3o
         de queijo, que sempre funciona."
       professor: 1
@@ -756,8 +722,6 @@ MonoBehaviour:
     portrait: {fileID: 21300000, guid: 1f153dd1ab5ee02429e7cc35ce1c35d5, type: 3}
     portraitOf: 02a1c9e80f1a1e4438f8d52f32bcb6d8/Maria_Fumaca_LowPoly@-0.42,0.00,0.00,0.00,0.00,0.40,-0.10,0.00,0.00,-0.10,-0.40,0.00,0.01,-0.55,-0.03,1.00
     actions:
-    - name: Baforada
-      description: "Solta uma nuvem de fuma\xE7a na cara da G-HYDRA. Dano de Criatividade."
     - name: "Reflex\xE3o Profunda"
       description: "Faz uma pergunta filos\xF3fica que a G-HYDRA n\xE3o consegue
         responder. Dano de L\xF3gica."
@@ -774,7 +738,7 @@ MonoBehaviour:
       description: "Est\xE1 t\xE3o longe que nada a atinge direito: recebe menos
         dano, mas age por \xFAltimo."
     labIntro:
-    - speaker: PROF. BELTRAN
+    - speaker: DR. BELTRAN O.
       text: "Maria Fuma\xE7a estava atr\xE1s do Pilotis quando a miasma a pegou.
         Ela diz que n\xE3o sentiu diferen\xE7a."
       professor: 1
@@ -785,7 +749,7 @@ MonoBehaviour:
     - speaker: "VOC\xCA"
       text: "Que horas ela acha que s\xE3o?"
       professor: 0
-    - speaker: PROF. BELTRAN
+    - speaker: DR. BELTRAN O.
       text: "Ela n\xE3o sabe. Mas sabe onde \xE9 a resenha de sexta. Cuida bem dela,
         que larica ela j\xE1 tem."
       professor: 1
@@ -802,9 +766,6 @@ MonoBehaviour:
     portrait: {fileID: 21300000, guid: e48b873dc3ca2b649931cf4e3f09f17f, type: 3}
     portraitOf: 08d45aa03e9d3b247bc669bc282d4b5a/Alexandre_LowPoly@-0.41,0.00,0.00,0.00,0.00,0.40,-0.10,0.00,0.00,-0.10,-0.40,0.00,-0.01,-0.55,-0.04,1.00
     actions:
-    - name: Linha do Tempo
-      description: "Bate com a linha do tempo inteira, de 3000 a.C. at\xE9 ontem.
-        Dano de L\xF3gica."
     - name: Revisionismo
       description: "Reconta a hist\xF3ria de um jeito que a G-HYDRA nem reconhece.
         Dano de Criatividade."
@@ -822,7 +783,7 @@ MonoBehaviour:
       description: "Lento, mas constante: age por \xFAltimo, e cada rodada que passa
         deixa suas a\xE7\xF5es mais fortes."
     labIntro:
-    - speaker: PROF. BELTRAN
+    - speaker: DR. BELTRAN O.
       text: "Alexandre, o Lento, est\xE1 no d\xE9cimo per\xEDodo. A miasma o fez
         virar a noite relendo a queda do Imp\xE9rio Romano. De novo."
       professor: 1
@@ -833,7 +794,7 @@ MonoBehaviour:
     - speaker: "VOC\xCA"
       text: Ele vai se formar algum dia?
       professor: 0
-    - speaker: PROF. BELTRAN
+    - speaker: DR. BELTRAN O.
       text: "Segundo ele, a formatura \xE9 um processo hist\xF3rico. Com calma e
         carinho, quem sabe ainda neste s\xE9culo."
       professor: 1
@@ -850,9 +811,6 @@ MonoBehaviour:
     portrait: {fileID: 21300000, guid: de87c9aeb470e6848b6b66d00f39e8c7, type: 3}
     portraitOf: 3f6b701d657ff0949af5046aef5cb290/Patrimiau_LowPoly@-0.40,0.00,0.00,0.00,0.00,0.39,-0.09,0.00,0.00,-0.09,-0.39,0.00,0.03,-0.56,-0.01,1.00
     actions:
-    - name: Bolsada
-      description: "Uma bolsada com a Longchamp, que custou mais que a mensalidade.
-        Dano de L\xF3gica."
     - name: Olhar de Julgamento
       description: "Encara a G-HYDRA de cima a baixo, em sil\xEAncio. Dano de Criatividade."
     - name: Look do Dia
@@ -869,7 +827,7 @@ MonoBehaviour:
       description: "N\xE3o se mistura: recebe menos dano dos golpes que atingem todo
         o time."
     labIntro:
-    - speaker: PROF. BELTRAN
+    - speaker: DR. BELTRAN O.
       text: "Patrimiau chegou pela fenda reclamando que o buraco n\xE3o combinava
         com a bolsa. A miasma s\xF3 deixou ela mais exigente."
       professor: 1
@@ -880,7 +838,7 @@ MonoBehaviour:
     - speaker: "VOC\xCA"
       text: "Ela t\xE1 julgando a minha roupa?"
       professor: 0
-    - speaker: PROF. BELTRAN
+    - speaker: DR. BELTRAN O.
       text: "Em sil\xEAncio, desde que voc\xEA entrou. Capricha no lanche, que p\xE3o
         de queijo ela aceita."
       professor: 1
@@ -897,8 +855,6 @@ MonoBehaviour:
     portrait: {fileID: 21300000, guid: 036d609d6df36444aacfb673c9546cf8, type: 3}
     portraitOf: 32bc6c01a6e545d4bb7cf6ee3d814a54/Tatlas_LowPoly@-0.37,0.00,0.00,0.00,0.00,0.36,-0.09,0.00,0.00,-0.09,-0.36,0.00,-0.01,-0.53,-0.02,1.00
     actions:
-    - name: Rolada de Tatu
-      description: "Vira uma bola e rola para cima da G-HYDRA. Dano de L\xF3gica."
     - name: "Aula N\xE3o Solicitada"
       description: "Explica desigualdade socioespacial at\xE9 a G-HYDRA desistir.
         Dano de Criatividade."
@@ -916,7 +872,7 @@ MonoBehaviour:
       description: 'Promete salvar o planeta, mas imprime tudo: recupera um pouco
         de vida a cada rodada.'
     labIntro:
-    - speaker: PROF. BELTRAN
+    - speaker: DR. BELTRAN O.
       text: "Tatlas atravessou a fenda com um mapa-m\xFAndi e mesmo assim se perdeu.
         Sem conseguir dormir, ele mapeou o laborat\xF3rio inteiro."
       professor: 1
@@ -927,7 +883,7 @@ MonoBehaviour:
     - speaker: "VOC\xCA"
       text: "Segunda porta \xE0 esquerda."
       professor: 0
-    - speaker: PROF. BELTRAN
+    - speaker: DR. BELTRAN O.
       text: "Agora ele vai imprimir 80 p\xE1ginas sobre essa resposta. Cuida dele,
         que a impressora \xE9 minha."
       professor: 1
@@ -945,8 +901,6 @@ MonoBehaviour:
     portrait: {fileID: 21300000, guid: eebfa0a451705574d86e60470c020ba5, type: 3}
     portraitOf: f94f019dd4fb3944b970755751af194a/Cerebro_LowPoly@-0.39,0.00,0.00,0.00,0.00,0.38,-0.09,0.00,0.00,-0.09,-0.38,0.00,0.00,-0.55,-0.02,1.00
     actions:
-    - name: Sinapse
-      description: "Dispara uma descarga el\xE9trica de neur\xF4nio. Dano de L\xF3gica."
     - name: Efeito Placebo
       description: "Convence a G-HYDRA de que levou um golpe fort\xEDssimo. Dano
         de Criatividade."
@@ -964,7 +918,7 @@ MonoBehaviour:
       description: "Prev\xEA o comportamento da G-HYDRA: o time recebe menos dano
         do golpe que ela avisou."
     labIntro:
-    - speaker: PROF. BELTRAN
+    - speaker: DR. BELTRAN O.
       text: "Cerebr\xF4 \xE9 o PUCmon mais inteligente do laborat\xF3rio. A miasma
         deixou ele com tanta sinapse que ele n\xE3o para de explicar as coisas."
       professor: 1
@@ -975,7 +929,7 @@ MonoBehaviour:
     - speaker: "VOC\xCA"
       text: "Ele n\xE3o ficou bravo comigo?"
       professor: 0
-    - speaker: PROF. BELTRAN
+    - speaker: DR. BELTRAN O.
       text: Ele entende o comportamento de todo mundo, menos o dele. Cuida bem, que
         ele faz amizade rapidinho.
       professor: 1
@@ -992,8 +946,6 @@ MonoBehaviour:
     portrait: {fileID: 21300000, guid: ef1f2cfcc2a0ca64aa356a67dec6a099, type: 3}
     portraitOf: f568be5982036d246bade79a33425d18/Dramacao_LowPoly@-0.38,0.00,0.00,0.00,0.00,0.37,-0.09,0.00,0.00,-0.09,-0.37,0.00,0.07,-0.55,0.00,1.00
     actions:
-    - name: Tapa Teatral
-      description: "Um tapa exagerado, com direito a c\xE2mera lenta. Dano de Criatividade."
     - name: Improviso
       description: "Inventa uma discuss\xE3o do nada e ganha no grito. Dano de L\xF3gica."
     - name: "Desmaio Dram\xE1tico"
@@ -1009,7 +961,7 @@ MonoBehaviour:
       description: "Atua melhor com p\xFAblico: causa mais dano para cada aliado
         em campo."
     labIntro:
-    - speaker: PROF. BELTRAN
+    - speaker: DR. BELTRAN O.
       text: "Dramac\xE3o chegou pela fenda chorando. A miasma n\xE3o o deixa dormir,
         ent\xE3o ele ensaia a pr\xF3pria trag\xE9dia todas as noites."
       professor: 1
@@ -1020,7 +972,7 @@ MonoBehaviour:
     - speaker: "VOC\xCA"
       text: A pedrada foi ontem.
       professor: 0
-    - speaker: PROF. BELTRAN
+    - speaker: DR. BELTRAN O.
       text: "E ele vai chorar por ela at\xE9 a Globo ligar. Aplaude no final, que
         ele se acalma."
       professor: 1
@@ -1038,8 +990,6 @@ MonoBehaviour:
     portrait: {fileID: 21300000, guid: adbac334bfd5782428bb96c44ca8d0d3, type: 3}
     portraitOf: 041c85c71a612864ca163a1aa186a612/Pedaguru_LowPoly@-0.36,0.00,0.00,0.00,0.00,0.35,-0.08,0.00,0.00,-0.08,-0.35,0.00,-0.01,-0.56,-0.09,1.00
     actions:
-    - name: Fantoche
-      description: Um tapa de fantoche, com voz fininha e tudo. Dano de Criatividade.
     - name: Chamada Oral
       description: "Faz uma pergunta dif\xEDcil na frente de todo mundo. Dano de
         L\xF3gica."
@@ -1057,7 +1007,7 @@ MonoBehaviour:
       description: "Nunca desiste da turma: suas a\xE7\xF5es de cura e de suporte
         s\xE3o mais fortes."
     labIntro:
-    - speaker: PROF. BELTRAN
+    - speaker: DR. BELTRAN O.
       text: "Pedaguru tentou dar aula para a G-HYDRA. Tr\xEAs cabe\xE7as, tr\xEAs
         turmas, nenhuma prestou aten\xE7\xE3o. Saiu de l\xE1 estressad\xEDssimo."
       professor: 1
@@ -1068,7 +1018,7 @@ MonoBehaviour:
     - speaker: "VOC\xCA"
       text: Eu... seguro o fantoche?
       professor: 0
-    - speaker: PROF. BELTRAN
+    - speaker: DR. BELTRAN O.
       text: "Segura. Ele ensina tudo com carinho. S\xF3 n\xE3o pergunta como vai
         a vida dele, que ele chora."
       professor: 1
@@ -1085,31 +1035,38 @@ MonoBehaviour:
     portrait: {fileID: 21300000, guid: 6e7b74d27d62ed1419a43364631d73ca, type: 3}
     portraitOf: c4e0b694c2fdd9346bd7a78b8886fe6f/Aristobode_LowPoly@-0.37,0.00,0.00,0.00,0.00,0.36,-0.09,0.00,0.00,-0.09,-0.36,0.00,0.00,-0.55,0.00,1.00
     actions:
-    - name: "Chifrada Socr\xE1tica"
-      description: "Uma chifrada seguida de uma pergunta que ningu\xE9m sabe responder. Dano de L\xF3gica."
-    - name: "Mito da Caverna"
-      description: "Convence a G-HYDRA de que tudo o que ela v\xEA \xE9 sombra na parede da caverna. Dano de Criatividade."
+    - name: Mito da Caverna
+      description: "Convence a G-HYDRA de que tudo o que ela v\xEA \xE9 sombra na
+        parede da caverna. Dano de Criatividade."
     - name: "Mai\xEAutica"
-      description: "Responde a um aliado com outra pergunta at\xE9 ele achar a resposta sozinho: ele causa mais dano na pr\xF3xima a\xE7\xE3o."
-    - name: "Martelo de Nietzsche"
-      description: "Filosofa a marteladas, como Nietzsche recomendou. Dano alto; precisa de 3 rodadas para recarregar."
+      description: "Responde a um aliado com outra pergunta at\xE9 ele achar a resposta
+        sozinho: ele causa mais dano na pr\xF3xima a\xE7\xE3o."
+    - name: Martelo de Nietzsche
+      description: Filosofa a marteladas, como Nietzsche recomendou. Dano alto; precisa
+        de 3 rodadas para recarregar.
     - name: "Constru\xE7\xE3o Social"
-      description: "Declara que a dor \xE9 uma constru\xE7\xE3o social e o time acredita: todos recebem metade do dano na pr\xF3xima rodada."
+      description: "Declara que a dor \xE9 uma constru\xE7\xE3o social e o time acredita:
+        todos recebem metade do dano na pr\xF3xima rodada."
     passive:
-      name: "Cheiro de Bode"
-      description: "N\xE3o toma banho por princ\xEDpio: o cheiro \xE9 tanto que a G-HYDRA recebe um pouco de dano no come\xE7o de cada rodada."
+      name: Cheiro de Bode
+      description: "N\xE3o toma banho por princ\xEDpio: o cheiro \xE9 tanto que a
+        G-HYDRA recebe um pouco de dano no come\xE7o de cada rodada."
     labIntro:
-    - speaker: "PROF. BELTRAN"
-      text: "Arist\xF3bode atravessou a fenda perguntando se a fenda existe mesmo. A miasma o deixou tr\xEAs noites sem dormir, discutindo com a pr\xF3pria sombra."
+    - speaker: DR. BELTRAN O.
+      text: "Arist\xF3bode atravessou a fenda perguntando se a fenda existe mesmo.
+        A miasma o deixou tr\xEAs noites sem dormir, discutindo com a pr\xF3pria
+        sombra."
       professor: 1
     - speaker: "ARIST\xD3BODE"
-      text: "B\xE9\xE9\xE9\xE9! Voc\xEA me apedrejou. Mas o que \xE9 uma pedra, sen\xE3o uma constru\xE7\xE3o social? Assim como o banho."
+      text: "B\xE9\xE9\xE9\xE9! Voc\xEA me apedrejou. Mas o que \xE9 uma pedra, sen\xE3o
+        uma constru\xE7\xE3o social? Assim como o banho."
       professor: 0
     - speaker: "VOC\xCA"
       text: "Professor, que cheiro \xE9 esse?"
       professor: 0
-    - speaker: "PROF. BELTRAN"
-      text: "Constru\xE7\xE3o social, segundo ele. Abre a janela e capricha no carinho, que desempregado em forma\xE7\xE3o precisa de apoio."
+    - speaker: DR. BELTRAN O.
+      text: "Constru\xE7\xE3o social, segundo ele. Abre a janela e capricha no carinho,
+        que desempregado em forma\xE7\xE3o precisa de apoio."
       professor: 1
     knock: 0.45
     agility: 0.8
@@ -1124,31 +1081,37 @@ MonoBehaviour:
     portrait: {fileID: 21300000, guid: 01ab5054629fe9c46a28c53e760eb8a1, type: 3}
     portraitOf: b5cfed7087e1d024e8c122f9e15d9ed0/Mecalim_LowPoly@-0.41,0.00,0.00,0.00,0.00,0.40,-0.10,0.00,0.00,-0.10,-0.40,0.00,-0.13,-0.54,-0.04,1.00
     actions:
-    - name: "Chaveada"
-      description: "Uma pancada com a chave inglesa, sem nem perguntar onde d\xF3i. Dano de L\xF3gica."
-    - name: "Silver Tape"
-      description: "Enrola a G-HYDRA em silver tape, que segundo ele conserta tudo. Dano de Criatividade."
+    - name: Silver Tape
+      description: Enrola a G-HYDRA em silver tape, que segundo ele conserta tudo.
+        Dano de Criatividade.
     - name: "Conserto R\xE1pido"
-      description: "Conserta um aliado na hora: ele recupera parte da vida. Sobraram dois parafusos, mas funciona."
+      description: 'Conserta um aliado na hora: ele recupera parte da vida. Sobraram
+        dois parafusos, mas funciona.'
     - name: "Torque M\xE1ximo"
-      description: "Aperta a G-HYDRA com tanta for\xE7a que espana a rosca. Dano alto; precisa de 3 rodadas para recarregar."
-    - name: "Desmonta Tudo"
-      description: "Desmonta a G-HYDRA antes de descobrir qual era o problema: ela perde o golpe que estava preparando."
+      description: "Aperta a G-HYDRA com tanta for\xE7a que espana a rosca. Dano
+        alto; precisa de 3 rodadas para recarregar."
+    - name: Desmonta Tudo
+      description: 'Desmonta a G-HYDRA antes de descobrir qual era o problema: ela
+        perde o golpe que estava preparando.'
     passive:
       name: "Irm\xE3o Mais Velho"
-      description: "Cuida de todo mundo como cuida dos irm\xE3os: enquanto ele estiver de p\xE9, os aliados recebem menos dano."
+      description: "Cuida de todo mundo como cuida dos irm\xE3os: enquanto ele estiver
+        de p\xE9, os aliados recebem menos dano."
     labIntro:
-    - speaker: "PROF. BELTRAN"
-      text: "Mecalim \xE9 o mais velho dos quatro irm\xE3os. A miasma o deixou duas noites sem dormir consertando a fenda. Ela ficou maior."
+    - speaker: DR. BELTRAN O.
+      text: "Mecalim \xE9 o mais velho dos quatro irm\xE3os. A miasma o deixou duas
+        noites sem dormir consertando a fenda. Ela ficou maior."
       professor: 1
-    - speaker: "MECALIM"
-      text: "A pedra entrou torta, mas tranquilo. Opa, esse recinto t\xE1 com um parafuso frouxo... Me passa a chave que eu desmonto tudo rapidinho."
+    - speaker: MECALIM
+      text: "A pedra entrou torta, mas tranquilo. Opa, esse recinto t\xE1 com um
+        parafuso frouxo... Me passa a chave que eu desmonto tudo rapidinho."
       professor: 0
     - speaker: "VOC\xCA"
       text: "Professor, ele t\xE1 desmontando a porta."
       professor: 0
-    - speaker: "PROF. BELTRAN"
-      text: "Deixa, ela j\xE1 estava ruim. Se sobrar parafuso, a gente guarda. Brinca com ele, que m\xE3o parada ele n\xE3o aguenta."
+    - speaker: DR. BELTRAN O.
+      text: "Deixa, ela j\xE1 estava ruim. Se sobrar parafuso, a gente guarda. Brinca
+        com ele, que m\xE3o parada ele n\xE3o aguenta."
       professor: 1
     knock: 0.4
     agility: 0.9
@@ -1164,31 +1127,37 @@ MonoBehaviour:
     portrait: {fileID: 21300000, guid: df1b779a447579647aed82f06cae1105, type: 3}
     portraitOf: 068ff970570120c498194910534cccab/Voltlim_LowPoly@-0.41,0.00,0.00,0.00,0.00,0.40,-0.10,0.00,0.00,-0.10,-0.40,0.00,-0.12,-0.54,-0.05,1.00
     actions:
-    - name: "Choque de 9 Volts"
-      description: "Encosta uma bateria de 9 volts na l\xEDngua da G-HYDRA, como todo mundo j\xE1 fez um dia. Dano de L\xF3gica."
-    - name: "Curto-Circuito"
-      description: "Liga o fio errado no lugar errado, dessa vez de prop\xF3sito. Dano de Criatividade."
-    - name: "Fio Terra"
-      description: "Aterra um aliado: o pr\xF3ximo golpe nele descarrega no ch\xE3o e causa menos dano."
+    - name: Curto-Circuito
+      description: "Liga o fio errado no lugar errado, dessa vez de prop\xF3sito.
+        Dano de Criatividade."
+    - name: Fio Terra
+      description: "Aterra um aliado: o pr\xF3ximo golpe nele descarrega no ch\xE3o
+        e causa menos dano."
     - name: "Alta Tens\xE3o"
-      description: "Liga a G-HYDRA no 220 jurando que era 127. Dano alto; precisa de 3 rodadas para recarregar."
-    - name: "Funcionou de Primeira!"
-      description: "Por milagre, o projeto funciona de primeira, e ele comemora tanto que energiza o time: todos causam mais dano na pr\xF3xima a\xE7\xE3o."
+      description: Liga a G-HYDRA no 220 jurando que era 127. Dano alto; precisa
+        de 3 rodadas para recarregar.
+    - name: Funcionou de Primeira!
+      description: "Por milagre, o projeto funciona de primeira, e ele comemora tanto
+        que energiza o time: todos causam mais dano na pr\xF3xima a\xE7\xE3o."
     passive:
-      name: "Entusiasmo Contagiante"
-      description: "Explica circuitos at\xE9 no meio da luta, e a empolga\xE7\xE3o passa para o time: todos os aliados ganham Iniciativa."
+      name: Entusiasmo Contagiante
+      description: "Explica circuitos at\xE9 no meio da luta, e a empolga\xE7\xE3o
+        passa para o time: todos os aliados ganham Iniciativa."
     labIntro:
-    - speaker: "PROF. BELTRAN"
-      text: "Voltlim \xE9 o segundo dos quatro irm\xE3os, id\xEAnticos at\xE9 o fim do ciclo b\xE1sico. A miasma o fez virar a noite ligando a fenda na tomada."
+    - speaker: DR. BELTRAN O.
+      text: "Voltlim \xE9 o segundo dos quatro irm\xE3os, id\xEAnticos at\xE9 o fim
+        do ciclo b\xE1sico. A miasma o fez virar a noite ligando a fenda na tomada."
       professor: 1
-    - speaker: "VOLTLIM"
-      text: "Se eu t\xF4 bem? \xD3tima pergunta! A pedrada foi tipo um curto-circuito. Mas antes, deixa eu explicar a Lei de Ohm desde o come\xE7o!"
+    - speaker: VOLTLIM
+      text: "Se eu t\xF4 bem? \xD3tima pergunta! A pedrada foi tipo um curto-circuito.
+        Mas antes, deixa eu explicar a Lei de Ohm desde o come\xE7o!"
       professor: 0
     - speaker: "VOC\xCA"
       text: "Era s\xF3 sim ou n\xE3o..."
       professor: 0
-    - speaker: "PROF. BELTRAN"
-      text: "Com ele nunca \xE9. Finge que entendeu e faz carinho, que ele fica feliz da vida."
+    - speaker: DR. BELTRAN O.
+      text: "Com ele nunca \xE9. Finge que entendeu e faz carinho, que ele fica feliz
+        da vida."
       professor: 1
     knock: 0.55
     agility: 1.5
@@ -1204,31 +1173,37 @@ MonoBehaviour:
     portrait: {fileID: 21300000, guid: 385c9d650e784db439b46ac0a6983dff, type: 3}
     portraitOf: ac36790ec2e20704fbd4bc08837d740c/Bitlim_LowPoly@-0.41,0.00,0.00,0.00,0.00,0.40,-0.10,0.00,0.00,-0.10,-0.40,0.00,-0.12,-0.54,-0.04,1.00
     actions:
-    - name: "Tabletada"
-      description: "Uma tabletada com a tela j\xE1 trincada. Dano de L\xF3gica."
     - name: "Automa\xE7\xE3o"
-      description: "Passa seis horas programando um rob\xF4 que d\xE1 um tapa de um segundo. Dano de Criatividade."
+      description: "Passa seis horas programando um rob\xF4 que d\xE1 um tapa de
+        um segundo. Dano de Criatividade."
     - name: "Rotina Autom\xE1tica"
-      description: "Automatiza o curativo de um aliado: ele recupera um pouco de vida a cada rodada, por 3 rodadas."
-    - name: "Overclock"
-      description: "For\xE7a o processador at\xE9 sair fuma\xE7a. Dano alto; precisa de 3 rodadas para recarregar."
-    - name: "Desliga e Liga de Novo"
-      description: "Tenta o de sempre na G-HYDRA: ela reinicia e perde a for\xE7a que acumulou nas rodadas passadas."
+      description: 'Automatiza o curativo de um aliado: ele recupera um pouco de
+        vida a cada rodada, por 3 rodadas.'
+    - name: Overclock
+      description: "For\xE7a o processador at\xE9 sair fuma\xE7a. Dano alto; precisa
+        de 3 rodadas para recarregar."
+    - name: Desliga e Liga de Novo
+      description: "Tenta o de sempre na G-HYDRA: ela reinicia e perde a for\xE7a
+        que acumulou nas rodadas passadas."
     passive:
       name: "Pregui\xE7a Eficiente"
-      description: "Faz de tudo para n\xE3o repetir esfor\xE7o: usar a mesma a\xE7\xE3o em rodadas seguidas a deixa mais forte."
+      description: "Faz de tudo para n\xE3o repetir esfor\xE7o: usar a mesma a\xE7\xE3o
+        em rodadas seguidas a deixa mais forte."
     labIntro:
-    - speaker: "PROF. BELTRAN"
-      text: "Bitlim \xE9 o terceiro dos irm\xE3os. A miasma o fez passar duas noites programando um rob\xF4 para fugir da G-HYDRA. A p\xE9, eram cinco minutos."
+    - speaker: DR. BELTRAN O.
+      text: "Bitlim \xE9 o terceiro dos irm\xE3os. A miasma o fez passar duas noites
+        programando um rob\xF4 para fugir da G-HYDRA. A p\xE9, eram cinco minutos."
       professor: 1
-    - speaker: "BITLIM"
-      text: "Travei. A pedrada me deu tela azul. Voc\xEA j\xE1 tentou me desligar e ligar de novo?"
+    - speaker: BITLIM
+      text: "Travei. A pedrada me deu tela azul. Voc\xEA j\xE1 tentou me desligar
+        e ligar de novo?"
       professor: 0
     - speaker: "VOC\xCA"
-      text: "Professor, isso funciona?"
+      text: Professor, isso funciona?
       professor: 0
-    - speaker: "PROF. BELTRAN"
-      text: "Com ele, sempre. Com o computador do laborat\xF3rio, nunca. Capricha no carinho, que isso ele ainda n\xE3o conseguiu automatizar."
+    - speaker: DR. BELTRAN O.
+      text: "Com ele, sempre. Com o computador do laborat\xF3rio, nunca. Capricha
+        no carinho, que isso ele ainda n\xE3o conseguiu automatizar."
       professor: 1
     knock: 0.55
     agility: 0.7
@@ -1244,31 +1219,37 @@ MonoBehaviour:
     portrait: {fileID: 21300000, guid: b402303914ee9194c8d7c4b43f4ec2bc, type: 3}
     portraitOf: 857e12198e1607847b137f0dc5ffee3b/Ecolim_LowPoly@-0.41,0.00,0.00,0.00,0.00,0.39,-0.09,0.00,0.00,-0.09,-0.39,0.00,-0.12,-0.54,-0.07,1.00
     actions:
-    - name: "Galhada"
-      description: "Uma galhada com um galho que caiu sozinho, porque arrancar n\xE3o pode. Dano de L\xF3gica."
-    - name: "Pegada de Carbono"
-      description: "Calcula a pegada de carbono da G-HYDRA e joga na cara dela. Dano de Criatividade."
+    - name: Pegada de Carbono
+      description: Calcula a pegada de carbono da G-HYDRA e joga na cara dela. Dano
+        de Criatividade.
     - name: "Sombra e \xC1gua Fresca"
-      description: "Planta uma \xE1rvore ao lado de um aliado: na sombra, ele recebe menos dano na pr\xF3xima rodada."
-    - name: "Cheia do Rio Rainha"
-      description: "Faz o Rio Rainha, que corta o campus, transbordar em cima da G-HYDRA. Dano alto; precisa de 3 rodadas para recarregar."
+      description: "Planta uma \xE1rvore ao lado de um aliado: na sombra, ele recebe
+        menos dano na pr\xF3xima rodada."
+    - name: Cheia do Rio Rainha
+      description: Faz o Rio Rainha, que corta o campus, transbordar em cima da G-HYDRA.
+        Dano alto; precisa de 3 rodadas para recarregar.
     - name: "N\xE3o Pise na Grama!"
-      description: "Flagra a G-HYDRA cortando caminho pela grama e d\xE1 uma bronca t\xE3o grande que ela esquece o golpe que estava preparando."
+      description: "Flagra a G-HYDRA cortando caminho pela grama e d\xE1 uma bronca
+        t\xE3o grande que ela esquece o golpe que estava preparando."
     passive:
-      name: "Calmo, Mas Nem Tanto"
-      description: "Tranquilo at\xE9 algu\xE9m pisar na grama: a cada aliado nocauteado, suas a\xE7\xF5es ficam bem mais fortes."
+      name: Calmo, Mas Nem Tanto
+      description: "Tranquilo at\xE9 algu\xE9m pisar na grama: a cada aliado nocauteado,
+        suas a\xE7\xF5es ficam bem mais fortes."
     labIntro:
-    - speaker: "PROF. BELTRAN"
-      text: "Ecolim \xE9 o ca\xE7ula dos quatro irm\xE3os. A miasma tirou o sono dele: passou a noite replantando cada folha que a G-HYDRA pisou."
+    - speaker: DR. BELTRAN O.
+      text: "Ecolim \xE9 o ca\xE7ula dos quatro irm\xE3os. A miasma tirou o sono
+        dele: passou a noite replantando cada folha que a G-HYDRA pisou."
       professor: 1
-    - speaker: "ECOLIM"
-      text: "Tudo bem, a pedrada eu perdoo. Mas voc\xEA veio at\xE9 aqui cortando caminho pela grama? Pela GRAMA?!"
+    - speaker: ECOLIM
+      text: "Tudo bem, a pedrada eu perdoo. Mas voc\xEA veio at\xE9 aqui cortando
+        caminho pela grama? Pela GRAMA?!"
       professor: 0
     - speaker: "VOC\xCA"
       text: "Era s\xF3 um atalho..."
       professor: 0
-    - speaker: "PROF. BELTRAN"
-      text: "Era. Agora \xE9 crime ambiental. D\xE1 um lanche, sem embalagem de pl\xE1stico, que ele te perdoa."
+    - speaker: DR. BELTRAN O.
+      text: "Era. Agora \xE9 crime ambiental. D\xE1 um lanche, sem embalagem de pl\xE1stico,
+        que ele te perdoa."
       professor: 1
     knock: 0.6
     agility: 1.1

@@ -50,12 +50,25 @@ entram pelo pacote glTFast (já no `manifest.json`): basta soltá-los em `Assets
    estão configurados no Player Settings).
 2. Arraste a pasta gerada para <https://app.netlify.com/drop>. O Netlify já dá HTTPS, que a câmera exige.
 
+## Testar no celular sem publicar
+
+A câmera só abre em HTTPS ou em `localhost`. Sirva o build no computador
+(`python -m http.server 8080 --directory Builds/FreeWebAR`) e abra no celular por um destes caminhos:
+
+- **Qualquer celular (iPhone também):** um túnel HTTPS grátis, sem conta. Instale uma vez com
+  `winget install --id Cloudflare.cloudflared`, rode `cloudflared tunnel --url http://localhost:8080` e abra no
+  celular o link `https://….trycloudflare.com` que ele mostra. O link muda a cada vez e só existe enquanto o
+  comando roda.
+- **Android no cabo USB:** ative a depuração USB no celular. No Chrome do computador, abra `chrome://inspect`, em
+  *Port forwarding* encaminhe `8080` para `localhost:8080` e abra `http://localhost:8080` no Chrome do celular. Ali
+  mesmo, *inspect* abre o DevTools do celular, com o *Performance* para medir o FPS de verdade.
+
 ## Câmera e diagnóstico
 
 Em celular com várias lentes, a página escolhe a lente principal pelo nome das câmeras, em qualquer idioma: nunca a
 0.5x, nem a câmera "Dupla/Tripla" do iPhone Pro, que troca para a 0.5x de perto.
 
-Com `?debug` no fim do link aparecem a lista de câmeras (◀ = a escolhida), a câmera aberta, a resolução e o estado
+Com `?debug` no fim do link aparecem a lista de câmeras (◀ = a escolhida), a câmera aberta, a resolução, o FPS e o estado
 (`denso`, `8th Wall` ou `procurando`) com a correlação e o tempo do rastreador. `?cam=N` força a câmera N da lista.
 
 Testes: `node "Assets/FreeWebAR/Tests~/freewebar.test.mjs"` e `node "Assets/FreeWebAR/Tests~/tracker.test.mjs"`.

@@ -1855,7 +1855,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: PROF. BELTRAN
+  m_text: DR. BELTRAN O.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a63368c6a862c5546b94e0acbede69e9, type: 2}
   m_sharedMaterial: {fileID: 340663133675476385, guid: a63368c6a862c5546b94e0acbede69e9, type: 2}
@@ -5224,14 +5224,14 @@ MonoBehaviour:
   caughtText: {fileID: 123498176}
   dialogue: {fileID: 727005537}
   firstCaptureLines:
-  - speaker: PROF. BELTRAN
+  - speaker: DR. BELTRAN O.
     text: "Esse PUCmon parece muito estressado, voc\xEA precisar\xE1 acalm\xE1-lo
       para podermos estudar melhor essas criaturas!"
     professor: 1
   - speaker: "VOC\xCA"
     text: "Como que eu fa\xE7o isso? A gente tem tranquilizantes ou coisa do g\xEAnero?"
     professor: 0
-  - speaker: PROF. BELTRAN
+  - speaker: DR. BELTRAN O.
     text: "E voc\xEA acha que a gente tem verba pra isso? Taca uma pedra na cabe\xE7a
       do bicho que ele apaga igual. Depois n\xE3o se esque\xE7a de trazer ele de
       volta pro laborat\xF3rio."
@@ -15742,7 +15742,7 @@ GameObject:
   - component: {fileID: 1689178539}
   - component: {fileID: 1689178538}
   m_Layer: 5
-  m_Name: Prof. Beltran
+  m_Name: Dr. Beltran O.
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

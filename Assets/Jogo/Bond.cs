@@ -5,16 +5,15 @@ using UnityEngine;
 /// <summary>
 /// The player's friendship with one captured PUCmon, as Supabase keeps it (a row of "capturas"; field names are its
 /// columns). Hunger and mood are saved as of <see cref="atualizado_em"/> and drop with time from there, by the same
-/// rule as the "cuidar" function in Supabase/2-colecao.sql.
+/// rule as the "cuidar" function in Supabase/4-economia.sql (both from the <see cref="Economy"/> asset).
 /// </summary>
 [Serializable]
 public class Bond
 {
     /// <summary>Total affinity needed for each friendship level (level 0 needs none).</summary>
-    public static readonly int[] Levels = { 0, 100, 300, 600, 1000, 1500 };
+    public static int[] Levels => Economy.Current.Levels;
     public static readonly string[] LevelNames = { "Desconfiado", "Curioso", "Conhecido", "Colega", "Amigo", "Inseparável" };
     public const int MaxLevel = 5;
-    const float DropPerHour = 100f / 24f;  // full to empty in a day
 
     public string criatura;
     public int afinidade;
@@ -35,14 +34,14 @@ public class Bond
     }
 
     /// <summary>Hunger and mood right now: 0 starving / miserable .. 100 full / happy.</summary>
-    public float Fullness => Drop(fome);
-    public float Mood => Drop(humor);
-    public bool NeedsCare => Fullness < 30f || Mood < 30f;
+    public float Fullness => Drop(fome, Economy.Current.hungerHours);
+    public float Mood => Drop(humor, Economy.Current.moodHours);
+    public bool NeedsCare => Fullness < Economy.Current.careWarning || Mood < Economy.Current.careWarning;
 
-    float Drop(float saved)
+    float Drop(float saved, float hoursToEmpty)
     {
         if (string.IsNullOrEmpty(atualizado_em) || !DateTimeOffset.TryParse(atualizado_em, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var since))
             return saved;
-        return Mathf.Max(0f, saved - (float)(DateTimeOffset.UtcNow - since).TotalHours * DropPerHour);
+        return Mathf.Max(0f, saved - (float)(DateTimeOffset.UtcNow - since).TotalHours * 100f / hoursToEmpty);
     }
 }

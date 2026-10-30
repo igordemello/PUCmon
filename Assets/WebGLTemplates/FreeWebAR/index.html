@@ -62,10 +62,12 @@
     // space. FreeWebAR.jslib copies it into WebARImageTracker every frame.
     const pose = window.freeWebARPose = new Float32Array(27);
     let unityReady = false, gameReady = false, arStarted = false, cameraReady = false, failed = false, cameraLabel = '', cameraList = '', lastSeen = 0;
+    let sceneLoading = false;  // Unity is loading the AR scene (freeWebAROpen until freeWebARStart)
     // The game says when its first screen knows what to show (e.g. after checking a saved session): PUCmon_PageReady.
     window.pucmonPageReady = () => { gameReady = true; showHint(); };
     const showHint = () => {
-      const ready = unityReady && gameReady && (cameraReady || !arStarted) && !failed;  // before the AR scene only Unity counts
+      // before the AR scene only Unity counts
+      const ready = unityReady && gameReady && (cameraReady || !arStarted) && !failed && !sceneLoading;
       $('loading').classList.toggle('off', ready || failed);
       $('scan').classList.toggle('off', !ready || !arStarted || pose[0] === 1 || window.freeWebARHint === false);
     };
@@ -88,20 +90,26 @@
     // one per ImageTarget image in the scene.
     async function loadTargets() {
       const list = await (await fetch('image-targets/targets.json')).json();
-      targets = await Promise.all(list.map(async data => {
-        const bitmap = await createImageBitmap(await (await fetch(data.imagePath)).blob());
+      targets = list.map(data => ({ name: data.name, card: templateToCard(data.properties), imagePath: data.imagePath, tracker: null }));
+      window.freeWebARTargets = targets.map(t => t.name);  // FreeWebAR_TargetName reads these
+      return list;
+    }
+    const indexOf = image => targets.findIndex(t => t.name === image.name);
+    // A poster's dense tracker is made the first time the engine sees it: decoding and preparing every poster up front
+    // held the camera back (~15 ms each on a computer, several times that on a phone). Until it is ready, a few
+    // frames, that poster goes by the engine's pose.
+    function prepare(target) {
+      target.loading ??= (async () => {
+        const bitmap = await createImageBitmap(await (await fetch(target.imagePath)).blob());
         const c = document.createElement('canvas');
         [c.width, c.height] = [bitmap.width, bitmap.height];
         const ctx = c.getContext('2d');
         ctx.drawImage(bitmap, 0, 0);
         const rgba = ctx.getImageData(0, 0, c.width, c.height).data, gray = new Uint8Array(c.width * c.height);
         for (let i = 0; i < gray.length; i++) gray[i] = rgba[4 * i];  // already grayscale
-        return { name: data.name, card: templateToCard(data.properties), tracker: new PlanarTracker({ data: gray, width: c.width, height: c.height }) };
-      }));
-      window.freeWebARTargets = targets.map(t => t.name);  // FreeWebAR_TargetName reads these
-      return list;
+        target.tracker = new PlanarTracker({ data: gray, width: c.width, height: c.height });
+      })().catch(e => { console.warn('Free WebAR: no dense tracking for', target.name, e); });
     }
-    const indexOf = image => targets.findIndex(t => t.name === image.name);
 
     // GL projection of a phone main camera (~63° across the long side) filling a w x h canvas.
     function typicalLens(w, h) {
@@ -110,12 +118,18 @@
     }
 
     const pool = {};  // pyramid buffers reused every frame
-    let lastGood = 0;
+    let lastGood = 0, lastUpdate = 0, fps = 0;
     function track(r, images, cam) {
       const K = frameIntrinsics(r.intrinsics, feed.width, feed.height, cam.cols, cam.rows);
-      const frame = pyramid({ data: cam.pixels, width: cam.cols, height: cam.rows }, undefined, pool);
+      let frame = null;  // built only for a frame with a poster to align
       const attempt = (i, start) => {
-        const res = targets[i].tracker.track(frame, start);
+        const tracker = targets[i].tracker;
+        if (!tracker) {
+          prepare(targets[i]);
+          return null;
+        }
+        frame ??= pyramid({ data: cam.pixels, width: cam.cols, height: cam.rows }, undefined, pool);
+        const res = tracker.track(frame, start);
         return res.score > MIN_SCORE && res.visible > 0.25 ? res : null;
       };
       // Follow the current poster from its last good alignment (kept for half a second after a miss: motion blur,
@@ -162,7 +176,9 @@
         else if (t0 - lastSeen > 250) pose[0] = 0;  // hold the last pose for a blink instead of flickering
         showHint();
         if (q.has('debug')) {
-          debug.textContent = `${cameraList}\naberta: ${cameraLabel}\n` +
+          fps += (1000 / Math.max(1, t0 - lastUpdate) - fps) * 0.05;
+          lastUpdate = t0;
+          debug.textContent = `${cameraList}\naberta: ${cameraLabel}\n${fps.toFixed(0)} fps\n` +
             `${densePose ? 'denso' : card ? '8th Wall' : 'procurando'}  ${card ? targets[active].name : ''}  ` +
             `ZNCC ${score.toFixed(2)}  ${(performance.now() - t0).toFixed(1)} ms`;
         }
@@ -233,12 +249,19 @@
     }
     // Unity opens the camera when the AR scene starts and closes it when the scene ends (FreeWebAR.jslib).
     window.freeWebARStart = () => {
-      if (arStarted) return;
+      sceneLoading = false;
+      if (arStarted) return showHint();
       arStarted = true;
       sizeFeed();  // the page may have been sized while hidden or loading
       showHint();
       if (!window.isSecureContext) fail('A câmera só funciona em HTTPS.');
       else startAR();
+    };
+    // Unity, right before loading the AR scene: the loading screen now, and the camera opening while the scene loads.
+    window.freeWebAROpen = () => {
+      window.freeWebARStart();
+      sceneLoading = true;
+      showHint();
     };
     window.freeWebARStop = () => {
       arStarted = false;

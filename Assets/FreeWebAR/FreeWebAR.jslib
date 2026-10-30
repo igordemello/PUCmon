@@ -20,6 +20,11 @@ mergeInto(LibraryManager.library, {
     if (window.freeWebARStart) window.freeWebARStart();
   },
 
+  // Opens the camera ahead of the AR scene, behind the page's loading screen, which stays until FreeWebAR_Start.
+  FreeWebAR_Open: function () {
+    if (window.freeWebAROpen) window.freeWebAROpen();
+  },
+
   // Closes the camera.
   FreeWebAR_Stop: function () {
     if (window.freeWebARStop) window.freeWebARStop();

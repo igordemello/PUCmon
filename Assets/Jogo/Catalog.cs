@@ -24,8 +24,8 @@ public class Catalog : ScriptableObject
         public string portraitOf;
 
         [Header("Repertório (amizade)")]
-        [Tooltip("Its 5 actions: the 1st it knows from the start (friendship 0), the others it learns at friendship 1, 2, 3 and 4.")]
-        public Skill[] actions = new Skill[5];
+        [Tooltip("Its 4 actions, learned at friendship 1, 2, 3 and 4 (at 0 it knows none yet).")]
+        public Skill[] actions = new Skill[4];
         [Tooltip("Passive ability, unlocked at friendship 5.")]
         public Skill passive;
 

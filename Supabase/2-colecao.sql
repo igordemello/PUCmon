@@ -1,6 +1,7 @@
 -- PUCmon, Coleção (tamagochi): rode uma vez no Supabase (SQL Editor > New query > Run), depois do schema.sql.
 -- Cada PUCmon capturado ganha afinidade (XP de amizade), fome e humor. O jogo nunca grava esses números direto:
 -- só pela função cuidar(), que decide quanto cada cuidado rende.
+-- Os números de agora ficam no 4-economia.sql (gerado pelo asset Economia, no Unity), que substitui esta cuidar().
 
 alter table public.capturas
   add column afinidade int not null default 0,
